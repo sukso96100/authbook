@@ -15,8 +15,15 @@ fun Route.auth(){
             
             val username = params["username"]
             val email = params["email"]
-            val displayName = params[]"display_name"]
+            val displayName = params["display_name"]
             val password = params["password"]
+            val passwordChech = params["password_check"]
+            
+            when {
+                password.length < 8 -> call.respondText("Password must be at least 8 digits")
+                username.length < 4 -> call.respondText("Username must be longer then 4 letters")
+            
+            val passwordHash = hash(password)
         }
         post("/login"){}
         get("/logout"){}

@@ -1,6 +1,9 @@
 package xyz.youngbin.authbook
 
-val hashKey = environment.config.property("authbook.secret").getString()
+import javax.crypto.*
+import javax.crypto.spec.*
+
+val hashKey = hex(environment.config.property("authbook.secret").getString())
 val hmacKey = SecretKeySpec(hashKey, "HmacSHA1")
 
 fun hash(password: String): String {

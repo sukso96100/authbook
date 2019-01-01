@@ -1,8 +1,12 @@
 package xyz.youngbin.authbook
 import org.jetbrains.exposed.sql.*
+import java.util.Date
 
 // User Session Model
-data class AuthbookSession(val sessionId: String)
+data class AuthbookSession(
+    val username: String
+    val ipAddress: String
+    val createdAt: Date = Date())
 
 // Users Table Object
 object Users : Table() {

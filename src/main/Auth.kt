@@ -28,8 +28,19 @@ fun Route.auth(){
                 !emailRegex.matches(email) -> call.respondText("Email address is not valid.")
                 UserQuery.findByUsername(username).count() > 0 -> call.respondText("Username ${username} is already in use")
                 UserQuery.findByEmail(email).count() > 0 -> call.respondText("Email ${email} is already in use")
+                else -> {
+                    // Sign up form validated! create new user with the form data
+                    val passwordHash = hash(password)
+                    UserQuery.signUp(username, email, displayName, passwordHash)
+                    
+                    // Set Session
+                    call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, Date()))
+                    
+                    // Respond to the client
+                    call.respondText("Signed Up! You can now log in with the new account.")
+                }
             
-            val passwordHash = hash(password)
+            
         }
         post("/login"){}
         get("/logout"){}

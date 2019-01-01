@@ -3,6 +3,8 @@ package xyz.youngbin.authbook
 import javax.crypto.*
 import javax.crypto.spec.*
 
+val emailRegex = Regex("""/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g""")
+
 val hashKey = hex(environment.config.property("authbook.secret").getString())
 val hmacKey = SecretKeySpec(hashKey, "HmacSHA1")
 

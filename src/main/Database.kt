@@ -1,11 +1,13 @@
 package xyz.youngbin.authbook
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
+
 import java.util.Date
 
 // User Session Model
 data class AuthbookSession(
-    val username: String
-    val ipAddress: String
+    val username: String,
+    val ipAddress: String,
     val createdAt: Date = Date())
 
 // Users Table Object
@@ -25,6 +27,20 @@ object OtpSeeds : IntIdTable() {
     val seedInfo = varchar("seed_info", 2048)
     val seedHash = varchar("seed_hash", 512)
     val seedOwner = varchar("seed_owner", 40) references Users.username
+}
+
+fun initDatabase(){
+    // Load DB connection configuration
+    val address = environment.config.property("authbook.db.address").getString()
+    val user = environment.config.property("authbook.db.user").getString()
+    val password = environment.config.property("authbook.db.password").getString()
+    
+    // Connect with database
+    Database.connect("jdbc:${address}", driver = "com.mysql.jdbc.Driver", user = user, password = password)  
+
+    transaction {
+        SchemaUtils.create (Users, OtpSeeds)
+    }
 }
 
 companion object UserQuery{

@@ -5,6 +5,11 @@ import io.ktor.features.*
 import io.ktor.html.*
 import io.ktor.routing.*
 import kotlinx.html.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.sessions.*
+import io.ktor.util.*
+import io.ktor.http.*
 
 fun Route.auth(){
     route("/auth"){
@@ -13,11 +18,11 @@ fun Route.auth(){
         post("/signup"){
             val params = call.receive<Parameters>()
             
-            val username = params["username"]
-            val email = params["email"]
-            val displayName = params["display_name"]
-            val password = params["password"]
-            val passwordCheck = params["password_check"]
+            val username = params["username"] ?: call.respondText("username is empty")
+            val email = params["email"] ?: call.respondText("email is empty")
+            val displayName = params["display_name"] ?: call.respondText("display name is empty")
+            val password = params["password"] ?: call.respondText("password is empty")
+            val passwordCheck = params["password_check"] ?: call.respondText("password check is empty")
             
             when {
                 // Validate sign up form
@@ -41,8 +46,9 @@ fun Route.auth(){
                 }
             
             
-        }
+            }
         post("/login"){}
         get("/logout"){}
+        }
     }
 }

@@ -1,7 +1,9 @@
 package xyz.youngbin.authbook
+
+import io.ktor.application.*
+import io.ktor.features.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-
 import java.util.Date
 
 // User Session Model
@@ -19,9 +21,9 @@ object Users : Table() {
 }
 
 // OTP Seeds Table Object
-object OtpSeeds : IntIdTable() {
-    val seedId = integer("seed_id").uniqueIndex()
-    val seedName = varchar("seed_name", 256)
+object OtpSeeds : Table() {
+    val seedId = integer("seed_id").autoIncrement().primaryKey()
+    val seedName = varchar("seed_name", 256).uniqueIndex()
     val url = varchar("url", 512)
     val accountUserName = varchar("account_user_name", 128)
     val seedInfo = varchar("seed_info", 2048)
@@ -29,32 +31,31 @@ object OtpSeeds : IntIdTable() {
     val seedOwner = varchar("seed_owner", 40) references Users.username
 }
 
-fun initDatabase(){
-    // Load DB connection configuration
-    val address = environment.config.property("authbook.db.address").getString()
-    val user = environment.config.property("authbook.db.user").getString()
-    val password = environment.config.property("authbook.db.password").getString()
+fun initDatabase(dbAddress: String, dbUser: String, dbPassword: String){
     
     // Connect with database
-    Database.connect("jdbc:${address}", driver = "com.mysql.jdbc.Driver", user = user, password = password)  
+    Database.connect("jdbc:${dbAddress}", 
+                     driver = "com.mysql.jdbc.Driver", 
+                     user = dbUser, 
+                     password = dbPassword)  
 
     transaction {
         SchemaUtils.create (Users, OtpSeeds)
     }
 }
 
-companion object UserQuery{
+object UserQuery{
     fun findByUsername(username: String): Query{
         return Users.select { Users.username eq username }
     }
     
-    fun findByEmail(email: String){
+    fun findByEmail(email: String): Query{
         return Users.select { Users.email eq email }
     }
     
     fun signUp(username: String, email: String, 
                displayName: String, passwordHash: String){
-        Users.insertAndGetId {
+        val id = Users.insertAndGetId {
             it[username] = username
             it[email] = email
             it[displayName] = displayName

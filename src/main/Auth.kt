@@ -10,19 +10,29 @@ import io.ktor.response.*
 import io.ktor.sessions.*
 import io.ktor.util.*
 import io.ktor.http.*
+import io.ktor.gson.*
+import org.jetbrains.exposed.sql.*
+import java.util.Date
+
+data class SignUpForm(
+    val username: String,
+    val email: String,
+    val displayName: String,
+    val password: String,
+    val passwordCheck: String)
 
 fun Route.auth(){
     route("/auth"){
         
         // Sign Up Function
         post("/signup"){
-            val params = call.receive<Parameters>()
+            val params = call.receive<SignUpForm>()
             
-            val username = params["username"] ?: call.respondText("username is empty")
-            val email = params["email"] ?: call.respondText("email is empty")
-            val displayName = params["display_name"] ?: call.respondText("display name is empty")
-            val password = params["password"] ?: call.respondText("password is empty")
-            val passwordCheck = params["password_check"] ?: call.respondText("password check is empty")
+            val username = params.username ?: return@post call.respondText("username is empty")
+            val email = params.email ?: return@post call.respondText("email is empty")
+            val displayName = params.displayName ?: return@post call.respondText("display name is empty")
+            val password = params.password ?: return@post call.respondText("password is empty")
+            val passwordCheck = params.passwordCheck ?: return@post call.respondText("password check is empty")
             
             when {
                 // Validate sign up form
@@ -47,8 +57,14 @@ fun Route.auth(){
             
             
             }
-        post("/login"){}
-        get("/logout"){}
+        }
+        
+        post("/login"){
+            
+        }
+        
+        get("/logout"){
+            
         }
     }
 }

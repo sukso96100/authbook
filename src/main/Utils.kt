@@ -4,7 +4,7 @@ import javax.crypto.*
 import javax.crypto.spec.*
 import io.ktor.application.*
 
-val emailRegex = Regex("""/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g""")
+val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
 
 fun hash(password: String): String {
     val hmac = Mac.getInstance("HmacSHA512")

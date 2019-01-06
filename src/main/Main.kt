@@ -27,7 +27,7 @@ fun Application.main() {
     }
     install(ContentNegotiation) {
         gson {
-            setDateFormat(DateFormat.LONG)
+            // setDateFormat(DateFormat.LONG)
             setPrettyPrinting()
         }
     }

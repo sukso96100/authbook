@@ -15,11 +15,11 @@ import org.jetbrains.exposed.sql.*
 import java.util.Date
 
 data class SignUpForm(
-    val username: String,
-    val email: String,
-    val displayName: String,
-    val password: String,
-    val passwordCheck: String)
+    val username: String?,
+    val email: String?,
+    val displayName: String?,
+    val password: String?,
+    val passwordCheck: String?)
 
 fun Route.auth(){
     route("/auth"){
@@ -27,7 +27,6 @@ fun Route.auth(){
         // Sign Up Function
         post("/signup"){
             val params = call.receive<SignUpForm>()
-            
             val username = params.username ?: return@post call.respondText("username is empty")
             val email = params.email ?: return@post call.respondText("email is empty")
             val displayName = params.displayName ?: return@post call.respondText("display name is empty")

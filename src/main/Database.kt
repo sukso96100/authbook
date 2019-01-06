@@ -53,13 +53,13 @@ object UserQuery{
         return Users.select { Users.email eq email }
     }
     
-    fun signUp(username: String, email: String, 
-               displayName: String, passwordHash: String){
-        val id = Users.insertAndGetId {
-            it[username] = username
-            it[email] = email
-            it[displayName] = displayName
-            it[passwordHash] = passwordHash
+    fun signUp(newUsername: String, newEmail: String, 
+               newDisplayName: String, newPasswordHash: String){
+        Users.insert {
+            it[username] = newUsername
+            it[email] = newEmail
+            it[displayName] = newDisplayName
+            it[passwordHash] = newPasswordHash
         }
     }
 }

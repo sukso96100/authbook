@@ -4,13 +4,14 @@ import io.ktor.application.*
 import io.ktor.features.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.Date
+import org.joda.time.*
+
 
 // User Session Model
 data class AuthbookSession(
     val username: String,
     val ipAddress: String,
-    val createdAt: Date = Date())
+    val createdAt: DateTime = DateTime.now())
 
 // Users Table Object
 object Users : Table() {
@@ -30,36 +31,44 @@ object OtpSeeds : Table() {
     val seedHash = varchar("seed_hash", 512)
     val seedOwner = varchar("seed_owner", 40) references Users.username
 }
-
-fun initDatabase(dbAddress: String, dbUser: String, dbPassword: String){
-    
-    // Connect with database
-    Database.connect("jdbc:${dbAddress}", 
+object DbQueries{
+    fun initDatabase(dbAddress: String, dbUser: String, dbPassword: String){
+        // Connect with database
+        Database.connect("jdbc:${dbAddress}", 
                      driver = "com.mysql.jdbc.Driver", 
                      user = dbUser, 
-                     password = dbPassword)  
-
-    transaction {
-        SchemaUtils.create (Users, OtpSeeds)
+                     password = dbPassword) 
+        transaction {
+            SchemaUtils.create (Users, OtpSeeds)
+        }
     }
-}
 
-object UserQuery{
     fun findByUsername(username: String): Query{
-        return Users.select { Users.username eq username }
-    }
-    
+            return transaction{
+                Users.select { Users.username eq username }
+            }
+        }
     fun findByEmail(email: String): Query{
-        return Users.select { Users.email eq email }
+            return transaction{
+                Users.select { Users.email eq email }
+            }
+        }
+    fun isUsernameInUse(username: String): Boolean{
+        return transaction{ findByUsername(username).count() > 0 }
     }
-    
-    fun signUp(newUsername: String, newEmail: String, 
+    fun isEmailInUse(email: String): Boolean{
+        return transaction{ findByEmail(email).count() > 0 }
+    }
+     fun signUp(newUsername: String, newEmail: String, 
                newDisplayName: String, newPasswordHash: String){
-        Users.insert {
-            it[username] = newUsername
-            it[email] = newEmail
-            it[displayName] = newDisplayName
-            it[passwordHash] = newPasswordHash
+        transaction{
+             Users.insert {
+                it[username] = newUsername
+                it[email] = newEmail
+                it[displayName] = newDisplayName
+                it[passwordHash] = newPasswordHash
+            }
         }
     }
 }
+

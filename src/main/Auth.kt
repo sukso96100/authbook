@@ -12,7 +12,8 @@ import io.ktor.util.*
 import io.ktor.http.*
 import io.ktor.gson.*
 import org.jetbrains.exposed.sql.*
-import java.util.Date
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.*
 
 data class SignUpForm(
     val username: String?,
@@ -40,15 +41,15 @@ fun Route.auth(){
                 username.length < 4 -> call.respondText("Username must be longer then 4 letters")
                 displayName.length < 3 -> call.respondText("Display name must be longer then 3 letters")
                 !emailRegex.matches(email) -> call.respondText("Email address is not valid.")
-                UserQuery.findByUsername(username).count() > 0 -> call.respondText("Username ${username} is already in use")
-                UserQuery.findByEmail(email).count() > 0 -> call.respondText("Email ${email} is already in use")
+                DbQueries.isUsernameInUse(username) -> call.respondText("Username ${username} is already in use")
+                DbQueries.isEmailInUse(email) -> call.respondText("Email ${email} is already in use")
                 else -> {
                     // Sign up form validated! create new user with the form data
                     val passwordHash = hash(password)
-                    UserQuery.signUp(username, email, displayName, passwordHash)
+                    DbQueries.signUp(username, email, displayName, passwordHash)
                     
                     // Set Session
-                    call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, Date()))
+                    call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, DateTime.now()))
                     
                     // Respond to the client
                     call.respondText("Signed Up! You can now log in with the new account.")

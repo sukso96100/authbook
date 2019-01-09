@@ -12,9 +12,11 @@ import io.ktor.auth.*
 import javax.crypto.*
 import javax.crypto.spec.*
 import io.ktor.util.*
+import org.jetbrains.exposed.sql.*
 
 lateinit var hashKey: ByteArray
 lateinit var hmacKey: SecretKeySpec
+// lateinit var database: Database
 
 fun Application.main() {
     install(DefaultHeaders)
@@ -36,7 +38,8 @@ fun Application.main() {
     val dbAddress = environment.config.property("authbook.db.address").getString()
     val dbUser = environment.config.property("authbook.db.user").getString()
     val dbPassword = environment.config.property("authbook.db.password").getString()
-    initDatabase(dbAddress, dbUser, dbPassword)
+    
+    DbQueries.initDatabase(dbAddress, dbUser, dbPassword)
     
     hashKey = environment.config.property("authbook.secret").getString().toByteArray()
     hmacKey = SecretKeySpec(hashKey, "HmacSHA512")

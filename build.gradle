@@ -44,5 +44,6 @@ dependencies {
     compile "com.sun.mail:jakarta.mail:1.6.3"
     compile "mysql:mysql-connector-java:5.1.46"
     compile "io.ktor:ktor-gson:$ktor_version"
+    compile 'joda-time:joda-time:2.10.1'
 
 }

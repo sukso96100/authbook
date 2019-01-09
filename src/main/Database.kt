@@ -11,7 +11,7 @@ import org.joda.time.*
 data class AuthbookSession(
     val username: String,
     val ipAddress: String,
-    val createdAt: DateTime = DateTime.now())
+    val createdAt: String = DateTime.now().toString())
 
 // Users Table Object
 object Users : Table() {

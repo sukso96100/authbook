@@ -49,7 +49,7 @@ fun Route.auth(){
                     DbQueries.signUp(username, email, displayName, passwordHash)
                     
                     // Set Session
-                    call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, DateTime.now()))
+                    call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, DateTime.now().toString()))
                     
                     // Respond to the client
                     call.respondText("Signed Up! You can now log in with the new account.")

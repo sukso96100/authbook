@@ -18,7 +18,7 @@ object Users : Table() {
     val username = varchar("username", 40).primaryKey()
     val email = varchar("email", 128).uniqueIndex()
     val displayName = varchar("display_name", 256)
-    val passwordHash = varchar("password_hash", 64)
+    val passwordHash = varchar("password_hash", 256)
 }
 
 // OTP Seeds Table Object

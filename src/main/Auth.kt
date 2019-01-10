@@ -22,6 +22,10 @@ data class SignUpForm(
     val password: String?,
     val passwordCheck: String?)
 
+data class LoginForm(
+    val username: String?,
+    val password: String?)
+
 fun Route.auth(){
     route("/auth"){
         
@@ -60,7 +64,17 @@ fun Route.auth(){
         }
         
         post("/login"){
-            
+            val params = call.receive<LoginForm>()
+            val username = params.username ?: return@post call.respondText("username is empty")
+            val password = params.password ?: return@post call.respondText("password is empty")
+            when {
+                // Validate login up form
+                username.length < 4 -> call.respondText("Username must be longer then 4 letters")
+                password.length < 8 -> call.respondText("Password must be at least 8 digits")
+                else -> {
+                    DbQueries.findByUsername(username)
+                }
+            }
         }
         
         get("/logout"){

@@ -45,8 +45,8 @@ fun Route.auth(){
                 username.length < 4 -> call.respondText("Username must be longer then 4 letters")
                 displayName.length < 3 -> call.respondText("Display name must be longer then 3 letters")
                 !emailRegex.matches(email) -> call.respondText("Email address is not valid.")
-                DbQueries.isUsernameInUse(username) -> call.respondText("Username ${username} is already in use")
-                DbQueries.isEmailInUse(email) -> call.respondText("Email ${email} is already in use")
+                DbQueries.findByUsername(username) != null -> return@post call.respondText("Username ${username} is already in use")
+                DbQueries.findByEmail(email) != null -> return@post call.respondText("Email ${email} is already in use")
                 else -> {
                     // Sign up form validated! create new user with the form data
                     val passwordHash = hash(password)
@@ -72,7 +72,18 @@ fun Route.auth(){
                 username.length < 4 -> call.respondText("Username must be longer then 4 letters")
                 password.length < 8 -> call.respondText("Password must be at least 8 digits")
                 else -> {
-                    DbQueries.findByUsername(username)
+                    val user = DbQueries.findByUsername(username) ?: return@post call.respondText("User not found")
+                    val passwordHash = hash(password)
+                    if(user.passwordHash == passwordHash){
+                        // Set Session
+                        call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, DateTime.now().toString()))
+
+                        // Respond to the client
+                        call.respondText("Logged In!")
+                    }else{
+                        // Respond to the client
+                        call.respondText("Password dose not matches!")
+                    }
                 }
             }
         }

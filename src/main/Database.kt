@@ -4,6 +4,7 @@ import io.ktor.application.*
 import io.ktor.features.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.dao.*
 import org.joda.time.*
 
 
@@ -14,11 +15,22 @@ data class AuthbookSession(
     val createdAt: String = DateTime.now().toString())
 
 // Users Table Object
-object Users : Table() {
-    val username = varchar("username", 40).primaryKey()
+object Users : IdTable<Int>() {
+    override val id = integer("id").autoIncrement().entityId()
+    val username = varchar("username", 40).uniqueIndex()
     val email = varchar("email", 128).uniqueIndex()
     val displayName = varchar("display_name", 256)
     val passwordHash = varchar("password_hash", 256)
+}
+
+// Users Entity Class
+class User(id: EntityID<Int>) : Entity<Int>(id) {
+    companion object : EntityClass<Int, User>(Users)
+    
+    var username by Users.username
+    var email by Users.email
+    var displayName by Users.displayName
+    var passwordHash by Users.passwordHash
 }
 
 // OTP Seeds Table Object
@@ -29,8 +41,10 @@ object OtpSeeds : Table() {
     val accountUserName = varchar("account_user_name", 128)
     val seedInfo = varchar("seed_info", 2048)
     val seedHash = varchar("seed_hash", 512)
-    val seedOwner = varchar("seed_owner", 40) references Users.username
+    val seedOwner = varchar("seed_owner", 40)
 }
+
+
 object DbQueries{
     fun initDatabase(dbAddress: String, dbUser: String, dbPassword: String){
         // Connect with database
@@ -43,31 +57,31 @@ object DbQueries{
         }
     }
 
-    fun findByUsername(username: String): Query{
+    fun findByUsername(username: String): User?{
             return transaction{
-                Users.select { Users.username eq username }
+                User.find { Users.username eq username }.singleOrNull()
             }
         }
-    fun findByEmail(email: String): Query{
+    fun findByEmail(email: String): User?{
             return transaction{
-                Users.select { Users.email eq email }
+                User.find { Users.email eq email }.singleOrNull()
             }
         }
-    fun isUsernameInUse(username: String): Boolean{
-        return transaction{ findByUsername(username).count() > 0 }
-    }
-    fun isEmailInUse(email: String): Boolean{
-        return transaction{ findByEmail(email).count() > 0 }
-    }
+    // fun isUsernameInUse(username: String): Boolean{
+    //     return transaction{ findByUsername(username).count() > 0 }
+    // }
+    // fun isEmailInUse(email: String): Boolean{
+    //     return transaction{ findByEmail(email).count() > 0 }
+    // }
      fun signUp(newUsername: String, newEmail: String, 
                newDisplayName: String, newPasswordHash: String){
         transaction{
-             Users.insert {
-                it[username] = newUsername
-                it[email] = newEmail
-                it[displayName] = newDisplayName
-                it[passwordHash] = newPasswordHash
-            }
+             User.new {
+                 username = newUsername
+                 email = newEmail
+                 displayName = newDisplayName
+                 passwordHash = newPasswordHash
+             }
         }
     }
 }

@@ -34,14 +34,25 @@ class User(id: EntityID<Int>) : Entity<Int>(id) {
 }
 
 // OTP Seeds Table Object
-object OtpSeeds : Table() {
-    val seedId = integer("seed_id").autoIncrement().primaryKey()
+object OtpSeeds : IdTable<Int>() {
+    override val id = integer("id").autoIncrement().entityId()
     val seedName = varchar("seed_name", 256).uniqueIndex()
     val url = varchar("url", 512)
     val accountUserName = varchar("account_user_name", 128)
     val seedInfo = varchar("seed_info", 2048)
     val seedHash = varchar("seed_hash", 512)
-    val seedOwner = varchar("seed_owner", 40)
+    val seedOwner= reference("seed_owner", Users)
+}
+
+class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
+    companion object : EntityClass<Int, OtpSeed>(OtpSeeds)
+    
+    var seedName by OtpSeeds.seedName
+    var url by OtpSeeds.url
+    var accountUserName by OtpSeeds.accountUserName
+    var seedInfo by OtpSeeds.seedInfo
+    var seedHash by OtpSeeds.seedHash
+    var seedOwner by User referencedOn OtpSeeds.seedOwner
 }
 
 

@@ -21,9 +21,9 @@ fun Route.seeds(){
         
         // Sign Up Function
         get("/all"){
-           
-            
-            
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            val seeds = DbQueries.getUserSeeds(session.useruid)
+            call.respond(seeds.toList())
         }
         
         post("/add"){

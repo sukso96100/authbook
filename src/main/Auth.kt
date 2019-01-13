@@ -50,10 +50,14 @@ fun Route.auth(){
                 else -> {
                     // Sign up form validated! create new user with the form data
                     val passwordHash = hash(password)
-                    DbQueries.signUp(username, email, displayName, passwordHash)
+                    val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
                     
                     // Set Session
-                    call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, DateTime.now().toString()))
+                    call.sessions.set(AuthbookSession(
+                        newUser.id,
+                        newUser.username, 
+                        call.request.origin.remoteHost, 
+                        DateTime.now().toString()))
                     
                     // Respond to the client
                     call.respondText("Signed Up! You can now log in with the new account.")
@@ -76,7 +80,11 @@ fun Route.auth(){
                     val passwordHash = hash(password)
                     if(user.passwordHash == passwordHash){
                         // Set Session
-                        call.sessions.set(AuthbookSession(username, call.request.origin.remoteHost, DateTime.now().toString()))
+                        call.sessions.set(AuthbookSession(
+                            user.id,
+                            user.username, 
+                            call.request.origin.remoteHost, 
+                            DateTime.now().toString()))
 
                         // Respond to the client
                         call.respondText("Logged In!")

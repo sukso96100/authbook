@@ -10,6 +10,7 @@ import org.joda.time.*
 
 // User Session Model
 data class AuthbookSession(
+    val useruid: EntityID<Int>,
     val username: String,
     val ipAddress: String,
     val createdAt: String = DateTime.now().toString())
@@ -78,21 +79,22 @@ object DbQueries{
                 User.find { Users.email eq email }.singleOrNull()
             }
         }
-    // fun isUsernameInUse(username: String): Boolean{
-    //     return transaction{ findByUsername(username).count() > 0 }
-    // }
-    // fun isEmailInUse(email: String): Boolean{
-    //     return transaction{ findByEmail(email).count() > 0 }
-    // }
+    
      fun signUp(newUsername: String, newEmail: String, 
-               newDisplayName: String, newPasswordHash: String){
-        transaction{
+               newDisplayName: String, newPasswordHash: String): User{
+        return transaction{
              User.new {
                  username = newUsername
                  email = newEmail
                  displayName = newDisplayName
                  passwordHash = newPasswordHash
              }
+        }
+    }
+    
+    fun getUserSeeds(useruid: EntityID<Int>): SizedIterable<OtpSeed>{
+        return transaction{
+            OtpSeed.find { OtpSeeds.seedOwner eq useruid }
         }
     }
 }

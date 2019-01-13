@@ -13,6 +13,7 @@ import javax.crypto.*
 import javax.crypto.spec.*
 import io.ktor.util.*
 import org.jetbrains.exposed.sql.*
+import java.io.File
 
 lateinit var hashKey: ByteArray
 lateinit var hmacKey: SecretKeySpec
@@ -25,7 +26,7 @@ fun Application.main() {
         
     }
     install(Sessions) {
-        header<AuthbookSession>("SESSION", storage = SessionStorageMemory())
+        header<AuthbookSession>("SESSION", storage = directorySessionStorage(File(".sessions"), cached = true))
     }
     install(ContentNegotiation) {
         gson {
@@ -58,6 +59,7 @@ fun Application.main() {
             }
         }
         auth()
+        seeds()
         
     }
 }

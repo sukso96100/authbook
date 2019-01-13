@@ -89,7 +89,8 @@ fun Route.auth(){
         }
         
         get("/logout"){
-            
+            // Clear session when logging out
+            call.sessions.clear<AuthbookSession>()
         }
     }
 }

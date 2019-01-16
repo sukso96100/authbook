@@ -15,6 +15,12 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.*
 
+data class AddSeedForm(
+    val seedName: String,
+    val url: String,
+    val accountUserName: String,
+    val seedInfo: String,
+    val seedHash: String)
 
 fun Route.seeds(){
     route("/seeds"){
@@ -22,12 +28,16 @@ fun Route.seeds(){
         // Sign Up Function
         get("/all"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@get call.respondText("Session is empty")
             val seeds = DbQueries.getUserSeeds(session.useruid)
             call.respond(seeds.toList())
         }
         
         post("/add"){
-            
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@get call.respondText("Session is empty")
+            val params = call.receive<AddSeedForm>()
+            DbQueries.addUserSeed(session.useruid, params)
         }
         
         post("/edit"){

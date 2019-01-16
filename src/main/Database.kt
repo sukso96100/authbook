@@ -97,5 +97,18 @@ object DbQueries{
             OtpSeed.find { OtpSeeds.seedOwner eq useruid }
         }
     }
+    
+    fun addUserSeed(useruid: EntityID<Int>, newSeedData: AddSeedForm) {
+        transaction{
+            OtpSeed.new {
+                seedName = params.seedName
+                url = params.url
+                accountUserName = params.accountUserName
+                seedInfo = params.seedInfo
+                seedHash = params.seedHash
+                seedOwner = useruid
+            }
+        }
+    }
 }
 

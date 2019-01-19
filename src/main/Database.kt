@@ -10,7 +10,7 @@ import org.joda.time.*
 
 // User Session Model
 data class AuthbookSession(
-    val useruid: EntityID<Int>,
+    val useruid: Int,
     val username: String,
     val ipAddress: String,
     val createdAt: String = DateTime.now().toString())
@@ -37,7 +37,7 @@ class User(id: EntityID<Int>) : Entity<Int>(id) {
 // OTP Seeds Table Object
 object OtpSeeds : IdTable<Int>() {
     override val id = integer("id").autoIncrement().entityId()
-    val seedName = varchar("seed_name", 256).uniqueIndex()
+    val seedName = varchar("seed_name", 256)
     val url = varchar("url", 512)
     val accountUserName = varchar("account_user_name", 128)
     val seedInfo = varchar("seed_info", 2048)
@@ -55,6 +55,15 @@ class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
     var seedHash by OtpSeeds.seedHash
     var seedOwner by User referencedOn OtpSeeds.seedOwner
 }
+
+data class SeedItem(
+    val id: Int,
+    var seedName: String,
+    var url: String,
+    var accountUserName: String,
+    var seedInfo: String,
+    var seedHash: String
+)
 
 
 object DbQueries{
@@ -92,22 +101,39 @@ object DbQueries{
         }
     }
     
-    fun getUserSeeds(useruid: EntityID<Int>): SizedIterable<OtpSeed>{
+    fun getUserSeeds(useruid: Int): List<SeedItem>{
         return transaction{
-            OtpSeed.find { OtpSeeds.seedOwner eq useruid }
+            val uid = EntityID<Int>(useruid, Users)
+            val seeds = OtpSeed.find { OtpSeeds.seedOwner eq uid }
+            val seedsList = mutableListOf<SeedItem>()
+            seeds.forEach{
+                seedsList.add(SeedItem(
+                    it.id.value,
+                    it.seedName,
+                    it.url,
+                    it.accountUserName,
+                    it.seedInfo,
+                    it.seedHash
+                ))
+            }
+            seedsList
         }
     }
     
-    fun addUserSeed(useruid: EntityID<Int>, newSeedData: AddSeedForm) {
-        transaction{
-            OtpSeed.new {
-                seedName = params.seedName
-                url = params.url
-                accountUserName = params.accountUserName
-                seedInfo = params.seedInfo
-                seedHash = params.seedHash
-                seedOwner = useruid
+    fun addUserSeed(useruid: Int, newSeedData: AddSeedForm) {
+        return transaction{
+            val uid = EntityID<Int>(useruid, Users)
+            User.findById(uid)?.let{
+                OtpSeed.new {
+                    seedName = newSeedData.seedName
+                    url = newSeedData.url
+                    accountUserName = newSeedData.accountUserName
+                    seedInfo = newSeedData.seedInfo
+                    seedHash = newSeedData.seedHash
+                    seedOwner = it
+                }
             }
+            
         }
     }
 }

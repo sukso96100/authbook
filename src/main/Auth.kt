@@ -54,7 +54,7 @@ fun Route.auth(){
                     
                     // Set Session
                     call.sessions.set(AuthbookSession(
-                        newUser.id,
+                        newUser.id.value,
                         newUser.username, 
                         call.request.origin.remoteHost, 
                         DateTime.now().toString()))
@@ -81,7 +81,7 @@ fun Route.auth(){
                     if(user.passwordHash == passwordHash){
                         // Set Session
                         call.sessions.set(AuthbookSession(
-                            user.id,
+                            user.id.value,
                             user.username, 
                             call.request.origin.remoteHost, 
                             DateTime.now().toString()))

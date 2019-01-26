@@ -15,16 +15,16 @@ fun hash(password: String): String {
     return hex(hmac.doFinal(password.toByteArray(Charsets.UTF_8)))
 }
 //https://www.baeldung.com/java-cipher-class
-fun encryptWithKey(keyBytes: ByteArray, vararg toEncrypt: String){
+fun encryptWithKey(keyBytes: ByteArray, vararg toEncrypt: String): List<ByteArray>{
     val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
     val secretKey = SecretKeySpec(keyBytes, "AES");
     cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-    return cipher.doFinal(message);
+    return toEncrypt.map{ cipher.doFinal(it.toByteArray()) }
 }
 
-fun decryptWithKey(keyBytes: ByteArray, vararg toDecrypt: String){
+fun decryptWithKey(keyBytes: ByteArray, vararg toDecrypt: String): List<ByteArray>{
     val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-    val secretKey = SecretKeySpec(keyBytes, "AES");
-    cipher.init(Cipher.DECRYPT_MODE, secretKey);
-    return cipher.doFinal(message);
+    val secretKey = SecretKeySpec(keyBytes, "AES")
+    cipher.init(Cipher.DECRYPT_MODE, secretKey)
+    return toDecrypt.map{ cipher.doFinal(it.toByteArray()) }
 }

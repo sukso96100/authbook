@@ -63,7 +63,9 @@ fun Route.seeds(){
             }
         }
         put("change_seedkey"){
-            
+             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@post call.respondText("Session is empty")
+            val params = call.receive<ChangeSeedKeyForm>()
         }
     }
         

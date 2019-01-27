@@ -55,7 +55,7 @@ object DbQueries{
                     it.url,
                     it.accountUserName,
                     it.seedInfo,
-                    it.seedHash
+                    it.seedBytes
                 ))
             }
             seedsList
@@ -76,7 +76,22 @@ object DbQueries{
     }
     
     fun changeSeedKey(useruid: Int, prevKey: String, newKey: String){
-        
+        return transaction{
+            val uid = EntityID<Int>(useruid, Users)
+            var result = false
+            User.findById(uid)?.let{
+                if(it.seedKeyHash == hash(prevKey)){
+                    val seeds = OtpSeed.find{ OtpSeeds.seedOwner eq uid }
+                    seeds.forEach{
+                        val old = Crypto.decryptWithKey(prevKey, it.seedBytes)
+                        it.seedBytes = Crypto.encryptWithKey(newKey, old)
+                    }
+                    it.seedKeyHash = hash(newKey)
+                }
+                result = true
+            }
+            result
+        }
     }
     
     fun addUserSeed(useruid: Int, newSeedData: AddSeedForm) {
@@ -88,7 +103,7 @@ object DbQueries{
                     url = newSeedData.url
                     accountUserName = newSeedData.accountUserName
                     seedInfo = newSeedData.seedInfo
-                    seedHash = newSeedData.seedHash
+                    seedBytes = newSeedData.seedHash.toByteArray() // Will be replaced with encrypt function in near future
                     seedOwner = it
                 }
             }

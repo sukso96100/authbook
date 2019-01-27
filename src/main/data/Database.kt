@@ -43,7 +43,7 @@ object OtpSeeds : IdTable<Int>() {
     val url = varchar("url", 512)
     val accountUserName = varchar("account_user_name", 128)
     val seedInfo = varchar("seed_info", 2048)
-    val seedHash = varchar("seed_hash", 512)
+    val seedBytes = binary("seed_bytes", 512)
     val seedOwner= reference("seed_owner", Users)
 }
 
@@ -54,7 +54,7 @@ class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
     var url by OtpSeeds.url
     var accountUserName by OtpSeeds.accountUserName
     var seedInfo by OtpSeeds.seedInfo
-    var seedHash by OtpSeeds.seedHash
+    var seedBytes by OtpSeeds.seedBytes
     var seedOwner by User referencedOn OtpSeeds.seedOwner
 }
 

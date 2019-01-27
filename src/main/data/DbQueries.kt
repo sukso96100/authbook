@@ -62,9 +62,20 @@ object DbQueries{
         }
     }
     
-    // Set (or change) the key for encrypting seeds.
-    // then re-encrypt all seeds for the user. 
-    fun setSeedKey(useruid: Int, seedKeyHash: String){
+    // Set the key for encrypting otp seeds
+    fun setSeedKey(useruid: Int, seedKey: String): Boolean{
+        return transaction{
+            val uid = EntityID<Int>(useruid, Users)
+            var result = false
+            User.findById(uid)?.let{
+                it.seedKeyHash = hash(seedKey)
+                result = true
+            }
+            result
+        }
+    }
+    
+    fun changeSeedKey(useruid: Int, prevKey: String, newKey: String){
         
     }
     

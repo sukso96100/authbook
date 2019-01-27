@@ -19,7 +19,8 @@ data class AddSeedForm(
     val accountUserName: String,
     val seedInfo: String,
     val seedHash: String)
-
+data class SetSeedKeyForm(val seedKey: String)
+data class ChangeSeedKeyForm(val preKey: String, val newKey: String)
 fun Route.seeds(){
     route("/seeds"){
         
@@ -47,6 +48,21 @@ fun Route.seeds(){
         }
         
         delete("/delete"){
+            
+        }
+        
+        put("/set_seedkey"){
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@post call.respondText("Session is empty")
+            val params = call.receive<SetSeedKeyForm>()
+            val result = DbQueries.setSeedKey(session.useruid, params.seedKey)
+            if(result){ 
+                call.respondText("Seed key configured")
+            }else{ 
+                call.respondText("set seed key failed") 
+            }
+        }
+        put("change_seedkey"){
             
         }
     }

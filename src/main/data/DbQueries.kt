@@ -25,11 +25,19 @@ object DbQueries{
                 User.find { Users.username eq username }.singleOrNull()
             }
         }
+    
     fun findByEmail(email: String): User?{
             return transaction{
                 User.find { Users.email eq email }.singleOrNull()
             }
         }
+    
+    fun findById(useruid: Int): User?{
+        return transaction{
+            val uid = EntityID<Int>(useruid, Users)
+            User.findById(uid)
+         }
+    }
     
      fun signUp(newUsername: String, newEmail: String, 
                newDisplayName: String, newPasswordHash: String): User{
@@ -63,51 +71,39 @@ object DbQueries{
     }
     
     // Set the key for encrypting otp seeds
-    fun setSeedKey(useruid: Int, seedKey: String): Boolean{
+    fun setSeedKey(user: User, seedKey: String){
         return transaction{
-            val uid = EntityID<Int>(useruid, Users)
-            var result = false
-            User.findById(uid)?.let{
-                it.seedKeyHash = hash(seedKey)
-                result = true
+            user.seedKeyHash = hash(seedKey)
+        }
+    }
+    
+    fun changeSeedKey(user: User, prevKey: String, newKey: String): Int{
+        return transaction{
+            var result = 1
+            if(user.seedKeyHash == hash(prevKey)){
+                val seeds = OtpSeed.find{ OtpSeeds.seedOwner eq user.id }
+                seeds.forEach{
+                    val old = Crypto.decryptWithKey(prevKey, it.seedBytes)
+                    it.seedBytes = Crypto.encryptWithKey(newKey, old)
+                }
+                user.seedKeyHash = hash(newKey)
+                result = 0
             }
             result
         }
     }
     
-    fun changeSeedKey(useruid: Int, prevKey: String, newKey: String){
+    fun addUserSeed(user: User, newSeedData: AddSeedForm) {
+        val newSeedBytes = Crypto.encryptWithKey(newSeedData.seedKey, newSeedData.seedValue)
         return transaction{
-            val uid = EntityID<Int>(useruid, Users)
-            var result = false
-            User.findById(uid)?.let{
-                if(it.seedKeyHash == hash(prevKey)){
-                    val seeds = OtpSeed.find{ OtpSeeds.seedOwner eq uid }
-                    seeds.forEach{
-                        val old = Crypto.decryptWithKey(prevKey, it.seedBytes)
-                        it.seedBytes = Crypto.encryptWithKey(newKey, old)
-                    }
-                    it.seedKeyHash = hash(newKey)
-                }
-                result = true
+            OtpSeed.new {
+                seedName = newSeedData.seedName
+                url = newSeedData.url
+                accountUserName = newSeedData.accountUserName
+                seedInfo = newSeedData.seedInfo
+                seedBytes = newSeedBytes 
+                seedOwner = user
             }
-            result
-        }
-    }
-    
-    fun addUserSeed(useruid: Int, newSeedData: AddSeedForm) {
-        return transaction{
-            val uid = EntityID<Int>(useruid, Users)
-            User.findById(uid)?.let{
-                OtpSeed.new {
-                    seedName = newSeedData.seedName
-                    url = newSeedData.url
-                    accountUserName = newSeedData.accountUserName
-                    seedInfo = newSeedData.seedInfo
-                    seedBytes = newSeedData.seedHash.toByteArray() // Will be replaced with encrypt function in near future
-                    seedOwner = it
-                }
-            }
-            
         }
     }
 }

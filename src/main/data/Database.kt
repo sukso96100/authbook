@@ -64,6 +64,6 @@ data class SeedItem(
     var url: String,
     var accountUserName: String,
     var seedInfo: String,
-    var seedHash: String
+    var seedBytes: ByteArray
 )
 

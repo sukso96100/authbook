@@ -20,8 +20,21 @@ data class AddSeedForm(
     val seedInfo: String,
     val seedValue: String,
     val seedKey: String)
+
 data class SetSeedKeyForm(val seedKey: String)
-data class ChangeSeedKeyForm(val preKey: String, val newKey: String)
+
+data class ChangeSeedKeyForm(val prevKey: String, val newKey: String)
+
+data class UpdateSeedForm(
+    val id: Int,
+    val seedName: String,
+    val url: String,
+    val accountUserName: String,
+    val seedInfo: String,
+    val seedValue: String,
+    val seedKey: String)
+
+
 fun Route.seeds(){
     route("/seeds"){
         
@@ -30,7 +43,7 @@ fun Route.seeds(){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
             session ?: return@get call.respondText("Session is empty")
             val user = DbQueries.findById(session.useruid) ?: return@get call.respondText("User not found")
-            val seeds = DbQueries.getUserSeeds(session.useruid)
+            val seeds = DbQueries.getUserSeeds(user)
             seeds ?: call.respondText("Empty")
             call.respond(seeds)
         }
@@ -39,17 +52,24 @@ fun Route.seeds(){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
             session ?: return@post call.respondText("Session is empty")
             val user = DbQueries.findById(session.useruid) ?: return@post call.respondText("User not found")
+            
             val params = call.receive<AddSeedForm>()
+            if(!DbQueries.checkSeedKey(user, params.seedKey)) return@post call.respondText("You have typed wrong seed key.")
             DbQueries.addUserSeed(user, params)
-            val seeds = DbQueries.getUserSeeds(session.useruid)
+            val seeds = DbQueries.getUserSeeds(user)
             seeds ?: call.respondText("Empty")
             call.respond(seeds)
         }
         
-        post("/edit"){
+        put("/edit"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@post call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@post call.respondText("User not found")
+            session ?: return@put call.respondText("Session is empty")
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respondText("User not found")
+            
+            val params = call.receive<UpdateSeedForm>()
+            if(!DbQueries.checkSeedKey(user, params.seedKey)) return@put call.respondText("You have typed wrong seed key.")
+            DbQueries.updateUserSeed(user, params) ?: return@put call.respondText("Seed not found.")
+            call.respondText("Seed updated.")
         }
         
         delete("/delete"){
@@ -71,11 +91,9 @@ fun Route.seeds(){
             session ?: return@put call.respondText("Session is empty")
             val user = DbQueries.findById(session.useruid) ?: return@put call.respondText("User not found")
             val params = call.receive<ChangeSeedKeyForm>()
-            val result = DbQueries.changeSeedKey(user, params.preKey, params.newKey)
-            when(result){
-                0 -> call.respondText("Seed key chanegd")
-                1 -> call.respondText("Current seed key is not valid")
-            }
+            if(!DbQueries.checkSeedKey(user, params.prevKey)) return@put call.respondText("You have typed wrong seed key.")
+            DbQueries.changeSeedKey(user, params.prevKey, params.newKey)
+            call.respondText("Seed key chanegd")
         }
     }
         

@@ -51,10 +51,15 @@ object DbQueries{
         }
     }
     
-    fun getUserSeeds(useruid: Int): List<SeedItem>{
+    fun checkSeedKey(user: User, seedKey: String): Boolean{
         return transaction{
-            val uid = EntityID<Int>(useruid, Users)
-            val seeds = OtpSeed.find { OtpSeeds.seedOwner eq uid }
+            user.seedKeyHash == hash(seedKey)
+        }
+    }
+    
+    fun getUserSeeds(user: User): List<SeedItem>{
+        return transaction{
+            val seeds = OtpSeed.find { OtpSeeds.seedOwner eq user.id }
             val seedsList = mutableListOf<SeedItem>()
             seeds.forEach{
                 seedsList.add(SeedItem(
@@ -77,19 +82,14 @@ object DbQueries{
         }
     }
     
-    fun changeSeedKey(user: User, prevKey: String, newKey: String): Int{
+    fun changeSeedKey(user: User, prevKey: String, newKey: String){
         return transaction{
-            var result = 1
-            if(user.seedKeyHash == hash(prevKey)){
-                val seeds = OtpSeed.find{ OtpSeeds.seedOwner eq user.id }
-                seeds.forEach{
-                    val old = Crypto.decryptWithKey(prevKey, it.seedBytes)
-                    it.seedBytes = Crypto.encryptWithKey(newKey, old)
-                }
-                user.seedKeyHash = hash(newKey)
-                result = 0
+            val seeds = OtpSeed.find{ OtpSeeds.seedOwner eq user.id }
+            seeds.forEach{
+                val old = Crypto.decryptWithKey(prevKey, it.seedBytes)
+                it.seedBytes = Crypto.encryptWithKey(newKey, old)
             }
-            result
+            user.seedKeyHash = hash(newKey)
         }
     }
     
@@ -104,6 +104,22 @@ object DbQueries{
                 seedBytes = newSeedBytes 
                 seedOwner = user
             }
+        }
+    }
+    
+    fun updateUserSeed(user: User, updatedSeed: UpdateSeedForm): OtpSeed? {
+        val newSeedBytes = Crypto.encryptWithKey(updatedSeed.seedKey, updatedSeed.seedValue)
+        return transaction{
+            val id = EntityID<Int>(updatedSeed.id, OtpSeeds)
+            val seed = OtpSeed.find{ OtpSeeds.id eq id and OtpSeeds.seedOwner eq user.id }
+            seed?.let{
+                it.seedName = updatedSeed.seedName
+                it.url = updatedSeed.url
+                it.accountUserName = updatedSeed.accountUserName
+                it.seedInfo = updatedSeed.seedInfo
+                it.seedBytes = newSeedBytes
+            }
+            seed
         }
     }
 }

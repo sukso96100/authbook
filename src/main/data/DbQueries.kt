@@ -111,7 +111,8 @@ object DbQueries{
         val newSeedBytes = Crypto.encryptWithKey(updatedSeed.seedKey, updatedSeed.seedValue)
         return transaction{
             val id = EntityID<Int>(updatedSeed.id, OtpSeeds)
-            val seed = OtpSeed.find{ OtpSeeds.id eq id and OtpSeeds.seedOwner eq user.id }
+            var seed = OtpSeed.findById(id)
+            if(seed?.seedOwner != user) seed = null
             seed?.let{
                 it.seedName = updatedSeed.seedName
                 it.url = updatedSeed.url

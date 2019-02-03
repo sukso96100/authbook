@@ -6,11 +6,13 @@ import io.ktor.application.*
 import java.util.Formatter
 import io.ktor.util.hex
 import java.security.SecureRandom
-import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.*
 import java.io.ByteArrayOutputStream
 
 val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
 
+
+// TO-DO Replace with bcrypt
 fun hash(password: String): String {
     val hmac = Mac.getInstance("HmacSHA512")
     hmac.init(hmacKey)
@@ -27,16 +29,21 @@ object Crypto{
         val secRandom = SecureRandom()
         val salt = ByteArray(16)
         secRandom.nextBytes(salt)
+        // val iv = ByteArray(16)
+        // secRandom.nextBytes(iv)
 
         // generate secret with key and salt
         val secretKey = generateSecretKey(key, salt)
 
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        // cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
-        // get IV from cipher
-        val params = cipher.getParameters()
-        val iv = params.getParameterSpec(IvParameterSpec::class.java).getIV()
+        // // get IV from cipher
+        val params = cipher.getParameters() 
+        // print(params) // null
+        val specs = params.getParameterSpec(IvParameterSpec::class.java)
+        val iv = specs.getIV()
 
         // encrypt the data
         val encrypted = cipher.doFinal(toEncrypt.toByteArray(Charsets.UTF_8))
@@ -64,7 +71,7 @@ object Crypto{
 
     fun generateSecretKey(key: String, salt: ByteArray): SecretKeySpec{
         // generate secret with key and salt
-        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
         val spec = PBEKeySpec(key.toCharArray(), salt, 65536, 256)
         val tmp = factory.generateSecret(spec)
         return SecretKeySpec(tmp.getEncoded(), "AES")

@@ -22,7 +22,7 @@ object Users : IdTable<Int>() {
     val email = varchar("email", 128).uniqueIndex()
     val displayName = varchar("display_name", 256)
     val passwordHash = varchar("password_hash", 256)
-    val seedKeyHash = varchar("seedkey_hash", 256)
+    val seedKeyHash = varchar("seedkey_hash", 256).default("")
 }
 
 // Users Entity Class
@@ -64,6 +64,6 @@ data class SeedItem(
     var url: String,
     var accountUserName: String,
     var seedInfo: String,
-    var seedBytes: ByteArray
+    var encryptedSeed: String
 )
 

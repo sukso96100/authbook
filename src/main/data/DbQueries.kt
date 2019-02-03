@@ -6,7 +6,8 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.dao.*
 import org.joda.time.*
-
+import java.util.Base64
+//https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html
 
 object DbQueries{
     fun initDatabase(dbAddress: String, dbUser: String, dbPassword: String){
@@ -68,7 +69,7 @@ object DbQueries{
                     it.url,
                     it.accountUserName,
                     it.seedInfo,
-                    it.seedBytes
+                    Base64.getEncoder().encodeToString(it.seedBytes)
                 ))
             }
             seedsList

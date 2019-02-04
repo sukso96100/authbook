@@ -34,6 +34,8 @@ data class UpdateSeedForm(
     val seedValue: String,
     val seedKey: String)
 
+data class DeleteSeedForm(val id: Int)
+
 
 fun Route.seeds(){
     route("/seeds"){
@@ -76,6 +78,13 @@ fun Route.seeds(){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
             session ?: return@delete call.respondText("Session is empty")
             val user = DbQueries.findById(session.useruid) ?: return@delete call.respondText("User not found")
+            val params = call.receive<DeleteSeedForm>()
+            
+            if(DbQueries.deleteSeed(user, params.id)){
+                call.respondText("Seed deleted")
+            }else{
+                call.respondText("Seed not found")
+            }
         }
         
         put("/set_seedkey"){

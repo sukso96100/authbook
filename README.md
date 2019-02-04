@@ -9,7 +9,7 @@ This project is in development stage and it isn't fullly functional yet.
 - [x] Signup
 - [x] Login
 - [ ] Add/Remove OTP Seed
-- [ ] Show list of OTP Seeds
+- [x] Show list of OTP Seeds
 - [ ] Edit OTP Seed
  
 ## Author

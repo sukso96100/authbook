@@ -125,5 +125,17 @@ object DbQueries{
             seed
         }
     }
+    
+    fun deleteSeed(user: User, seedId: Int): Boolean{
+        return transaction{
+            var result = true
+            val id = EntityID<Int>(seedId, OtpSeeds)
+            val seed = OtpSeed.findById(id)
+            seed ?: run{ result = false } 
+            if(seed?.seedOwner != user) result = false
+            seed?.delete()
+            result
+        }
+    }
 }
 

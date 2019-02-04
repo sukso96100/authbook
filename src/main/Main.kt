@@ -15,9 +15,6 @@ import io.ktor.util.*
 import org.jetbrains.exposed.sql.*
 import java.io.File
 
-lateinit var hashKey: ByteArray
-lateinit var hmacKey: SecretKeySpec
-// lateinit var database: Database
 
 fun Application.main() {
     install(DefaultHeaders)
@@ -41,9 +38,6 @@ fun Application.main() {
     val dbPassword = environment.config.property("authbook.db.password").getString()
     
     DbQueries.initDatabase(dbAddress, dbUser, dbPassword)
-    
-    hashKey = environment.config.property("authbook.secret").getString().toByteArray()
-    hmacKey = SecretKeySpec(hashKey, "HmacSHA512")
     
     routing {
         get("/") {

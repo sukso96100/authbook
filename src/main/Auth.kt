@@ -14,6 +14,7 @@ import io.ktor.gson.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.*
+import org.mindrot.jbcrypt.BCrypt
 
 data class SignUpForm(
     val username: String?,
@@ -49,7 +50,7 @@ fun Route.auth(){
                 DbQueries.findByEmail(email) != null -> return@post call.respondText("Email ${email} is already in use")
                 else -> {
                     // Sign up form validated! create new user with the form data
-                    val passwordHash = hash(password)
+                    val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
                     val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
                     
                     // Set Session
@@ -62,8 +63,6 @@ fun Route.auth(){
                     // Respond to the client
                     call.respondText("Signed Up! You can now log in with the new account.")
                 }
-            
-            
             }
         }
         
@@ -77,8 +76,7 @@ fun Route.auth(){
                 password.length < 8 -> call.respondText("Password must be at least 8 digits")
                 else -> {
                     val user = DbQueries.findByUsername(username) ?: return@post call.respondText("User not found")
-                    val passwordHash = hash(password)
-                    if(user.passwordHash == passwordHash){
+                    if(BCrypt.checkpw(password, user.passwordHash)){
                         // Set Session
                         call.sessions.set(AuthbookSession(
                             user.id.value,

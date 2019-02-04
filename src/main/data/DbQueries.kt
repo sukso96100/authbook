@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.dao.*
 import org.joda.time.*
 import java.util.Base64
+import org.mindrot.jbcrypt.BCrypt
 //https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html
 
 object DbQueries{
@@ -54,7 +55,7 @@ object DbQueries{
     
     fun checkSeedKey(user: User, seedKey: String): Boolean{
         return transaction{
-            user.seedKeyHash == hash(seedKey)
+            BCrypt.checkpw(seedKey, user.seedKeyHash)
         }
     }
     
@@ -79,7 +80,7 @@ object DbQueries{
     // Set the key for encrypting otp seeds
     fun setSeedKey(user: User, seedKey: String){
         return transaction{
-            user.seedKeyHash = hash(seedKey)
+            user.seedKeyHash = BCrypt.hashpw(seedKey, BCrypt.gensalt())
         }
     }
     
@@ -90,7 +91,7 @@ object DbQueries{
                 val old = Crypto.decryptWithKey(prevKey, it.seedBytes)
                 it.seedBytes = Crypto.encryptWithKey(newKey, old)
             }
-            user.seedKeyHash = hash(newKey)
+            user.seedKeyHash = BCrypt.hashpw(newKey, BCrypt.gensalt())
         }
     }
     

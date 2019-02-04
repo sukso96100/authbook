@@ -2,22 +2,13 @@ package xyz.youngbin.authbook
 
 import javax.crypto.*
 import javax.crypto.spec.*
-import io.ktor.application.*
 import java.util.Formatter
-import io.ktor.util.hex
 import java.security.SecureRandom
 import javax.crypto.spec.*
 import java.io.ByteArrayOutputStream
 
 val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
 
-
-// TO-DO Replace with bcrypt
-fun hash(password: String): String {
-    val hmac = Mac.getInstance("HmacSHA512")
-    hmac.init(hmacKey)
-    return hex(hmac.doFinal(password.toByteArray(Charsets.UTF_8)))
-}
 
 object Crypto{
     // https://www.baeldung.com/java-cipher-class

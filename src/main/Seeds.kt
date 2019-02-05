@@ -95,6 +95,7 @@ fun Route.seeds(){
             DbQueries.setSeedKey(user, params.seedKey)
             call.respondText("Seed key configured") 
         }
+        
         put("change_seedkey"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
             session ?: return@put call.respondText("Session is empty")

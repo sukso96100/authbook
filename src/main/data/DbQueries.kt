@@ -114,13 +114,15 @@ object DbQueries{
         return transaction{
             val id = EntityID<Int>(updatedSeed.id, OtpSeeds)
             var seed = OtpSeed.findById(id)
-            if(seed?.seedOwner != user) seed = null
-            seed?.let{
-                it.seedName = updatedSeed.seedName
-                it.url = updatedSeed.url
-                it.accountUserName = updatedSeed.accountUserName
-                it.seedInfo = updatedSeed.seedInfo
-                it.seedBytes = newSeedBytes
+            when(seed?.seedOwner?.username){
+                user?.username ->{
+                    seed?.seedName = updatedSeed.seedName
+                    seed?.url = updatedSeed.url
+                    seed?.accountUserName = updatedSeed.accountUserName
+                    seed?.seedInfo = updatedSeed.seedInfo
+                    seed?.seedBytes = newSeedBytes
+                }
+                else -> seed = null
             }
             seed
         }
@@ -130,10 +132,12 @@ object DbQueries{
         return transaction{
             var result = true
             val id = EntityID<Int>(seedId, OtpSeeds)
-            val seed = OtpSeed.findById(id)
+            var seed = OtpSeed.findById(id)
+            when(seed?.seedOwner?.username){
+                user?.username -> seed?.delete()
+                else -> seed = null
+            }
             seed ?: run{ result = false } 
-            if(seed?.seedOwner != user) result = false
-            seed?.delete()
             result
         }
     }

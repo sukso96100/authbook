@@ -1,0 +1,9 @@
+.Login{
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.Login > .mdc-text-field,
+.Login > Button{
+    margin: 8px;
+}

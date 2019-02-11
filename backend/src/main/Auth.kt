@@ -33,11 +33,11 @@ fun Route.auth(){
         // Sign Up Function
         post("/signup"){
             val params = call.receive<SignUpForm>()
-            val username = params.username ?: return@post call.respondText("username is empty")
-            val email = params.email ?: return@post call.respondText("email is empty")
-            val displayName = params.displayName ?: return@post call.respondText("display name is empty")
-            val password = params.password ?: return@post call.respondText("password is empty")
-            val passwordCheck = params.passwordCheck ?: return@post call.respondText("password check is empty")
+            val username = params.username ?: return@post call.respondText(HttpStatusCode.BadRequest, "username is empty")
+            val email = params.email ?: return@post call.respondText(HttpStatusCode.BadRequest, "email is empty")
+            val displayName = params.displayName ?: return@post call.respondText(HttpStatusCode.BadRequest,"display name is empty")
+            val password = params.password ?: return@post call.respondText(HttpStatusCode.BadRequest,"password is empty")
+            val passwordCheck = params.passwordCheck ?: return@post call.respondText(HttpStatusCode.BadRequest,"password check is empty")
             
             when {
                 // Validate sign up form
@@ -68,14 +68,14 @@ fun Route.auth(){
         
         post("/login"){
             val params = call.receive<LoginForm>()
-            val username = params.username ?: return@post call.respondText("username is empty")
-            val password = params.password ?: return@post call.respondText("password is empty")
+            val username = params.username ?: return@post call.respondText(HttpStatusCode.BadRequest, "username is empty")
+            val password = params.password ?: return@post call.respondText(HttpStatusCode.BadRequest, "password is empty")
             when {
                 // Validate login up form
-                username.length < 4 -> call.respondText("Username must be longer then 4 letters")
-                password.length < 8 -> call.respondText("Password must be at least 8 digits")
+                username.length < 4 -> call.respondText(HttpStatusCode.BadRequest , "Username must be longer then 4 letters")
+                password.length < 8 -> call.respondText(HttpStatusCode.BadRequest , "Password must be at least 8 digits")
                 else -> {
-                    val user = DbQueries.findByUsername(username) ?: return@post call.respondText("User not found")
+                    val user = DbQueries.findByUsername(username) ?: return@post call.respondText(HttpStatusCode.Unauthorized , "User not found")
                     if(BCrypt.checkpw(password, user.passwordHash)){
                         // Set Session
                         call.sessions.set(AuthbookSession(
@@ -88,7 +88,7 @@ fun Route.auth(){
                         call.respondText("Logged In!")
                     }else{
                         // Respond to the client
-                        call.respondText("Password dose not matches!")
+                        call.respondText(HttpStatusCode.Unauthorized, "Password dose not matches!")
                     }
                 }
             }

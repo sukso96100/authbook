@@ -12,15 +12,20 @@ import io.ktor.auth.*
 import javax.crypto.*
 import javax.crypto.spec.*
 import io.ktor.util.*
-import org.jetbrains.exposed.sql.*
+import io.ktor.http.*
 import java.io.File
 
 
 fun Application.main() {
     install(DefaultHeaders)
     install(CallLogging)
-    install(Authentication) {
-        
+    install(Authentication){}
+    install(CORS){
+        method(HttpMethod.Options)
+        method(HttpMethod.Put)
+        method(HttpMethod.Delete)
+        anyHost()
+        header("SESSION")
     }
     install(Sessions) {
         header<AuthbookSession>("SESSION", storage = directorySessionStorage(File(".sessions"), cached = true))
@@ -52,6 +57,9 @@ fun Application.main() {
                 }
             }
         }
+        // static("app") {
+        //     files("css") 
+        // }
         auth()
         seeds()
         

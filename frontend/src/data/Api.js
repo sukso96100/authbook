@@ -4,12 +4,11 @@ const Api = {
         this.url = url;
     },
     login(username, password){
-        let loginHeaders = new Headers();
-        loginHeaders.append('Content-Type', 'application/json');
         return fetch(`${this.url}/auth/login`, {
             method: 'POST',
-            headers: loginHeaders,
-            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+              },
             body: JSON.stringify({
                 username: username.toString(),
                 password: password.toString()

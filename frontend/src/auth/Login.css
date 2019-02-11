@@ -4,6 +4,7 @@
 }
 
 .Login > .mdc-text-field,
+.Login > .mdc-chip,
 .Login > Button{
     margin: 8px;
 }

@@ -9,3 +9,7 @@
   flex: auto;
   overflow: auto;
 }
+
+.mdc-card {
+    margin: 16px;
+}

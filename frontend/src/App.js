@@ -9,6 +9,8 @@ import '@material/react-list/dist/list.css';
 import '@material/react-text-field/dist/text-field.css';
 import '@material/react-icon-button/dist/icon-button.css';
 import '@material/react-card/dist/card.css';
+import '@material/react-layout-grid/dist/layout-grid.css';
+import '@material/react-linear-progress/dist/linear-progress.css';
 
 import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
 import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle} from '@material/react-drawer';
@@ -23,6 +25,8 @@ import Card, {
   CardActionButtons,
   CardActionIcons
 } from "@material/react-card";
+import {Cell, Grid, Row} from '@material/react-layout-grid';
+import LinearProgress from '@material/react-linear-progress';
 
 export default class App extends Component {
     constructor(props) {
@@ -34,6 +38,26 @@ export default class App extends Component {
         };
     }
   render() {
+      const card = (
+          <Card>
+              <CardPrimaryContent>
+                  <div class="seedInfoItem">
+                      <span class="otpcode">123 456</span><br/>
+                      <span>Facebook - https://facebook.com</span><br/>
+                      <span>Youngbin Han</span>
+                  </div>
+              </CardPrimaryContent>
+                <LinearProgress
+                    buffer={0.9} progress={0.8}
+                    reversed={true}/>
+              <CardActions>
+                <CardActionIcons>
+                    <IconButton><MaterialIcon icon='file_copy'/></IconButton>
+                    <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
+                    <IconButton><MaterialIcon icon='edit'/></IconButton>
+                </CardActionIcons>
+              </CardActions>
+          </Card>)
     return (
      <div className='drawer-container'>
         <Drawer dismissible open={this.state.isOpened}>
@@ -62,23 +86,17 @@ export default class App extends Component {
         />}
       />
       <TopAppBarFixedAdjust>
-        <Card>
-           <CardPrimaryContent>
-            <h1>OTP CODE</h1>
-            <span>Site name / url</span>
-              <span>username</span>
-          </CardPrimaryContent>
-
-              <CardActions>
-                <CardActionButtons>
-                  <button>Click Me</button>
-                </CardActionButtons>
-
-                <CardActionIcons>
-                  <i>Click Me Too!</i>
-                </CardActionIcons>
-              </CardActions>
-          </Card>
+          <Grid>
+            <Row>
+              <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
+              <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
+            <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
+                <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
+              <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
+                <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
+            </Row>
+          </Grid>
+        
       </TopAppBarFixedAdjust>
         </DrawerAppContent>
       </div>

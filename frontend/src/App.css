@@ -11,5 +11,13 @@
 }
 
 .mdc-card {
-    margin: 16px;
+    margin: 4px;
+}
+
+.otpcode {
+    font-size: 2em;
+}
+
+.seedInfoItem {
+    padding: 12px;
 }

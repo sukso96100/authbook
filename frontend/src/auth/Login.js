@@ -16,6 +16,7 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 import {Chip} from '@material/react-chips';
+import { createBrowserHistory } from 'history';
 
 export default class App extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ export default class App extends Component {
             username: "", password: "", url: "http://52.78.53.181:58769",
             isOpen: false
         };
+        this.history = createBrowserHistory();
         Api.setUrl(this.state.url);
     }
   render() {
@@ -72,8 +74,8 @@ export default class App extends Component {
     async login(){
         Api.setUrl(this.state.url);
         let res = await Api.login(this.state.username, this.state.password);
-        switch(res.ok){
-                
+        if(res.ok){
+                this.history.push('/')
         }
     }
 }

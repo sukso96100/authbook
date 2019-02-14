@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 import '@material/react-top-app-bar/dist/top-app-bar.css';
@@ -88,10 +88,11 @@ export default class App extends Component {
                 <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
                 <ListItemText primaryText='About' />
                   </ListItem>
-             <ListItem>
+                <NavLink to="/login"> <ListItem>
                 <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
                 <ListItemText primaryText='Logout' />
-                  </ListItem>
+                  </ListItem></NavLink>
+            
             </List>
           </DrawerContent>
         </Drawer>

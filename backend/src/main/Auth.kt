@@ -27,6 +27,12 @@ data class LoginForm(
     val username: String?,
     val password: String?)
 
+data class UserData(
+    val username: String,
+    val displayName: String,
+    val email: String)
+    
+
 fun Route.auth(){
     route("/auth"){
         
@@ -85,7 +91,7 @@ fun Route.auth(){
                             DateTime.now().toString()))
 
                         // Respond to the client
-                        call.respondText("Logged In!")
+                        call.respond(UserData(user.username, user.displayName, user.email))
                     }else{
                         // Respond to the client
                         call.respondText("Password dose not matches!", status = HttpStatusCode.Unauthorized)

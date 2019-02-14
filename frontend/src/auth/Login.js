@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Router, Route, Link } from "react-router-dom";
+import history from '../history';
 import Api from '../data/Api';
 import './Login.css';
 import logo from '../logo.svg';
@@ -16,16 +17,14 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 import {Chip} from '@material/react-chips';
-import { createBrowserHistory } from 'history';
 
-export default class App extends Component {
+export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
             username: "", password: "", url: "http://52.78.53.181:58769",
             isOpen: false
         };
-        this.history = createBrowserHistory();
         Api.setUrl(this.state.url);
     }
   render() {
@@ -75,8 +74,15 @@ export default class App extends Component {
         Api.setUrl(this.state.url);
         let res = await Api.login(this.state.username, this.state.password);
         if(res.ok){
-                this.history.push('/')
+            let userdata = await res.json();
+            localStorage.setItem("serverUrl", Api.url);
+            localStorage.setItem("displayName", userdata.displayName);
+            localStorage.setItem("username", userdata.username);
+            localStorage.setItem("email", userdata.email);
+            localStorage.setItem("session", res.headers.get("SESSION"));
+            history.push("/");
         }
     }
 }
+
 

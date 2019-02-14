@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { Router, Route, NavLink } from "react-router-dom";
+import history from './history';
 import logo from './logo.svg';
 import './App.css';
 import '@material/react-top-app-bar/dist/top-app-bar.css';
@@ -31,6 +32,7 @@ import {Cell, Grid, Row} from '@material/react-layout-grid';
 import LinearProgress from '@material/react-linear-progress';
 import {Chip} from '@material/react-chips';
 import {Fab} from '@material/react-fab';
+import Api from './data/Api';
 
 export default class App extends Component {
     constructor(props) {
@@ -38,8 +40,28 @@ export default class App extends Component {
         this.state = {
             selectedIndex: 0,
             isOpened: false,
-            keyword: ""
+            userdata: {
+                username:"",
+                displayName: ""
+            },
+            serverUrl: ""
         };
+    }
+    
+    componentDidMount(){
+        if(!localStorage.getItem("session")){
+            history.push("/login");
+        }else{
+            Api.setUrl(localStorage.getItem("serverUrl"));
+            this.setState({
+            userdata: {
+                username: localStorage.getItem("username"),
+                displayName: localStorage.getItem("displayName")
+            },
+            serverUrl: Api.url
+        });
+        }
+        
     }
   render() {
       const card = (
@@ -67,10 +89,10 @@ export default class App extends Component {
         <Drawer dismissible open={this.state.isOpened}>
           <DrawerHeader>
               <DrawerTitle tag='h2'>
-                Youngbin Han
+                {this.state.userdata.displayName}
               </DrawerTitle>
               <DrawerSubtitle>
-                sukso96100<br/>https://authbook.com
+                {this.state.userdata.username}<br/>{this.state.serverUrl}
               </DrawerSubtitle>
           </DrawerHeader>
 
@@ -123,4 +145,3 @@ export default class App extends Component {
     );
   }
 }
-

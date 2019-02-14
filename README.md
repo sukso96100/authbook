@@ -1,7 +1,9 @@
 # Authbook
 
-Authbook is a self-hosted OTP Web app software written in Kolin.  
-It's built with Kotlin, Ktor and Exposed framework.
+![App Preview](preview.png)
+
+Authbook is a self-hosted OTP Web app software.  
+The backend is built with Kotlin, Ktor and Exposed framework and the frontend is built with Javascipt, React and MDC(Material Design Components)
 
 This project is in development stage and it isn't fullly functional yet.
 

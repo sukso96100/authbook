@@ -16,8 +16,19 @@
 
 .otpcode {
     font-size: 2em;
+    font-weight: bold;
 }
 
 .seedInfoItem {
     padding: 12px;
+}
+
+#addbtn{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+#otpCardsGrid {
+    padding-bottom: 5rem;
 }

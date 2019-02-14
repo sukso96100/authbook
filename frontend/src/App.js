@@ -11,9 +11,11 @@ import '@material/react-icon-button/dist/icon-button.css';
 import '@material/react-card/dist/card.css';
 import '@material/react-layout-grid/dist/layout-grid.css';
 import '@material/react-linear-progress/dist/linear-progress.css';
+import "@material/react-chips/dist/chips.css";
+import '@material/react-fab/dist/fab.css';
 
 import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
-import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle} from '@material/react-drawer';
+import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle, DrawerSubtitle} from '@material/react-drawer';
 import MaterialIcon from '@material/react-material-icon';
 import List, {ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import TextField, {HelperText, Input} from '@material/react-text-field';
@@ -27,6 +29,8 @@ import Card, {
 } from "@material/react-card";
 import {Cell, Grid, Row} from '@material/react-layout-grid';
 import LinearProgress from '@material/react-linear-progress';
+import {Chip} from '@material/react-chips';
+import {Fab} from '@material/react-fab';
 
 export default class App extends Component {
     constructor(props) {
@@ -62,17 +66,32 @@ export default class App extends Component {
      <div className='drawer-container'>
         <Drawer dismissible open={this.state.isOpened}>
           <DrawerHeader>
-            <DrawerTitle tag='h2'>
-              jane.smith@gmail.com
-            </DrawerTitle>
+              <DrawerTitle tag='h2'>
+                Youngbin Han
+              </DrawerTitle>
+              <DrawerSubtitle>
+                sukso96100<br/>https://authbook.com
+              </DrawerSubtitle>
           </DrawerHeader>
 
           <DrawerContent>
             <List singleSelection selectedIndex={this.state.selectedIndex}>
               <ListItem>
-                <ListItemGraphic graphic={<MaterialIcon icon='folder'/>} />
-                <ListItemText primaryText='Mail' />
+                <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
+                <ListItemText primaryText='Accounts' />
               </ListItem>
+                <ListItem>
+                <ListItemGraphic graphic={<MaterialIcon icon='settings'/>} />
+                <ListItemText primaryText='Settings' />
+              </ListItem>
+            <ListItem>
+                <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
+                <ListItemText primaryText='About' />
+                  </ListItem>
+             <ListItem>
+                <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
+                <ListItemText primaryText='Logout' />
+                  </ListItem>
             </List>
           </DrawerContent>
         </Drawer>
@@ -87,7 +106,7 @@ export default class App extends Component {
       />
       <TopAppBarFixedAdjust>
           <Grid>
-            <Row>
+            <Row id="otpCardsGrid">
               <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
               <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
             <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
@@ -95,8 +114,8 @@ export default class App extends Component {
               <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
                 <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
             </Row>
-          </Grid>
-        
+          </Grid> 
+        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"/>
       </TopAppBarFixedAdjust>
         </DrawerAppContent>
       </div>

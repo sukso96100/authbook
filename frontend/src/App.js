@@ -48,18 +48,22 @@ export default class App extends Component {
         };
     }
     
-    componentDidMount(){
+    async componentDidMount(){
         if(!localStorage.getItem("session")){
             history.push("/login");
         }else{
             Api.setUrl(localStorage.getItem("serverUrl"));
             this.setState({
-            userdata: {
-                username: localStorage.getItem("username"),
-                displayName: localStorage.getItem("displayName")
-            },
-            serverUrl: Api.url
-        });
+                userdata: {
+                    username: localStorage.getItem("username"),
+                    displayName: localStorage.getItem("displayName")
+                },
+                serverUrl: Api.url
+            });
+            let res = await Api.getAccounts();
+            if(res.ok){
+                let accounts = await res.json();
+            }
         }
         
     }
@@ -86,7 +90,9 @@ export default class App extends Component {
           </Card>)
     return (
      <div className='drawer-container'>
-        <Drawer dismissible open={this.state.isOpened}>
+        <Drawer modal
+            open={this.state.isOpened}
+            onClose={() => this.setState({isOpened: false})}>
           <DrawerHeader>
               <DrawerTitle tag='h2'>
                 {this.state.userdata.displayName}

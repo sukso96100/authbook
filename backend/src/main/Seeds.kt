@@ -13,30 +13,6 @@ import io.ktor.http.*
 import io.ktor.gson.*
 import org.joda.time.*
 
-data class AddSeedForm(
-    val seedName: String,
-    val url: String,
-    val accountUserName: String,
-    val seedInfo: String,
-    val seedValue: String,
-    val seedKey: String)
-
-data class SetSeedKeyForm(val seedKey: String)
-
-data class ChangeSeedKeyForm(val prevKey: String, val newKey: String)
-
-data class UpdateSeedForm(
-    val id: Int,
-    val seedName: String,
-    val url: String,
-    val accountUserName: String,
-    val seedInfo: String,
-    val seedValue: String,
-    val seedKey: String)
-
-data class DeleteSeedForm(val id: Int)
-
-
 fun Route.seeds(){
     route("/seeds"){
         

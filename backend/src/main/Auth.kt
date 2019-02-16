@@ -16,23 +16,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.*
 import org.mindrot.jbcrypt.BCrypt
 
-data class SignUpForm(
-    val username: String?,
-    val email: String?,
-    val displayName: String?,
-    val password: String?,
-    val passwordCheck: String?)
-
-data class LoginForm(
-    val username: String?,
-    val password: String?)
-
-data class UserData(
-    val username: String,
-    val displayName: String,
-    val email: String)
-    
-
 fun Route.auth(){
     route("/auth"){
         

@@ -25,7 +25,9 @@ fun Application.main() {
         method(HttpMethod.Put)
         method(HttpMethod.Delete)
         anyHost()
+        header(HttpHeaders.XForwardedProto)
         header("SESSION")
+        exposeHeader("SESSION")
     }
     install(Sessions) {
         header<AuthbookSession>("SESSION", storage = directorySessionStorage(File(".sessions"), cached = true))

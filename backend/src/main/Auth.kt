@@ -74,7 +74,7 @@ fun Route.auth(){
                             DateTime.now().toString()))
 
                         // Respond to the client
-                        call.respond(UserData(user.username, user.displayName, user.email))
+                        call.respond(UserData(user.username, user.displayName, user.email, !user.seedKeyHash.isEmpty(), false))
                     }else{
                         // Respond to the client
                         call.respondText("Password dose not matches!", status = HttpStatusCode.Unauthorized)

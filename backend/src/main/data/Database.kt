@@ -8,12 +8,7 @@ import org.jetbrains.exposed.dao.*
 import org.joda.time.*
 
 
-// User Session Model
-data class AuthbookSession(
-    val useruid: Int,
-    val username: String,
-    val ipAddress: String,
-    val createdAt: String = DateTime.now().toString())
+
 
 // Users Table Object
 object Users : IdTable<Int>() {
@@ -58,12 +53,5 @@ class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
     var seedOwner by User referencedOn OtpSeeds.seedOwner
 }
 
-data class SeedItem(
-    val id: Int,
-    var seedName: String,
-    var url: String,
-    var accountUserName: String,
-    var seedInfo: String,
-    var encryptedSeed: String
-)
+
 

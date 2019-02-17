@@ -19,8 +19,8 @@ fun Route.seeds(){
         // Sign Up Function
         get("/all"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@get call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@get call.respondText("User not found")
+            session ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val seeds = DbQueries.getUserSeeds(user)
             seeds ?: call.respondText("Empty")
             call.respond(seeds)
@@ -28,11 +28,13 @@ fun Route.seeds(){
         
         post("/add"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@post call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@post call.respondText("User not found")
+            session ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            if(user.seedKeyHash.isEmpty()) return@post call.respond(HttpStatusCode.Forbidden, ResponseWithCode(2, "Please set seed encryption key first."))
             
             val params = call.receive<AddSeedForm>()
-            if(!DbQueries.checkSeedKey(user, params.seedKey)) return@post call.respondText("You have typed wrong seed key.")
+            if(!DbQueries.checkSeedKey(user, params.seedKey)) 
+                return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You have typed wrong seed key."))
             DbQueries.addUserSeed(user, params)
             val seeds = DbQueries.getUserSeeds(user)
             seeds ?: call.respondText("Empty")
@@ -41,43 +43,48 @@ fun Route.seeds(){
         
         put("/edit"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@put call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@put call.respondText("User not found")
+            session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            if(user.seedKeyHash.isEmpty()) return@put call.respond(HttpStatusCode.Forbidden, ResponseWithCode(2, "Please set seed encryption key first."))
             
             val params = call.receive<UpdateSeedForm>()
-            if(!DbQueries.checkSeedKey(user, params.seedKey)) return@put call.respondText("You have typed wrong seed key.")
-            DbQueries.updateUserSeed(user, params) ?: return@put call.respondText("Seed not found.")
+            if(!DbQueries.checkSeedKey(user, params.seedKey)) 
+                return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You have typed wrong seed key."))
+            DbQueries.updateUserSeed(user, params) ?: return@put call.respond(HttpStatusCode.NotFound, ResponseWithCode(4, "Seed not found."))
             call.respondText("Seed updated.")
         }
         
         delete("/delete"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@delete call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@delete call.respondText("User not found")
+            session ?: return@delete call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@delete call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            if(user.seedKeyHash.isEmpty()) return@delete call.respond(HttpStatusCode.Forbidden, ResponseWithCode(2, "Please set seed encryption key first."))
             val params = call.receive<DeleteSeedForm>()
             
             if(DbQueries.deleteSeed(user, params.id)){
                 call.respondText("Seed deleted")
             }else{
-                call.respondText("Seed not found")
+                call.respond(HttpStatusCode.NotFound, ResponseWithCode(3, "Seed not found."))
             }
         }
         
         put("/set_seedkey"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@put call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@put call.respondText("User not found")
+            session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<SetSeedKeyForm>()
+            if(params.seedKey != params.seedKeyCheck) return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Seed Key not matches"))
             DbQueries.setSeedKey(user, params.seedKey)
             call.respondText("Seed key configured") 
         }
         
         put("change_seedkey"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@put call.respondText("Session is empty")
-            val user = DbQueries.findById(session.useruid) ?: return@put call.respondText("User not found")
+            session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<ChangeSeedKeyForm>()
-            if(!DbQueries.checkSeedKey(user, params.prevKey)) return@put call.respondText("You have typed wrong seed key.")
+            if(!DbQueries.checkSeedKey(user, params.prevKey))
+                return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2,"You have typed wrong seed key."))
             DbQueries.changeSeedKey(user, params.prevKey, params.newKey)
             call.respondText("Seed key chanegd")
         }

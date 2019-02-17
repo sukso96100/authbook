@@ -26,6 +26,35 @@ const Api = {
                 'SESSION': session
             }
         });
+    },
+    
+    addAccount(name, url, username, info, seed, key){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/seeds/add`, {
+            method: 'POST',
+            headers: {
+                'SESSION': session,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                seedName: name,
+                url: url,
+                accountUserName: username,
+                seedInfo: info,
+                seedValue: seed,
+                seedKey: key
+            })
+        });
+    },
+    
+    setEncryptionKey(key){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/seeds/set_seedkey`, {
+            method: 'POST',
+            headers: {
+                'SESSION': session
+            }
+        });
     }
 };
 

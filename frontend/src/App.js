@@ -33,6 +33,7 @@ import LinearProgress from '@material/react-linear-progress';
 import {Chip} from '@material/react-chips';
 import {Fab} from '@material/react-fab';
 import Api from './data/Api';
+import AddAccountDialog from './dialogs/AddAccountDialog';
 
 export default class App extends Component {
     constructor(props) {
@@ -44,7 +45,8 @@ export default class App extends Component {
                 username:"",
                 displayName: ""
             },
-            serverUrl: ""
+            serverUrl: "",
+            isAddDialogVisible: false
         };
     }
     
@@ -144,7 +146,9 @@ export default class App extends Component {
                 <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
             </Row>
           </Grid> 
-        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"/>
+        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
+            onClick={()=>this.setState({isAddDialogVisible: true})}/>
+          <AddAccountDialog isOpen={this.state.isAddDialogVisible}/>
       </TopAppBarFixedAdjust>
         </DrawerAppContent>
       </div>

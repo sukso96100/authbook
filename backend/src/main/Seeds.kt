@@ -33,8 +33,10 @@ fun Route.seeds(){
             if(user.seedKeyHash.isEmpty()) return@post call.respond(HttpStatusCode.Forbidden, ResponseWithCode(2, "Please set seed encryption key first."))
             
             val params = call.receive<AddSeedForm>()
+            if(params.seedName.isNullOrEmpty() || params.seedValue.isNullOrEmpty())
+                return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You must enter name of the account and otp key value!."))
             if(!DbQueries.checkSeedKey(user, params.seedKey)) 
-                return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You have typed wrong seed key."))
+                return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "You have typed wrong seed key."))
             DbQueries.addUserSeed(user, params)
             val seeds = DbQueries.getUserSeeds(user)
             seeds ?: call.respondText("Empty")

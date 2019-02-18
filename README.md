@@ -1,5 +1,6 @@
 # Authbook
 
+![App Preview](login.png)
 ![App Preview](preview.png)
 
 Authbook is a self-hosted OTP Web app software.  

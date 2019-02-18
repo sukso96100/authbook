@@ -57,14 +57,14 @@ fun Route.auth(){
         
         post("/login"){
             val params = call.receive<LoginForm>()
-            val username = params.username ?: return@post call.respondText("username is empty", status = HttpStatusCode.BadRequest)
-            val password = params.password ?: return@post call.respondText("password is empty", status = HttpStatusCode.BadRequest)
+            val username = params.username ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(0, "username is empty"))
+            val password = params.password ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(1, "password is empty"))
             when {
                 // Validate login up form
-                username.length < 4 -> call.respondText("Username must be longer then 4 letters", status = HttpStatusCode.BadRequest)
-                password.length < 8 -> call.respondText("Password must be at least 8 digits", status = HttpStatusCode.BadRequest)
+                username.length < 4 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Username must be longer then 4 letters"))
+                password.length < 8 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "Password must be at least 8 digits"))
                 else -> {
-                    val user = DbQueries.findByUsername(username) ?: return@post call.respondText("User not found", status = HttpStatusCode.Unauthorized)
+                    val user = DbQueries.findByUsername(username) ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(4, "User not found"))
                     if(BCrypt.checkpw(password, user.passwordHash)){
                         // Set Session
                         call.sessions.set(AuthbookSession(
@@ -77,7 +77,7 @@ fun Route.auth(){
                         call.respond(UserData(user.username, user.displayName, user.email, !user.seedKeyHash.isEmpty(), false))
                     }else{
                         // Respond to the client
-                        call.respondText("Password dose not matches!", status = HttpStatusCode.Unauthorized)
+                        call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(5, "Password dose not matches!"))
                     }
                 }
             }

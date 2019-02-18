@@ -17,42 +17,55 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 import {Chip} from '@material/react-chips';
+import LinearProgress from '@material/react-linear-progress';
+import Card, {
+  CardPrimaryContent,
+  CardMedia,
+  CardActions,
+  CardActionButtons,
+  CardActionIcons
+} from "@material/react-card";
 
 export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
             username: "", password: "", url: "http://52.78.53.181:58769",
-            isOpen: false
+            isOpen: false, message: "", loading: false
         };
         Api.setUrl(this.state.url);
     }
   render() {
+      const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
       return (
     <div class="Login">
+              <Card>
         <img src={logo} className="App-logo" alt="logo" />
         <h1>Authbook</h1><br/>
-        <Chip id="urlChip" label={this.state.url} onClick={()=>{this.setState({isOpen: true})}}/><br/>
+              
+                  <Chip id="urlChip" label={this.state.url} onClick={()=>{this.setState({isOpen: true})}}/><br/>
         <TextField 
             class="loginForm"
             label='Username'>
-            <Input
+            <Input disabled={this.state.loading}
                 value={this.state.username}
                 onChange={(e) => this.setState({username: e.target.value})}/>
         </TextField><br/>
         <TextField 
             class="loginForm"
             label='Password'>
-            <Input
+            <Input disabled={this.state.loading}
                 type="password"
                 value={this.state.password}
                 onChange={(e) => this.setState({password: e.target.value})}/>
         </TextField><br/>
+              <p>{this.state.message}</p>
+              {loading}
         <Button raised="true" onClick={this.login.bind(this)}>Log In</Button><br/>
         <Button>Sign Up</Button>
         <Button>Forgot password</Button>
-              
-        <Dialog open={this.state.isOpen}>
+              </Card>
+                <Dialog open={this.state.isOpen}>
             <DialogTitle>Configure Server</DialogTitle>
             <DialogContent>
             <p>Type the url of Authbook server instance. It must be HTTPS.</p>
@@ -71,6 +84,7 @@ export default class Login extends Component {
       );
   }
     async login(){
+        this.setState({loading: true});
         Api.setUrl(this.state.url);
         let res = await Api.login(this.state.username, this.state.password);
         if(res.ok){
@@ -81,7 +95,11 @@ export default class Login extends Component {
             localStorage.setItem("email", userdata.email);
             localStorage.setItem("encryptionKeySet", userdata.isSeedKeySet);
             localStorage.setItem("session", res.headers.get("SESSION"));
+            this.setState({loading: false});
             history.push("/");
+        }else{
+            let result = await res.json();
+            this.setState({message: result.message, loading: false})
         }
     }
 }

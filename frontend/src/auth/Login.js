@@ -8,6 +8,10 @@ import '@material/react-text-field/dist/text-field.css';
 import '@material/react-button/dist/button.css';
 import "@material/react-dialog/dist/dialog.css";
 import "@material/react-chips/dist/chips.css";
+import '@material/react-linear-progress/dist/linear-progress.css';
+import '@material/react-card/dist/card.css';
+
+
 import TextField, {HelperText, Input} from '@material/react-text-field';
 import Button from '@material/react-button';
 import Dialog, {

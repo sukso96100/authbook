@@ -1,11 +1,19 @@
 .Login{
     text-align: center;
-    margin-top: 10vh;
+    margin-top: 24px;
+    
+}
+
+.Login > .mdc-card{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 16px;
+    max-width: 500px;
 }
 
 .Login > .mdc-text-field,
 .Login > .mdc-chip,
-.Login > Button{
+.Login >  Button{
     margin: 8px;
 }
 

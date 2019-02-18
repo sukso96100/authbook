@@ -79,6 +79,7 @@ export default class Login extends Component {
             localStorage.setItem("displayName", userdata.displayName);
             localStorage.setItem("username", userdata.username);
             localStorage.setItem("email", userdata.email);
+            localStorage.setItem("encryptionKeySet", userdata.isSeedKeySet);
             localStorage.setItem("session", res.headers.get("SESSION"));
             history.push("/");
         }

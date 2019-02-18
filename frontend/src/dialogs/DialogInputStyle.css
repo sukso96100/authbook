@@ -1,4 +1,4 @@
-.mdc-text-field{
+.mdc-dialog__content > .mdc-text-field{
     width: 100%;
     margin-bottom: 8px;
 }

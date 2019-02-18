@@ -34,6 +34,7 @@ import {Chip} from '@material/react-chips';
 import {Fab} from '@material/react-fab';
 import Api from './data/Api';
 import AddAccountDialog from './dialogs/AddAccountDialog';
+import SetEncryptionKeyDialog from './dialogs/SetEncryptionKeyDialog';
 
 export default class App extends Component {
     constructor(props) {
@@ -46,7 +47,8 @@ export default class App extends Component {
                 displayName: ""
             },
             serverUrl: "",
-            isAddDialogVisible: false
+            isAddDialogVisible: false,
+            isSetKeyDialogVisible: false
         };
     }
     
@@ -65,6 +67,10 @@ export default class App extends Component {
             let res = await Api.getAccounts();
             if(res.ok){
                 let accounts = await res.json();
+            }
+            
+            if(!localStorage.getItem("encryptionKeySet")){
+                this.setState({isSetKeyDialogVisible: true});
             }
         }
         
@@ -148,7 +154,10 @@ export default class App extends Component {
           </Grid> 
         <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
             onClick={()=>this.setState({isAddDialogVisible: true})}/>
-          <AddAccountDialog isOpen={this.state.isAddDialogVisible}/>
+          <AddAccountDialog isOpen={this.state.isAddDialogVisible}
+              onClose={(action)=>this.setState({isAddDialogVisible: false})}/>
+          <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
+              onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}/>
       </TopAppBarFixedAdjust>
         </DrawerAppContent>
       </div>

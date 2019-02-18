@@ -47,13 +47,17 @@ const Api = {
         });
     },
     
-    setEncryptionKey(key){
+    setEncryptionKey(key, keyCheck){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/seeds/set_seedkey`, {
             method: 'POST',
             headers: {
                 'SESSION': session
-            }
+            },
+            body: JSON.stringify({
+                seedKey: key,
+                seedKeyCheck: keyCheck,
+            })
         });
     }
 };

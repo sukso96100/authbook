@@ -26,52 +26,49 @@ export default class AddAccountDialog extends Component{
             seed: "",
             key: "",
             loading: false,
-            mseeage: ""
+            message: ""
         };
-    }
-    
-    componentDidMount(){
-     
     }
     
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
-            <Dialog open={this.props.isOpen}>
+            <Dialog open={this.props.isOpen}
+                onClose={this.props.onClose}>
             <DialogTitle>Add new account</DialogTitle>
             <DialogContent>
                 <TextField label='Website/Service Name'>
-                    <Input
+                    <Input disabled={this.state.loading}
                         value={this.state.name}
                         onChange={(e) => this.setState({name: e.target.value})}/>
                 </TextField>
                 <TextField label='URL'>
-                    <Input
+                    <Input disabled={this.state.loading}
                         value={this.state.url}
                         onChange={(e) => this.setState({url: e.target.value})}/>
                 </TextField>
                 <TextField label='Username'>
-                    <Input
+                    <Input disabled={this.state.loading}
                         value={this.state.username}
                         onChange={(e) => this.setState({username: e.target.value})}/>
                 </TextField>
                 <TextField label='Information' textarea>
-                    <Input
+                    <Input disabled={this.state.loading}
                         value={this.state.info}
                         onChange={(e) => this.setState({info: e.target.value})}/>
                 </TextField>
                 <TextField label='OTP Key'>
-                    <Input
+                    <Input disabled={this.state.loading}
                         value={this.state.seed}
                         onChange={(e) => this.setState({seed: e.target.value})}/>
                 </TextField>
                 <TextField label='Encryption Key'>
-                    <Input
+                    <Input disabled={this.state.loading}
                         type="password"
                         value={this.state.key}
                         onChange={(e) => this.setState({key: e.target.value})}/>
                 </TextField>
-                <span class="mseeage">{this.state.mseeage}</span>
+                <p>{this.state.message}</p>
             </DialogContent>
                 {loading}
             <DialogFooter>
@@ -88,7 +85,7 @@ export default class AddAccountDialog extends Component{
                         if(res.ok){
                             this.setState({isOpen: false, loading: false});
                         }else{
-                            this.setState({isOpen: false, loading: false, mseeage: result.message});
+                            this.setState({isOpen: true, loading: false, mseeage: result.message});
                         }
                     }}>Submit</DialogButton>
             </DialogFooter>

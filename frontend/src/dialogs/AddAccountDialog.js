@@ -83,9 +83,10 @@ export default class AddAccountDialog extends Component{
                                         this.state.key)
                         const result = await res.json();
                         if(res.ok){
-                            this.setState({isOpen: false, loading: false});
+                            this.setState({loading: false});
+                            this.props.afterSubmit();
                         }else{
-                            this.setState({isOpen: true, loading: false, mseeage: result.message});
+                            this.setState({loading: false, message: result.message});
                         }
                     }}>Submit</DialogButton>
             </DialogFooter>

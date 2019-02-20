@@ -49,14 +49,16 @@ export default class SetEncryptionKeyDialog extends Component{
             </DialogContent>
                 {loading}
             <DialogFooter>
-                <DialogButton isDefault onClick={async ()=>{
+                <DialogButton action='dismiss'>Cancel</DialogButton>
+                <DialogButton isDefault action='confirm' onClick={async ()=>{
                         this.setState({loading: true})
                         const res = await Api.setEncryptionKey(this.state.key, this.state.keyCheck);
                         const result = await res.json();
                         if(res.ok){
-                            this.setState({isOpen: false, loading: false});
+                            this.setState({loading: false});
+                            this.props.afterSubmit();
                         }else{
-                            this.setState({isOpen: true, loading: false, mseeage: result.message});
+                            this.setState({loading: false, mseeage: result.message});
                         }
                     }}>Submit</DialogButton>
             </DialogFooter>

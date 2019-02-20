@@ -14,6 +14,7 @@ import '@material/react-layout-grid/dist/layout-grid.css';
 import '@material/react-linear-progress/dist/linear-progress.css';
 import "@material/react-chips/dist/chips.css";
 import '@material/react-fab/dist/fab.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
 import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle, DrawerSubtitle} from '@material/react-drawer';
@@ -35,6 +36,8 @@ import {Fab} from '@material/react-fab';
 import Api from './data/Api';
 import AddAccountDialog from './dialogs/AddAccountDialog';
 import SetEncryptionKeyDialog from './dialogs/SetEncryptionKeyDialog';
+import { ToastContainer, toast } from 'react-toastify';
+import { css } from 'glamor';
 
 export default class App extends Component {
     constructor(props) {
@@ -73,10 +76,25 @@ export default class App extends Component {
                 this.setState({isSetKeyDialogVisible: true});
             }
         }
+    }
+    
+    notify(msg){
+        toast(msg, {
+          className: css({
+            background: '#333',
+            "border-radius": "8px"
+          }),
+          progressClassName: css({
+            background: "white"
+          })
+        });
+    }
+    
+    loadAccounts(){
         
     }
-  render() {
-      const card = (
+     render() {
+         const card = (
           <Card>
               <CardPrimaryContent>
                   <div class="seedInfoItem">
@@ -155,9 +173,18 @@ export default class App extends Component {
         <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
             onClick={()=>this.setState({isAddDialogVisible: true})}/>
           <AddAccountDialog isOpen={this.state.isAddDialogVisible}
-              onClose={(action)=>this.setState({isAddDialogVisible: false})}/>
+              onClose={(action)=>this.setState({isAddDialogVisible: false})}
+              afterSubmit={()=>{
+                  this.setState({isAddDialogVisible: false});
+                  this.notify("New account has been added.");
+              }}/>
           <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
-              onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}/>
+              onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}
+              afterSubmit={()=>{
+                  this.setState({isSetKeyDialogVisible: false});
+                  this.notify("Encryption key has been configured.");
+              }}/>
+          <ToastContainer />
       </TopAppBarFixedAdjust>
         </DrawerAppContent>
       </div>

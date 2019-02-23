@@ -101,7 +101,6 @@ export default class App extends Component {
                 accounts.forEach((item)=>{
                     console.log(item.encryptedSeed);
                     let raw = Crypto.decrypt(this.state.encryptionKey, item.encryptedSeed);
-                    console.log(raw);
                 });
                 this.setState({accounts: accounts, loading: false, keySubmited: true});
             }

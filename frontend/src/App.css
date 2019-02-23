@@ -32,3 +32,8 @@
 #otpCardsGrid {
     padding-bottom: 5rem;
 }
+
+.decryptPrompt{
+    text-align: center;
+    margin: 32px;
+}

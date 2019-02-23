@@ -12,9 +12,9 @@ import '@material/react-icon-button/dist/icon-button.css';
 import '@material/react-card/dist/card.css';
 import '@material/react-layout-grid/dist/layout-grid.css';
 import '@material/react-linear-progress/dist/linear-progress.css';
-import "@material/react-chips/dist/chips.css";
 import '@material/react-fab/dist/fab.css';
 import 'react-toastify/dist/ReactToastify.css';
+import '@material/react-button/dist/button.css';
 
 import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
 import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle, DrawerSubtitle} from '@material/react-drawer';
@@ -31,13 +31,14 @@ import Card, {
 } from "@material/react-card";
 import {Cell, Grid, Row} from '@material/react-layout-grid';
 import LinearProgress from '@material/react-linear-progress';
-import {Chip} from '@material/react-chips';
 import {Fab} from '@material/react-fab';
 import Api from './data/Api';
 import AddAccountDialog from './dialogs/AddAccountDialog';
 import SetEncryptionKeyDialog from './dialogs/SetEncryptionKeyDialog';
 import { ToastContainer, toast } from 'react-toastify';
 import { css } from 'glamor';
+import Crypto from './data/Crypto';
+import Button from '@material/react-button';
 
 export default class App extends Component {
     constructor(props) {
@@ -50,8 +51,12 @@ export default class App extends Component {
                 displayName: ""
             },
             serverUrl: "",
+            accounts: [],
             isAddDialogVisible: false,
-            isSetKeyDialogVisible: false
+            isSetKeyDialogVisible: false,
+            encryptionKey: "",
+            loading: false,
+            keySubmited: false
         };
     }
     
@@ -67,13 +72,11 @@ export default class App extends Component {
                 },
                 serverUrl: Api.url
             });
-            let res = await Api.getAccounts();
-            if(res.ok){
-                let accounts = await res.json();
-            }
-            
+           
             if(!localStorage.getItem("encryptionKeySet")){
                 this.setState({isSetKeyDialogVisible: true});
+            }else if(this.state.encryptionKey){
+                this.loadAccounts();
             }
         }
     }
@@ -90,30 +93,72 @@ export default class App extends Component {
         });
     }
     
-    loadAccounts(){
-        
+    async loadAccounts(){
+        this.setState({loading: true});
+        let res = await Api.getAccounts();
+            if(res.ok){
+                let accounts = await res.json();
+                accounts.forEach((item)=>{
+                    console.log(item.encryptedSeed);
+                    let raw = Crypto.decrypt(this.state.encryptionKey, item.encryptedSeed);
+                    console.log(raw);
+                });
+                this.setState({accounts: accounts, loading: false, keySubmited: true});
+            }
+            
     }
      render() {
-         const card = (
-          <Card>
-              <CardPrimaryContent>
-                  <div class="seedInfoItem">
-                      <span class="otpcode">123 456</span><br/>
-                      <span>Facebook - https://facebook.com</span><br/>
-                      <span>Youngbin Han</span>
-                  </div>
-              </CardPrimaryContent>
-                <LinearProgress
-                    buffer={0.9} progress={0.8}
-                    reversed={true}/>
-              <CardActions>
-                <CardActionIcons>
-                    <IconButton><MaterialIcon icon='file_copy'/></IconButton>
-                    <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
-                    <IconButton><MaterialIcon icon='edit'/></IconButton>
-                </CardActionIcons>
-              </CardActions>
-          </Card>)
+         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
+         const decryptPrompt = (
+             <div class="decryptPrompt">
+                <p>Type your encryption key to decrypt your accounts.</p>
+                 <TextField label='Encryption Key'>
+                    <Input disabled={this.state.loading}
+                        type="password"
+                        value={this.state.encryptionKey}
+                        onChange={(e) => this.setState({encryptionKey: e.target.value})}/>
+                </TextField><br/><br/>
+                 <Button raised="true" onClick={this.loadAccounts.bind(this)}>Decrypt</Button><br/>
+             </div>
+         );
+         
+         const accounts = (
+             <div>
+          <Grid>
+            <Row id="otpCardsGrid">
+                {this.state.accounts.map((item, i)=>{
+                    return(
+                        <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>
+                            <Card>
+                                  <CardPrimaryContent>
+                                      <div class="seedInfoItem">
+                                          <span class="otpcode">123 456</span><br/>
+                                          <span>{item.seedName} - {item.url}</span><br/>
+                                          <span>{item.accountUserName}</span>
+                                      </div>
+                                  </CardPrimaryContent>
+                                    <LinearProgress
+                                        buffer={0.9} progress={0.8}
+                                        reversed={true}/>
+                                  <CardActions>
+                                    <CardActionIcons>
+                                        <IconButton><MaterialIcon icon='file_copy'/></IconButton>
+                                        <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
+                                        <IconButton><MaterialIcon icon='edit'/></IconButton>
+                                    </CardActionIcons>
+                                  </CardActions>
+                              </Card>
+                        </Cell>
+                    )
+                })}
+            </Row>
+          </Grid> 
+        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
+            onClick={()=>this.setState({isAddDialogVisible: true})}/>
+                 </div>
+         );
+         
+         const content = this.state.keySubmited ? accounts : decryptPrompt;
     return (
      <div className='drawer-container'>
         <Drawer modal
@@ -160,18 +205,8 @@ export default class App extends Component {
         />}
       />
       <TopAppBarFixedAdjust>
-          <Grid>
-            <Row id="otpCardsGrid">
-              <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
-              <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
-            <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
-                <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
-              <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
-                <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>{card}</Cell>
-            </Row>
-          </Grid> 
-        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
-            onClick={()=>this.setState({isAddDialogVisible: true})}/>
+          {loading}
+          {content}
           <AddAccountDialog isOpen={this.state.isAddDialogVisible}
               onClose={(action)=>this.setState({isAddDialogVisible: false})}
               afterSubmit={()=>{

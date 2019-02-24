@@ -39,6 +39,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import { css } from 'glamor';
 import Crypto from './data/Crypto';
 import Button from '@material/react-button';
+import otplib from 'otplib/otplib-browser';
+
 
 export default class App extends Component {
     constructor(props) {
@@ -94,24 +96,37 @@ export default class App extends Component {
     }
     
     async loadAccounts(){
+        if(this.otpTimer){
+            clearInterval(this.otpTimer);
+        }
         this.setState({loading: true});
         let res = await Api.getAccounts();
-            if(res.ok){
-                let accounts = await res.json();
-                accounts.forEach((item)=>{
-                    console.log(item.encryptedSeed);
-                    let raw = Crypto.decrypt(this.state.encryptionKey, item.encryptedSeed);
-                });
-                this.setState({accounts: accounts, loading: false, keySubmited: true});
+        if(res.ok){
+            let accounts = await res.json();
+            for(let item of accounts){
+                let raw = await Crypto.decrypt(this.state.encryptionKey, item.encryptedSeed);
+                item.otpKey = raw;
+                console.log(raw, typeof raw);
+                item.otp = otplib.totp.generate(raw);
             }
-            
+            this.setState({accounts: accounts, loading: false, keySubmited: true});
+            console.log(this.state);
+        }
+        this.otpTimer = setInterval(()=>{
+            let tmp = this.state.accounts;
+            for(let item of tmp){
+                item.otp = otplib.totp.generate(item.otpKey);
+            }
+            this.setState({accounts: tmp});
+        }, 1000);
     }
-     render() {
-         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
-         const decryptPrompt = (
-             <div class="decryptPrompt">
+    
+    render() {
+        const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
+        const decryptPrompt = (
+            <div class="decryptPrompt">
                 <p>Type your encryption key to decrypt your accounts.</p>
-                 <TextField label='Encryption Key'>
+                <TextField label='Encryption Key'>
                     <Input disabled={this.state.loading}
                         type="password"
                         value={this.state.encryptionKey}
@@ -131,7 +146,7 @@ export default class App extends Component {
                             <Card>
                                   <CardPrimaryContent>
                                       <div class="seedInfoItem">
-                                          <span class="otpcode">123 456</span><br/>
+                                          <span class="otpcode">{item.otp}</span><br/>
                                           <span>{item.seedName} - {item.url}</span><br/>
                                           <span>{item.accountUserName}</span>
                                       </div>

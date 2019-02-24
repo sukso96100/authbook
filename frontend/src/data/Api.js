@@ -47,6 +47,38 @@ const Api = {
         });
     },
     
+    updateAccount(id, name, url, username, info, seed, key){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/seeds/edit`, {
+            method: 'PUT',
+            headers: {
+                'SESSION': session
+            },
+            body: JSON.stringify({
+                id: id,
+                seedName: name,
+                url: url,
+                accountUserName: username,
+                seedInfo: info,
+                seedValue: seed,
+                seedKey: key
+            })
+        });
+    },
+    
+    deleteAccount(id){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/seeds/delete`, {
+            method: 'DELETE',
+            headers: {
+                'SESSION': session
+            },
+            body: JSON.stringify({
+                id: id
+            })
+        });
+    },
+    
     setEncryptionKey(key, keyCheck){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/seeds/set_seedkey`, {

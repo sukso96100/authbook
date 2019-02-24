@@ -40,6 +40,7 @@ import { css } from 'glamor';
 import Crypto from './data/Crypto';
 import Button from '@material/react-button';
 import otplib from 'otplib/otplib-browser';
+import EditAccountDialog from './dialogs/EditAccountDialog';
 
 
 export default class App extends Component {
@@ -58,7 +59,9 @@ export default class App extends Component {
             isSetKeyDialogVisible: false,
             encryptionKey: "",
             loading: false,
-            keySubmited: false
+            keySubmited: false,
+            isEditDialogVisible: false,
+            editDialogInitData: {}
         };
     }
     
@@ -158,7 +161,13 @@ export default class App extends Component {
                                     <CardActionIcons>
                                         <IconButton><MaterialIcon icon='file_copy'/></IconButton>
                                         <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
-                                        <IconButton><MaterialIcon icon='edit'/></IconButton>
+                                        <IconButton onClick={()=>{
+                                                console.log(this.state.accounts[i]);
+                                                this.setState({
+                                                    isEditDialogVisible: true, 
+                                                    editDialogInitData: this.state.accounts[i]
+                                                });
+                                            }}><MaterialIcon icon='edit'/></IconButton>
                                     </CardActionIcons>
                                   </CardActions>
                               </Card>
@@ -232,6 +241,16 @@ export default class App extends Component {
               afterSubmit={()=>{
                   this.setState({isSetKeyDialogVisible: false});
                   this.notify("Encryption key has been configured.");
+              }}/>
+          <EditAccountDialog isOpen={this.state.isEditDialogVisible}
+              initData={this.state.editDialogInitData}
+              onClose={(action)=>this.setState({isEditDialogVisible: false})}
+              afterSubmit={(result)=>{
+                  this.setState({isEditDialogVisible: false});
+                  switch(result){
+                          case 0: this.notify("Account updated."); break;
+                          case 1: this.notify("Account deleted."); break;
+                  }
               }}/>
           <ToastContainer />
       </TopAppBarFixedAdjust>

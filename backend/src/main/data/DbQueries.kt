@@ -120,7 +120,7 @@ object DbQueries{
                     seed?.url = updatedSeed.url
                     seed?.accountUserName = updatedSeed.accountUserName
                     seed?.seedInfo = updatedSeed.seedInfo
-                    seed?.seedBytes = newSeedBytes
+                    if(!updatedSeed.seedValue.isEmptyOrNull()) seed?.seedBytes = newSeedBytes
                 }
                 else -> seed = null
             }

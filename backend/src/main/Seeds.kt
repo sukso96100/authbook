@@ -50,7 +50,7 @@ fun Route.seeds(){
             if(user.seedKeyHash.isEmpty()) return@put call.respond(HttpStatusCode.Forbidden, ResponseWithCode(2, "Please set seed encryption key first."))
             
             val params = call.receive<UpdateSeedForm>()
-            if(!DbQueries.checkSeedKey(user, params.seedKey)) 
+            if(!params.seedKey.isNullOrEmpty() || !DbQueries.checkSeedKey(user, params.seedKey)) 
                 return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You have typed wrong seed key."))
             DbQueries.updateUserSeed(user, params) ?: return@put call.respond(HttpStatusCode.NotFound, ResponseWithCode(4, "Seed not found."))
             call.respondText("Seed updated.")

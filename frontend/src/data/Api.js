@@ -52,7 +52,8 @@ const Api = {
         return fetch(`${this.url}/seeds/edit`, {
             method: 'PUT',
             headers: {
-                'SESSION': session
+                'SESSION': session,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 id: id,
@@ -71,7 +72,8 @@ const Api = {
         return fetch(`${this.url}/seeds/delete`, {
             method: 'DELETE',
             headers: {
-                'SESSION': session
+                'SESSION': session,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 id: id

@@ -21,14 +21,14 @@ export default class EditAccountDialog extends Component{
         this.state = {
             formData: {
                 id: 0,
-                name: "",
+                seedName: "",
                 url: "",
-                username: "",
+                accountUserName: "",
                 seed: "",
                 key: "",
-                message: ""
+                seedInfo: ""
             },
-            info: "",
+            message: "",
             loading: false,
         };
     }
@@ -49,72 +49,76 @@ export default class EditAccountDialog extends Component{
             <DialogContent>
                 <TextField label='Website/Service Name'>
                     <Input disabled={this.state.loading}
-                        value={this.state.formData.name}
-                        onChange={(e) => this.setState((prevState) => ({
-                            formData:{...prevState.formData, name: e.target.value}}))}/>
+                        value={this.state.formData.seedName}
+                        onChange={(e) => this.setState({
+                            formData:{...this.state.formData, seedName: e.target.value}
+                        })}/>
                 </TextField>
                 <TextField label='URL'>
                     <Input disabled={this.state.loading}
                         value={this.state.formData.url}
-                        onChange={(e) => this.setState((prevState) => ({
-                            formData:{...prevState.formData, url: e.target.value}}))}/>
+                        onChange={(e) => this.setState({
+                            formData:{...this.state.formData, url: e.target.value}
+                        })}/>
                 </TextField>
                 <TextField label='Username'>
                     <Input disabled={this.state.loading}
-                        value={this.state.formData.username}
-                        onChange={(e) => this.setState((prevState) => ({
-                            formData:{...prevState.formData, username: e.target.value}}))}/>
+                        value={this.state.formData.accountUserName}
+                        onChange={(e) => this.setState({
+                            formData:{...this.state.formData, accountUserName: e.target.value}
+                        })}/>
                 </TextField>
                 <TextField label='Information' textarea>
                     <Input disabled={this.state.loading}
-                        value={this.state.formData.info}
-                        onChange={(e) => this.setState((prevState) => ({
-                            formData:{...prevState.formData, info: e.target.value}}))}/>
+                        value={this.state.formData.seedInfo}
+                        onChange={(e) => this.setState({
+                            formData:{...this.state.formData, seedInfo: e.target.value}
+                        })}/>
                 </TextField>
                 <TextField label='OTP Key'
                     helperText={<HelperText>Leave this field empty to not update otp key.</HelperText>}>
                     <Input disabled={this.state.loading}
-                        value={this.state.formData.seed}
-                        onChange={(e) => this.setState((prevState) => ({
-                            formData:{...prevState.formData, seed: e.target.value}}))}/>
+                        value={this.state.seed}
+                        onChange={(e) => this.setState({seed: e.target.value})}/>
                 </TextField>
                 <TextField label='Encryption Key'>
                     <Input disabled={this.state.loading}
                         type="password"
-                        value={this.state.formData.key}
-                        onChange={(e) => this.setState((prevState) => ({
-                            formData:{...prevState.formData, key: e.target.value}}))}/>
+                        value={this.state.key}
+                        onChange={(e) => this.setState({key: e.target.value})}/>
                 </TextField>
                 <p>{this.state.message}</p>
             </DialogContent>
                 {loading}
             <DialogFooter>
-                <DialogButton isDefault onClick={async ()=>{
-                        this.setState({loading: true})
-                        const res = await Api.deleteAccount(this.state.id);
-                        const result = await res.json();
+                <DialogButton onClick={async ()=>{
+                        this.setState({loading: true});
+                        const res = await Api.deleteAccount(this.state.formData.id);
+                        
                         if(res.ok){
                             this.setState({loading: false});
                             this.props.afterSubmit(1);
                         }else{
+                            const result = await res.json();
                             this.setState({loading: false, message: result.message});
                         }
                     }}>Delete</DialogButton>
                 <DialogButton isDefault onClick={async ()=>{
-                        this.setState({loading: true})
+                        this.setState({loading: true});
                         const res = await Api.updateAccount(
-                                        this.state.id,
-                                        this.state.name,
-                                        this.state.url,
-                                        this.state.username,
-                                        this.state.info,
+                                        this.state.formData.id,
+                                        this.state.formData.seedName,
+                                        this.state.formData.url,
+                                        this.state.formData.accountUserName,
+                                        this.state.formData.seedInfo,
                                         this.state.seed,
                                         this.state.key);
-                        const result = await res.json();
+                        console.log(res);
                         if(res.ok){
                             this.setState({loading: false});
                             this.props.afterSubmit(0);
                         }else{
+                            const result = await res.json();
                             this.setState({loading: false, message: result.message});
                         }
                     }}>Submit</DialogButton>

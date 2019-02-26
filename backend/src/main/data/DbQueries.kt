@@ -110,7 +110,7 @@ object DbQueries{
     }
     
     fun updateUserSeed(user: User, updatedSeed: UpdateSeedForm): OtpSeed? {
-        val newSeedBytes = Crypto.encryptWithKey(updatedSeed.seedKey, updatedSeed.seedValue)
+        
         return transaction{
             val id = EntityID<Int>(updatedSeed.id, OtpSeeds)
             var seed = OtpSeed.findById(id)
@@ -120,7 +120,11 @@ object DbQueries{
                     seed?.url = updatedSeed.url
                     seed?.accountUserName = updatedSeed.accountUserName
                     seed?.seedInfo = updatedSeed.seedInfo
-                    if(!updatedSeed.seedValue.isEmptyOrNull()) seed?.seedBytes = newSeedBytes
+                    updatedSeed.seedValue?.let{
+                        seedValue ->
+                        val newSeedBytes = Crypto.encryptWithKey(updatedSeed.seedKey, seedValue)
+                        seed?.seedBytes = newSeedBytes
+                    }
                 }
                 else -> seed = null
             }

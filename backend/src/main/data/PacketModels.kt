@@ -51,7 +51,7 @@ data class UpdateSeedForm(
     val url: String,
     val accountUserName: String,
     val seedInfo: String,
-    val seedValue: String,
+    val seedValue: String?,
     val seedKey: String)
 
 data class DeleteSeedForm(val id: Int)

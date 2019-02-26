@@ -44,6 +44,7 @@ import EditAccountDialog from './dialogs/EditAccountDialog';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 
+
 export default class App extends Component {
     constructor(props) {
         super(props);
@@ -167,15 +168,17 @@ export default class App extends Component {
                                   <CardActions>
                                     <CardActionIcons>
                                         <CopyToClipboard text={item.otp}
-                                          onCopy={() => this.notify("Copied!")}>
-                                          <IconButton><MaterialIcon icon='file_copy'/></IconButton>
+                                            onCopy={() => this.notify("Copied!")}>
+                                            <IconButton>
+                                                <MaterialIcon icon='file_copy'/></IconButton>
                                         </CopyToClipboard>
                                         <CopyToClipboard text={item.otp}
-                                          onCopy={() => {
+                                            onCopy={() => {
                                                 this.notify("Copied!");
                                                 window.open(item.url, "_blank");
                                             }}>
-                                          <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
+                                            <IconButton>
+                                                <MaterialIcon icon='exit_to_app'/></IconButton>
                                         </CopyToClipboard>
                                         
                                         <IconButton onClick={()=>{
@@ -184,7 +187,9 @@ export default class App extends Component {
                                                     isEditDialogVisible: true, 
                                                     editDialogInitData: this.state.accounts[i]
                                                 });
-                                            }}><MaterialIcon icon='edit'/></IconButton>
+                                            }}>
+                                            <MaterialIcon icon='edit'/>
+                                        </IconButton>
                                     </CardActionIcons>
                                   </CardActions>
                               </Card>

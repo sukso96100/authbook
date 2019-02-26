@@ -41,6 +41,7 @@ import Crypto from './data/Crypto';
 import Button from '@material/react-button';
 import otplib from 'otplib/otplib-browser';
 import EditAccountDialog from './dialogs/EditAccountDialog';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 
 export default class App extends Component {
@@ -110,7 +111,11 @@ export default class App extends Component {
                 let raw = await Crypto.decrypt(this.state.encryptionKey, item.encryptedSeed);
                 item.otpKey = raw;
                 console.log(raw, typeof raw);
-                item.otp = otplib.totp.generate(raw);
+                item.otp = otplib.authenticator.generate(raw);
+                
+                const timeUsed = otplib.authenticator.timeUsed();
+                const timeLeft = otplib.authenticator.timeRemaining();
+                item.timeLeft = timeLeft / (timeUsed + timeLeft);
             }
             this.setState({accounts: accounts, loading: false, keySubmited: true});
             console.log(this.state);
@@ -118,7 +123,10 @@ export default class App extends Component {
         this.otpTimer = setInterval(()=>{
             let tmp = this.state.accounts;
             for(let item of tmp){
-                item.otp = otplib.totp.generate(item.otpKey);
+                item.otp = otplib.authenticator.generate(item.otpKey);
+                const timeUsed = otplib.authenticator.timeUsed();
+                const timeLeft = otplib.authenticator.timeRemaining();
+                item.timeLeft = timeLeft / (timeUsed + timeLeft);
             }
             this.setState({accounts: tmp});
         }, 1000);
@@ -155,11 +163,13 @@ export default class App extends Component {
                                       </div>
                                   </CardPrimaryContent>
                                     <LinearProgress
-                                        buffer={0.9} progress={0.8}
-                                        reversed={true}/>
+                                        progress={item.timeLeft} bufferingDots={false}/>
                                   <CardActions>
                                     <CardActionIcons>
-                                        <IconButton><MaterialIcon icon='file_copy'/></IconButton>
+                                        <CopyToClipboard text={item.otp}
+                                          onCopy={() => this.notify("Copied!")}>
+                                          <IconButton><MaterialIcon icon='file_copy'/></IconButton>
+                                        </CopyToClipboard>
                                         <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
                                         <IconButton onClick={()=>{
                                                 console.log(this.state.accounts[i]);

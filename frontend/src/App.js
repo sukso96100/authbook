@@ -170,7 +170,14 @@ export default class App extends Component {
                                           onCopy={() => this.notify("Copied!")}>
                                           <IconButton><MaterialIcon icon='file_copy'/></IconButton>
                                         </CopyToClipboard>
-                                        <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
+                                        <CopyToClipboard text={item.otp}
+                                          onCopy={() => {
+                                                this.notify("Copied!");
+                                                window.open(item.url, "_blank");
+                                            }}>
+                                          <IconButton><MaterialIcon icon='exit_to_app'/></IconButton>
+                                        </CopyToClipboard>
+                                        
                                         <IconButton onClick={()=>{
                                                 console.log(this.state.accounts[i]);
                                                 this.setState({

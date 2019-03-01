@@ -63,7 +63,7 @@ object Crypto{
     fun generateSecretKey(key: String, salt: ByteArray): SecretKeySpec{
         // generate secret with key and salt
         val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
-        val spec = PBEKeySpec(key.toCharArray(), salt, 65536, 256)
+        val spec = PBEKeySpec(key.toCharArray(), salt, 20000, 256)
         val tmp = factory.generateSecret(spec)
         return SecretKeySpec(tmp.getEncoded(), "AES")
     }

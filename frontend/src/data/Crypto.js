@@ -1,31 +1,29 @@
-import aesjs from 'aes-js';
-import pbkdf2 from 'pbkdf2';
+// import aesjs from 'aes-js';
+// import pbkdf2 from 'pbkdf2';
+import CryptoJS from 'crypto-js';
+
 // https://github.com/digitalbazaar/forge
-//https://en.wikipedia.org/wiki/PBKDF2
+// https://en.wikipedia.org/wiki/PBKDF2
+// https://cryptojs.gitbook.io/docs/
 export default class Crypto{
     static async decrypt(password, encryptedContent){
-        
-        const toDecrypt = aesjs.utils.hex.toBytes(encryptedContent);
-        const salt = toDecrypt.slice(0, 16);
-        const iv = toDecrypt.slice(16, 32);
-        const content = toDecrypt.slice(32, toDecrypt.length);
-        
-        const secretKey = await Crypto.genSecret(password, new Buffer(salt, 'binary'), 65536, 256 / 8, 'sha512');
-        const aesCbc = new aesjs.ModeOfOperation.cbc(secretKey, iv);
-        const decryptedBytes = aesCbc.decrypt(content);
-
-        // Convert our bytes back into text
-        const decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
-        return decryptedText.replace(/[^(a-z)(A-Z)(0-9)]+/, "");
-    }
-    
-    static genSecret(password, salt, iterations, keylen, digest){
-        return new Promise((resolve, reject) => {
-            pbkdf2.pbkdf2(password, salt, iterations, keylen, digest, 
-                         (err, derivedKey)=>{
-                if(err) reject(err);
-                resolve(derivedKey);
+        return new Promise((resolve, reject)=>{
+            const salt = CryptoJS.enc.Hex.parse(encryptedContent.slice(0, 32));
+            const iv = CryptoJS.enc.Hex.parse(encryptedContent.slice(32, 64));
+            // const content = Buffer.from(encryptedContent.slice(64, encryptedContent.length), 'hex').toString('base64');
+            const content = CryptoJS.enc.Hex.parse(encryptedContent.slice(64, encryptedContent.length));
+            console.log(content);
+            const secretKey = CryptoJS.PBKDF2(password, salt, { 
+                keySize: 256 / 32, iterations: 20000, 
+                hasher: CryptoJS.algo.SHA512,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
             });
+
+            const decrypted = CryptoJS.AES.decrypt({ciphertext: content}, secretKey, {iv: iv});
+            console.log(decrypted);
+            console.log(decrypted.toString(CryptoJS.enc.Utf8));
+            resolve(decrypted.toString(CryptoJS.enc.Utf8));
         });
     }
 }

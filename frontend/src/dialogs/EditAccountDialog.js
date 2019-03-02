@@ -31,11 +31,13 @@ export default class EditAccountDialog extends Component{
             message: "",
             loading: false,
         };
+        this.editIndex = 0;
     }
     
     componentDidUpdate(prevProps) {
       if (this.props.isOpen !== prevProps.isOpen && this.props.isOpen) {
         this.setState({formData: this.props.initData});
+        this.editIndex = this.props.editIndex;
       }
     }
     
@@ -97,7 +99,7 @@ export default class EditAccountDialog extends Component{
                         
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.afterSubmit(1);
+                            this.props.afterSubmit(1, {editIndex: this.editIndex});
                         }else{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});
@@ -116,7 +118,14 @@ export default class EditAccountDialog extends Component{
                         console.log(res);
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.afterSubmit(0);
+                            this.props.afterSubmit(0, {
+                                editIndex: this.editIndex,
+                                seedName: this.state.formData.seedName,
+                                url: this.state.formData.url,
+                                accountUserName: this.state.formData.accountUserName,
+                                seedInfo: this.state.formData.seedInfo,
+                                seed: this.state.seed
+                            });
                         }else{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});

@@ -63,7 +63,8 @@ export default class App extends Component {
             loading: false,
             keySubmited: false,
             isEditDialogVisible: false,
-            editDialogInitData: {}
+            editDialogInitData: {},
+            editIndex: 0
         };
     }
     
@@ -185,7 +186,8 @@ export default class App extends Component {
                                                 console.log(this.state.accounts[i]);
                                                 this.setState({
                                                     isEditDialogVisible: true, 
-                                                    editDialogInitData: this.state.accounts[i]
+                                                    editDialogInitData: this.state.accounts[i],
+                                                    editIndex: i
                                                 });
                                             }}>
                                             <MaterialIcon icon='edit'/>
@@ -254,8 +256,10 @@ export default class App extends Component {
           {content}
           <AddAccountDialog isOpen={this.state.isAddDialogVisible}
               onClose={(action)=>this.setState({isAddDialogVisible: false})}
-              afterSubmit={()=>{
-                  this.setState({isAddDialogVisible: false});
+              afterSubmit={(newItem)=>{
+                  let tmp = this.state.accounts;
+                  tmp.push(newItem);
+                  this.setState({isAddDialogVisible: false, accounts: tmp});
                   this.notify("New account has been added.");
               }}/>
           <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
@@ -265,13 +269,26 @@ export default class App extends Component {
                   this.notify("Encryption key has been configured.");
               }}/>
           <EditAccountDialog isOpen={this.state.isEditDialogVisible}
+              editIndex={this.state.editIndex}
               initData={this.state.editDialogInitData}
               onClose={(action)=>this.setState({isEditDialogVisible: false})}
-              afterSubmit={(result)=>{
+              afterSubmit={(result, item)=>{
                   this.setState({isEditDialogVisible: false});
                   switch(result){
-                          case 0: this.notify("Account updated."); break;
-                          case 1: this.notify("Account deleted."); break;
+                          case 0:
+                              let tmp = this.state.accounts;
+                              tmp[item.editIndex].seedName = item.seedName;
+                              tmp[item.editIndex].url = item.url;
+                              tmp[item.editIndex].accountUserName = item.accountUserName;
+                              tmp[item.editIndex].seedInfo = item.seedInfo;
+                              tmp[item.editIndex].otpkey = item.seed;
+                              this.setState({accounts: tmp});
+                              this.notify("Account updated.");
+                              break;
+                          case 1: 
+                              this.setState({accounts: this.state.accounts.splice(item.editIndex, 1)});
+                              this.notify("Account deleted."); 
+                              break;
                   }
               }}/>
           <ToastContainer />

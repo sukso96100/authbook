@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Router, Route, Link } from "react-router-dom";
+import { Router, Route, Link, Redirect } from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 
 import App from './App';
@@ -11,7 +11,10 @@ import history from './history';
 const routing = (
   <Router history={history}>
         <div>
-            <Route exact path="/" component={App} />
+            <Route exact path="/" render={() => (
+                <Redirect to="/app"/>
+            )}/>
+            <Route exact path="/app" component={App} />
             <Route exact path="/login" component={Login}/>
         </div>
   </Router>

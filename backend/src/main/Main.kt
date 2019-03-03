@@ -46,6 +46,15 @@ fun Application.main() {
     
     DbQueries.initDatabase(dbAddress, dbUser, dbPassword)
     
+    val mailHost: environment.config.property("authbook.mail.host").getString()
+    val mailPort: environment.config.property("authbook.mail.port").getString()
+    val mailUsername: environment.config.property("authbook.mail.username").getString()
+    val mailPassword: environment.config.property("authbook.mail.password").getString()
+    val mailAddress: environment.config.property("authbook.mail.emailAddress").getString()
+    val mailDisplayName: environment.config.property("authbook.mail.displayName").getString()
+    
+    Mailer.initMailer(mailHost, mailPort, mailUsername, mailPassword, mailAddress, mailDisplayName)
+    
     routing {
         get("/") {
             call.respondHtml {

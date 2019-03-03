@@ -53,5 +53,30 @@ class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
     var seedOwner by User referencedOn OtpSeeds.seedOwner
 }
 
+enum class VerificationTypes{
+    Email(0),
+    Password(1)
+}
+
+object Verifications : IdTable<Int>() {
+    override val id = integer("id").autoIncrement().entityId()
+    val type = enumeration("status", VerificationTypes::class.java)
+    val codeHash = varchar("code_hash", 256)
+    val requestedAt = datetime("requested_at")
+    val verifiedAt = datetime("verified_at")
+    val newEmail = varchar("new_email", 128).default("")
+    val user = reference("user", Users)
+}
+
+class Verification(id: EntityID<Int>) : Entity<Int>(id) {
+    companion object : EntityClass<Int, Verification>(Verifications)
+
+    var type by Verifications.type 
+    var codeHash by Verifications.codehash 
+    var requestedAt by Verifications.requestedAt 
+    var verifiedAt by Verifications.verifiedAt 
+    var newEmail by Verifications.newEmail 
+    var user by User referencedOn Verifications.user
+}
 
 

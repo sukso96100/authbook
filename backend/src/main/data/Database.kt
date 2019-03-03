@@ -53,7 +53,7 @@ class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
     var seedOwner by User referencedOn OtpSeeds.seedOwner
 }
 
-enum class VerificationTypes{
+enum class VerificationTypes(val type: Int){
     Email(0),
     Password(1)
 }
@@ -72,7 +72,7 @@ class Verification(id: EntityID<Int>) : Entity<Int>(id) {
     companion object : EntityClass<Int, Verification>(Verifications)
 
     var type by Verifications.type 
-    var codeHash by Verifications.codehash 
+    var codeHash by Verifications.codeHash 
     var requestedAt by Verifications.requestedAt 
     var verifiedAt by Verifications.verifiedAt 
     var newEmail by Verifications.newEmail 

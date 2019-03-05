@@ -15,6 +15,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.*
 import org.mindrot.jbcrypt.BCrypt
+import org.joda.time.*
 
 fun Route.auth(){
     route("/auth"){
@@ -41,13 +42,25 @@ fun Route.auth(){
                     // Sign up form validated! create new user with the form data
                     val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
                     val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
+
+                    val rawCode = Ranndom.nextLong(0, 99999999).toString()
+                    val code = "${"0".repeat(8 - rawCode.length) }${rawCode}"
+
+                    // Send verification code via email
+                    val result = Mailer.sendVerification(newUser, VerificationTypes.Email,
+                        code, DateTime().toString())
+                    
+                    if(result){
+                        // Store verification information
+                        DbQueries.genVerification(newUser, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()))
+                    }
                     
                     // Set Session
                     call.sessions.set(AuthbookSession(
                         newUser.id.value,
                         newUser.username, 
                         call.request.origin.remoteHost, 
-                        DateTime.now().toString()))
+                        DateTime().toString()))
                     
                     // Respond to the client
                     call.respondText("Signed Up! You can now log in with the new account.")

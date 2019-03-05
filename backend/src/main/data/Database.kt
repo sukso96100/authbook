@@ -60,11 +60,11 @@ enum class VerificationTypes(val type: Int){
 
 object Verifications : IdTable<Int>() {
     override val id = integer("id").autoIncrement().entityId()
-    val type = enumeration("status", VerificationTypes::class.java)
+    val type = enumeration("type", VerificationTypes::class.java)
     val codeHash = varchar("code_hash", 256)
     val requestedAt = datetime("requested_at")
-    val verifiedAt = datetime("verified_at")
-    val newEmail = varchar("new_email", 128).default("")
+    val verifiedAt = datetime("verified_at").nullable()
+    val newEmail = varchar("new_email", 128).nullable()
     val user = reference("user", Users)
 }
 

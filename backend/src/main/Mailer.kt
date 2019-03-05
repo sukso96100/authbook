@@ -31,7 +31,8 @@ object Mailer{
         Mailer.host = host
     }
     
-    fun sendMail(receiverAddr: String, receiverName: String, subject: String, body: String){
+    fun sendMail(receiverAddr: String, receiverName: String, subject: String, body: String): Boolean{
+        var isMailSent = false
         // Create a Session object to represent a mail session with the specified properties. 
     	val session = Session.getDefaultInstance(Mailer.mailProps)
 
@@ -59,12 +60,58 @@ object Mailer{
             // Send the email.
             transport.sendMessage(msg, msg.getAllRecipients())
             println("Email sent!")
+            isMailSent = true
         }catch (ex: Exception) {
             println("The email was not sent.")
             println("Error message: " + ex.message)
+            isMailSent = false
         }finally{
             // Close and terminate the connection.
             transport.close()
         }
+
+        return isMailSent
+    }
+
+    fun sendVerification(user: User, type: VerificationTypes, code: String, requestedAt: String): Boolean{
+        lateinit var subjectTemplate: String
+        lateinit var bodyTemplate: String
+
+        when(type){
+            VerificationTypes.Email -> {
+                subjectTemplate = "Your authbook email verification code"
+                bodyTemplate = """
+                Hello, ${user.displayName}.
+
+                You have signed up or changed email address at ${requestedAt}.
+                To finish the process, Please use the following verification code.
+
+                ${code}
+
+                If you didn't sign up or change email,
+                Please just ignore this mail.
+
+                Thank you.
+                """
+            }
+            VerificationTypes.Password -> {
+                subjectTemplate = "Your authbook verification code for password recovery"
+                bodyTemplate = """
+                Hello, ${user.displayName}.
+
+                You have to recover your password ${requestedAt}.
+                To finish the process, Please use the following verification code.
+
+                ${code}
+
+                If you didn't request password recovery,
+                Please just ignore this mail.
+
+                Thank you.
+                """
+            }
+        }
+
+        return Mailer.sendMail(user.email, user.displayName, subjectTemplate, bodyTemplate)
     }
 }

@@ -145,5 +145,18 @@ object DbQueries{
             result
         }
     }
+
+    fun genVerification(user: User, type: VerificationTypes, codeHash: String, requestedAt: DateTime){
+        return transaction{
+            Verification.new {
+                type = type
+                codeHash = codeHash
+                requestedAt = requestedAt
+                verifiedAt = null
+                newEmail = if(type == VerificationTypes.Email) user.email else null
+                user = user
+            }
+        }
+    }
 }
 

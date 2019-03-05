@@ -44,7 +44,7 @@ fun Route.auth(){
                     val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
 
                     val rawCode = Ranndom.nextLong(0, 99999999).toString()
-                    val code = "${"0".repeat(8 - rawCode.length) }${rawCode}"
+                    val code = "${"0".repeat(8 - rawCode.length)}${rawCode}"
 
                     // Send verification code via email
                     val result = Mailer.sendVerification(newUser, VerificationTypes.Email,

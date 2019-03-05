@@ -148,13 +148,28 @@ object DbQueries{
 
     fun genVerification(user: User, type: VerificationTypes, codeHash: String, requestedAt: DateTime){
         return transaction{
-            Verification.new {
-                type = type
-                codeHash = codeHash
-                requestedAt = requestedAt
-                verifiedAt = null
-                newEmail = if(type == VerificationTypes.Email) user.email else null
-                user = user
+            val result? = Verification.find{
+                Verifications.type eq type
+                Verifications.verifiedAt eq null
+                Verifications.user eq user
+            }.singleOrNull()
+
+            result?.let{
+                item -> 
+                item.codeHash = codeHash
+                item.requestedAt = requestedAt
+                item.newEmail = if(type == VerificationTypes.Email) user.email else null
+            }
+
+            result ?: run{
+                Verification.new {
+                    type = type
+                    codeHash = codeHash
+                    requestedAt = requestedAt
+                    verifiedAt = null
+                    newEmail = if(type == VerificationTypes.Email) user.email else null
+                    user = user
+                }
             }
         }
     }

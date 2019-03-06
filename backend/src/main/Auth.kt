@@ -43,16 +43,17 @@ fun Route.auth(){
                     val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
                     val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
 
-                    val rawCode = Ranndom.nextLong(0, 99999999).toString()
+                    val rawCode = (0 .. 99999999).random().toString()
                     val code = "${"0".repeat(8 - rawCode.length)}${rawCode}"
+                    val now = DateTime()
 
                     // Send verification code via email
                     val result = Mailer.sendVerification(newUser, VerificationTypes.Email,
-                        code, DateTime().toString())
+                        code, now.toString())
                     
                     if(result){
                         // Store verification information
-                        DbQueries.genVerification(newUser, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()))
+                        DbQueries.genVerification(newUser, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()), now)
                     }
                     
                     // Set Session
@@ -63,7 +64,7 @@ fun Route.auth(){
                         DateTime().toString()))
                     
                     // Respond to the client
-                    call.respondText("Signed Up! You can now log in with the new account.")
+                    call.respondText("Signed Up! You can now log in with the new account. Please verify your email when your are loggin in.")
                 }
             }
         }
@@ -99,6 +100,14 @@ fun Route.auth(){
         get("/logout"){
             // Clear session when logging out
             call.sessions.clear<AuthbookSession>()
+        }
+
+        post("/recover"){
+
+        }
+        
+        put("/verify"){
+
         }
     }
 }

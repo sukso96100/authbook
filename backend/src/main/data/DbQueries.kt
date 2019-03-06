@@ -146,30 +146,28 @@ object DbQueries{
         }
     }
 
-    fun genVerification(user: User, type: VerificationTypes, codeHash: String, requestedAt: DateTime){
+    fun genVerification(target: User, mType: VerificationTypes, newCodeHash: String, reqAt: DateTime, mNewEmail: String=""){
         return transaction{
-            val result? = Verification.find{
-                Verifications.type eq type
-                Verifications.verifiedAt eq null
-                Verifications.user eq user
+            var result = Verification.find{
+                (Verifications.type eq mType) and
+                (Verifications.verifiedAt.isNull()) and
+                (Verifications.user eq target.id)
             }.singleOrNull()
 
             result?.let{
                 item -> 
-                item.codeHash = codeHash
-                item.requestedAt = requestedAt
-                item.newEmail = if(type == VerificationTypes.Email) user.email else null
+                item.codeHash = newCodeHash
+                item.requestedAt = reqAt
+                item.newEmail = mNewEmail
             }
 
-            result ?: run{
-                Verification.new {
-                    type = type
-                    codeHash = codeHash
-                    requestedAt = requestedAt
-                    verifiedAt = null
-                    newEmail = if(type == VerificationTypes.Email) user.email else null
-                    user = user
-                }
+            Verification.new {
+                type = mType
+                codeHash = newCodeHash
+                requestedAt = reqAt
+                verifiedAt = null
+                newEmail = mNewEmail
+                user = target
             }
         }
     }

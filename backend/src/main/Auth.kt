@@ -103,11 +103,11 @@ fun Route.auth(){
         }
 
         post("/recover"){
-
+            val params = call.receive<PasswordRecoverForm>()
         }
         
         put("/verify"){
-
+            val params = call.receive<EmailVerificationForm>()
         }
     }
 }

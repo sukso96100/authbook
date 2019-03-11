@@ -5,6 +5,22 @@ const Api = {
         this.url = url;
     },
     
+    signup(username, displayName, email, password, passwordCheck){
+        return fetch(`${this.url}/auth/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                displayName: displayName,
+                password: password,
+                passwordCheck: passwordCheck
+            })
+        });
+    },
+    
     login(username, password){
         return fetch(`${this.url}/auth/login`, {
             method: 'POST',

@@ -43,8 +43,11 @@ fun Route.auth(){
                     val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
                     val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
 
-                    val rawCode = (0 .. 99999999).random().toString()
-                    val code = "${"0".repeat(8 - rawCode.length)}${rawCode}"
+                    val codeBuilder = StringBuilder()
+                    for(i in 0 .. 7){
+                        codeBuilder.append((0 .. 9).random().toString())
+                    }
+                    val code = codeBuilder.toString()
                     val now = DateTime()
 
                     // Send verification code via email
@@ -103,11 +106,11 @@ fun Route.auth(){
         }
 
         post("/recover"){
-            
+            val params = call.receive<PasswordRecoverForm>()
         }
         
         put("/verify"){
-            
+            val params = call.receive<EmailVerificationForm>()
         }
     }
 }

@@ -58,9 +58,19 @@ data class DeleteSeedForm(val id: Int)
 
 data class SeedItem(
     val id: Int,
-    var seedName: String,
-    var url: String,
-    var accountUserName: String,
-    var seedInfo: String,
-    var encryptedSeed: String
+    val seedName: String,
+    val url: String,
+    val accountUserName: String,
+    val seedInfo: String,
+    val encryptedSeed: String
+)
+
+data class EmailVerificationForm(
+    val verificatioCode: String
+)
+
+data class PasswordRecoverForm(
+    val verificatioCode: String,
+    val newPassword: String,
+    val newPasswordCheck: String
 )

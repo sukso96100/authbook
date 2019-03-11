@@ -39,7 +39,7 @@ export default class Login extends Component {
             isOpen: false, message: "", loading: false
         };
         Api.setUrl(this.state.url);
-        this.signup = React.creatRef();
+        this.signup = React.createRef();
     }
   render() {
       const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);

@@ -66,7 +66,7 @@ export default class SignupDialog extends Component{
                             value={this.state.displayName}
                             onChange={(e) => this.setState({displayName: e.target.value})}/>
                     </TextField>
-                    <TextField label='Email Address' textarea>
+                    <TextField label='Email Address'>
                         <Input disabled={this.state.loading}
                             value={this.state.email}
                             onChange={(e) => this.setState({email: e.target.value})}/>

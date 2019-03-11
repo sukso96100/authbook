@@ -32,7 +32,7 @@ export default class SignupDialog extends Component{
         };
     }
     
-    open(serverUrl){
+    openForm(serverUrl){
         this.setState({isOpen: true, serverUrl: serverUrl});
     }
     
@@ -103,7 +103,7 @@ export default class SignupDialog extends Component{
                             }else{
                                 this.setState({loading: false, message: result.message});
                             }
-                        }}>Submit</DialogButton>
+                        }}>Sign Up</DialogButton>
                 </DialogFooter>
             </div>)
         return(

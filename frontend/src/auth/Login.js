@@ -68,7 +68,7 @@ export default class Login extends Component {
               <p>{this.state.message}</p>
               {loading}
         <Button raised="true" onClick={this.login.bind(this)}>Log In</Button><br/>
-        <Button onClick={()=>this.signup.open(this.state.url)}>Sign Up</Button>
+        <Button onClick={()=>this.signup.current.openForm(this.state.url)}>Sign Up</Button>
         <Button>Forgot password</Button>
               </Card>
                 <Dialog open={this.state.isOpen}>

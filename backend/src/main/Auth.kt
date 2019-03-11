@@ -103,11 +103,11 @@ fun Route.auth(){
         }
 
         post("/recover"){
-
+            
         }
         
         put("/verify"){
-
+            
         }
     }
 }

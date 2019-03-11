@@ -87,7 +87,8 @@ export default class SignupDialog extends Component{
                 </DialogContent>
                     {loading}
                 <DialogFooter>
-                    <DialogButton isDefault onClick={async ()=>{
+                    <DialogButton isDefault disabled={this.state.loading}
+                        onClick={async ()=>{
                             this.setState({loading: true})
                             const res = await Api.addAccount(
                                             this.state.username,

@@ -29,6 +29,7 @@ import Card, {
   CardActionButtons,
   CardActionIcons
 } from "@material/react-card";
+import SignupDialog from '../dialogs/SignupDialog';
 
 export default class Login extends Component {
     constructor(props) {
@@ -38,6 +39,7 @@ export default class Login extends Component {
             isOpen: false, message: "", loading: false
         };
         Api.setUrl(this.state.url);
+        this.signup = React.creatRef();
     }
   render() {
       const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
@@ -66,7 +68,7 @@ export default class Login extends Component {
               <p>{this.state.message}</p>
               {loading}
         <Button raised="true" onClick={this.login.bind(this)}>Log In</Button><br/>
-        <Button>Sign Up</Button>
+        <Button onClick={()=>this.signup.open(this.state.url)}>Sign Up</Button>
         <Button>Forgot password</Button>
               </Card>
                 <Dialog open={this.state.isOpen}>
@@ -84,6 +86,7 @@ export default class Login extends Component {
               <DialogButton isDefault onClick={()=>{this.setState({isOpen: false})}}>Configure</DialogButton>
             </DialogFooter>
       </Dialog>
+        <SignupDialog ref={this.signup}/>
     </div>
       );
   }

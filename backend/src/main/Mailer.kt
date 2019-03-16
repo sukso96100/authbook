@@ -14,10 +14,14 @@ object Mailer{
     lateinit var smtpUsername: String
     lateinit var smtpPassword: String
     lateinit var host: String
+    lateinit var contact: String
+    lateinit var serverUrl: String
+    lateinit var serverName: String
     
     fun initMailer(host: String, port: Int, 
             smtpUsername: String, smtpPassword: String,
-            senderAddr: String, senderName: String){
+            senderAddr: String, senderName: String,
+            contact: String, serverUrl: String, serverName: String){
         Mailer.mailProps = System.getProperties()
     	Mailer.mailProps.put("mail.transport.protocol", "smtp")
     	Mailer.mailProps.put("mail.smtp.port", port) 
@@ -28,6 +32,10 @@ object Mailer{
         Mailer.smtpUsername = smtpUsername
         Mailer.smtpPassword = smtpPassword
         Mailer.host = host
+        
+        Mailer.contact = contact
+        Mailer.serverUrl = serverUrl
+        Mailer.serverName = serverName
     }
     
     fun sendMail(receiverAddr: String, receiverName: String, subject: String, body: String): Boolean{
@@ -78,33 +86,43 @@ object Mailer{
             VerificationTypes.Email -> {
                 subjectTemplate = "Your authbook email verification code"
                 bodyTemplate = """
-                Hello, ${user.displayName}.
+                Hello, ${user.displayName}.<br><br>
 
-                You have signed up or changed email address at ${requestedAt}.
-                To finish the process, Please use the following verification code.
+                You have signed up or changed email address at for ${user.username} at ${requestedAt}.<br>
+                To finish the process, Please use the following verification code.<br><br>
 
-                ${code}
+                ${code}<br><br>
 
-                If you didn't sign up or change email,
-                Please just ignore this mail.
+                If you didn't sign up or change email,<br>
+                Please just ignore this mail.<br><br>
 
-                Thank you.
+                Thank you.<br>
+                <hr>
+                Authbook - self hosted OTP app<br>
+                ${Mailer.serverName}<br>
+                ${Mailer.serverUrl}<br>
+                Contact: ${Mailer.contact}
                 """
             }
             VerificationTypes.Password -> {
                 subjectTemplate = "Your authbook verification code for password recovery"
                 bodyTemplate = """
-                Hello, ${user.displayName}.
+                Hello, ${user.displayName}.<br><br>
 
-                You have to recover your password ${requestedAt}.
-                To finish the process, Please use the following verification code.
+                You have requested password recovery for ${user.username} at ${requestedAt}.<br>
+                To finish the process, Please use the following verification code.<br><br>
 
-                ${code}
+                ${code}<br><br>
 
-                If you didn't request password recovery,
-                Please just ignore this mail.
+                If you didn't request password recovery,<br>
+                Please just ignore this mail.<br><br>
 
                 Thank you.
+                <hr>
+                Authbook - self hosted OTP app<br>
+                ${Mailer.serverName}<br>
+                ${Mailer.serverUrl}<br>
+                Contact: ${Mailer.contact}
                 """
             }
         }

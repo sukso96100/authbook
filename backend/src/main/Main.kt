@@ -55,7 +55,12 @@ fun Application.main() {
     val mailAddress = environment.config.property("authbook.mail.emailAddress").getString()
     val mailDisplayName = environment.config.property("authbook.mail.displayName").getString()
     
-    Mailer.initMailer(mailHost, mailPort.toInt(), mailUsername, mailPassword, mailAddress, mailDisplayName)
+    val serverName = environment.config.property("authbook.serverName").getString()
+    val serverUrl = environment.config.property("authbook.serverUrl").getString()
+    val serverContact = environment.config.property("authbook.contact").getString()
+    
+    Mailer.initMailer(mailHost, mailPort.toInt(), mailUsername, mailPassword, mailAddress, mailDisplayName,
+                     serverContact, serverUrl, serverName)
     
     routing {
         get("/") {

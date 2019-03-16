@@ -108,6 +108,22 @@ fun Route.auth(){
 
         post("/recover"){
             val params = call.receive<PasswordRecoverForm>()
+            val username = params.username ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(0, "username is empty"))
+            val newPassword = params.newPassword ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(1, "You didn't type new password"))
+            val newPasswordCheck = params.newPasswordCheck ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "You didn't type new password check"))
+            val verificationCode = params.verificationCode ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type verification code"))
+            
+            when{
+                password.length < 8 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(5, "Password must be at least 8 digits"))
+                password != passwordCheck -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(6, "You have to type same value for password and password check."))
+                username.length < 4 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(7, "Username must be longer then 4 letters"))
+                else -> {
+                    val result = DbQueries.verify(user, VerificationTypes.Email, params.verificationCode, newPassword)
+                    if(result) call.respondText("Your can now log in with the new password.")
+                    else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(8, "Verification code dose not matches"))
+                }
+            }
+            
         }
         
         put("/verify"){
@@ -115,7 +131,7 @@ fun Route.auth(){
             session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
             val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<EmailVerificationForm>()
-            
+            val verificationCode = params.verificationCode ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type verification code"))
             val result = DbQueries.verify(user, VerificationTypes.Email, params.verificationCode)
             if(result) call.respondText("Your email is now verified.")
             else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Verification code dose not matches"))

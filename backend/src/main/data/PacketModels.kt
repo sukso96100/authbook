@@ -70,6 +70,7 @@ data class EmailVerificationForm(
 )
 
 data class PasswordRecoverForm(
+    val username: String,
     val verificationCode: String,
     val newPassword: String,
     val newPasswordCheck: String

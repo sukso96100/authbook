@@ -22,6 +22,8 @@ fun Application.main() {
     install(Authentication){}
     install(CORS){
         method(HttpMethod.Options)
+        method(HttpMethod.Get)
+        method(HttpMethod.Post)
         method(HttpMethod.Put)
         method(HttpMethod.Delete)
         anyHost()

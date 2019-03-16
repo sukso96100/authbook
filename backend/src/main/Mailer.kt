@@ -18,7 +18,6 @@ object Mailer{
     fun initMailer(host: String, port: Int, 
             smtpUsername: String, smtpPassword: String,
             senderAddr: String, senderName: String){
-        
         Mailer.mailProps = System.getProperties()
     	Mailer.mailProps.put("mail.transport.protocol", "smtp")
     	Mailer.mailProps.put("mail.smtp.port", port) 
@@ -52,14 +51,12 @@ object Mailer{
                     
         // Send the message.
         try{
-            println("Sending...")
             
             // Connect to Amazon SES using the SMTP username and password you specified above.
             transport.connect(Mailer.host, Mailer.smtpUsername, Mailer.smtpPassword)
         	
             // Send the email.
             transport.sendMessage(msg, msg.getAllRecipients())
-            println("Email sent!")
             isMailSent = true
         }catch (ex: Exception) {
             println("The email was not sent.")

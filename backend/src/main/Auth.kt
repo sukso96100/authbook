@@ -50,6 +50,7 @@ fun Route.auth(){
                     val code = codeBuilder.toString()
                     val now = DateTime()
 
+
                     // Send verification code via email
                     val result = Mailer.sendVerification(newUser, VerificationTypes.Email,
                         code, now.toString())
@@ -67,7 +68,7 @@ fun Route.auth(){
                         DateTime().toString()))
                     
                     // Respond to the client
-                    call.respondText("Signed Up! You can now log in with the new account. Please verify your email when your are loggin in.")
+                    call.respondText("Signed Up! You can now log in with the new account. Please verify your email when loggin in.")
                 }
             }
         }

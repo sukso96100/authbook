@@ -18,7 +18,7 @@ object DbQueries{
                      user = dbUser, 
                      password = dbPassword) 
         transaction {
-            SchemaUtils.create (Users, OtpSeeds)
+            SchemaUtils.create (Users, OtpSeeds, Verifications)
         }
     }
 

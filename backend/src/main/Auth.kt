@@ -111,7 +111,14 @@ fun Route.auth(){
         }
         
         put("/verify"){
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<EmailVerificationForm>()
+            
+            val result = DbQueries.verify(user, VerificationTypes.Email, params.verificationCode)
+            if(result) call.respondText("Your email is now verified.")
+            else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Verification code dose not matches"))
         }
     }
 }

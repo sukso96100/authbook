@@ -66,11 +66,11 @@ data class SeedItem(
 )
 
 data class EmailVerificationForm(
-    val verificatioCode: String
+    val verificationCode: String
 )
 
 data class PasswordRecoverForm(
-    val verificatioCode: String,
+    val verificationCode: String,
     val newPassword: String,
     val newPasswordCheck: String
 )

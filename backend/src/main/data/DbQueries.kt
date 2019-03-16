@@ -155,20 +155,47 @@ object DbQueries{
             }.singleOrNull()
 
             result?.let{
-                item -> 
+                item: Verification ->
                 item.codeHash = newCodeHash
                 item.requestedAt = reqAt
                 item.newEmail = mNewEmail
+            } ?: Verification.new {
+                    type = mType
+                    codeHash = newCodeHash
+                    requestedAt = reqAt
+                    verifiedAt = null
+                    newEmail = mNewEmail
+                    user = target
+                }
+            
+        }
+    }
+    
+    fun verify(target: User, vType: VerificationTypes, code: String, newPassword: String=""): Boolean{
+        return transaction{
+            var verifyResult = false
+            var result = Verification.find{
+                (Verifications.type eq vType) and
+                (Verifications.verifiedAt.isNull()) and
+                (Verifications.user eq target.id)
+            }.singleOrNull()
+            
+            result?.let{
+                result: Verification ->
+                    if(BCrypt.checkpw(code, result.codeHash)){
+                    when(vType){
+                        VerificationTypes.Email -> {
+                            target.email = result.newEmail
+                        }
+                        VerificationTypes.Password -> {
+                            target.passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+                        }
+                    }
+                    result.verifiedAt = DateTime()
+                    verifyResult = true
+                }
             }
-
-            Verification.new {
-                type = mType
-                codeHash = newCodeHash
-                requestedAt = reqAt
-                verifiedAt = null
-                newEmail = mNewEmail
-                user = target
-            }
+            verifyResult
         }
     }
 }

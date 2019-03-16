@@ -83,7 +83,10 @@ export default class Login extends Component {
             </TextField>
             </DialogContent>
             <DialogFooter>
-              <DialogButton isDefault onClick={()=>{this.setState({isOpen: false})}}>Configure</DialogButton>
+              <DialogButton isDefault onClick={()=>{
+                        Api.setUrl(this.state.url);
+                        this.setState({isOpen: false})
+                    }}>Configure</DialogButton>
             </DialogFooter>
       </Dialog>
         <SignupDialog ref={this.signup}/>

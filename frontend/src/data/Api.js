@@ -12,11 +12,11 @@ const Api = {
                 'Content-Type': 'application/json'
               },
             body: JSON.stringify({
-                username: username,
-                email: email,
-                displayName: displayName,
-                password: password,
-                passwordCheck: passwordCheck
+                username: username.toString(),
+                email: email.toString(),
+                displayName: displayName.toString(),
+                password: password.toString(),
+                passwordCheck: passwordCheck.toString()
             })
         });
     },

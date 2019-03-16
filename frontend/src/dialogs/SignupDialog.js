@@ -36,6 +36,28 @@ export default class SignupDialog extends Component{
         this.setState({isOpen: true, serverUrl: serverUrl});
     }
     
+    async signup(){
+        this.setState({loading: true});
+        try{
+            let res = await Api.signup(
+            this.state.username,
+            this.state.displayName,
+            this.state.email,
+            this.state.password,
+            this.state.passwordCheck);
+            if(res.ok){
+                this.setState({loading: false, done: true});
+            }else{
+                const result = await res.json();
+                this.setState({loading: false, message: result.message});
+            }
+        }catch(error){
+            console.log(error);
+        }
+        
+        
+    }
+    
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         const content = this.state.done ? (<div>
@@ -45,9 +67,7 @@ export default class SignupDialog extends Component{
                         To use your account, verify your email with the code on your first login.</p>
                 </DialogContent>
                 <DialogFooter>
-                    <DialogButton isDefault onClick={async ()=>{
-                            this.setState({isOpen: false, done: false})
-                        }}>OK</DialogButton>
+                    <DialogButton isDefault onClick={() => this.setState({isOpen: false, done: false})}>OK</DialogButton>
                 </DialogFooter>
             </div>) : 
             (<div>
@@ -88,22 +108,7 @@ export default class SignupDialog extends Component{
                     {loading}
                 <DialogFooter>
                     <DialogButton isDefault disabled={this.state.loading}
-                        onClick={async ()=>{
-                            this.setState({loading: true})
-                            const res = await Api.addAccount(
-                                            this.state.username,
-                                            this.state.displayName,
-                                            this.state.email,
-                                            this.state.password,
-                                            this.state.passwordCheck)
-                            const result = await res.json();
-                            if(res.ok){
-                                this.setState({loading: false, done: true});
-
-                            }else{
-                                this.setState({loading: false, message: result.message});
-                            }
-                        }}>Sign Up</DialogButton>
+                        onClick={this.signup.bind(this)}>Sign Up</DialogButton>
                 </DialogFooter>
             </div>)
         return(

@@ -57,7 +57,7 @@ fun Route.auth(){
                     
                     if(result){
                         // Store verification information
-                        DbQueries.genVerification(newUser, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()), now)
+                        DbQueries.genVerification(newUser, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()), now, email)
                     }
                     
                     // Set Session
@@ -105,13 +105,37 @@ fun Route.auth(){
             // Clear session when logging out
             call.sessions.clear<AuthbookSession>()
         }
+        
+        post("/reqrecover"){
+            val params = call.receive<PwRecoverRequestForm>()
+            val email = params.email ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(0, "email is empty"))
+            val user = DbQueries.findByEmail(email) ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            
+            val codeBuilder = StringBuilder()
+            for(i in 0 .. 7){
+            codeBuilder.append((0 .. 9).random().toString())
+            }
+            val code = codeBuilder.toString()
+            val now = DateTime()
 
-        post("/recover"){
+
+                    // Send verification code via email
+            val result = Mailer.sendVerification(user, VerificationTypes.Password,
+                code, now.toString())
+                    
+            if(result){
+                        // Store verification information
+                DbQueries.genVerification(user, VerificationTypes.Password, BCrypt.hashpw(code, BCrypt.gensalt()), now)
+            }
+            call.respondText("A verification code for password recovery has sent to your mail.")
+        }
+
+        put("/recover"){
             val params = call.receive<PasswordRecoverForm>()
-            val username = params.username ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(0, "username is empty"))
-            val newPassword = params.newPassword ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(1, "You didn't type new password"))
-            val newPasswordCheck = params.newPasswordCheck ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "You didn't type new password check"))
-            val verificationCode = params.verificationCode ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type verification code"))
+            val username = params.username ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(0, "username is empty"))
+            val newPassword = params.newPassword ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(1, "You didn't type new password"))
+            val newPasswordCheck = params.newPasswordCheck ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "You didn't type new password check"))
+            val verificationCode = params.verificationCode ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type verification code"))
             
             when{
                 password.length < 8 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(5, "Password must be at least 8 digits"))

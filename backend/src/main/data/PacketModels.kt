@@ -30,6 +30,21 @@ data class UserData(
     val email: String,
     val isSeedKeySet: Boolean,
     val isEmailVerified: Boolean)
+
+data class EmailVerificationForm(
+    val verificationCode: String
+)
+
+data class PasswordRecoverForm(
+    val username: String,
+    val verificationCode: String,
+    val newPassword: String,
+    val newPasswordCheck: String
+)
+
+data class PwRecoverRequestForm(
+    val email: String
+)
     
 // Seeds
 
@@ -65,13 +80,3 @@ data class SeedItem(
     val encryptedSeed: String
 )
 
-data class EmailVerificationForm(
-    val verificationCode: String
-)
-
-data class PasswordRecoverForm(
-    val username: String,
-    val verificationCode: String,
-    val newPassword: String,
-    val newPasswordCheck: String
-)

@@ -42,18 +42,12 @@ fun Route.auth(){
                     // Sign up form validated! create new user with the form data
                     val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
                     val newUser = DbQueries.signUp(username, email, displayName, passwordHash)
-
-                    val codeBuilder = StringBuilder()
-                    for(i in 0 .. 7){
-                        codeBuilder.append((0 .. 9).random().toString())
-                    }
-                    val code = codeBuilder.toString()
+                    val code = genVerificationCode()
                     val now = DateTime()
 
 
                     // Send verification code via email
-                    val result = Mailer.sendVerification(newUser, VerificationTypes.Email,
-                        code, now.toString())
+                    val result = Mailer.sendVerification(newUser, email, VerificationTypes.Email, code, now.toString())
                     
                     if(result){
                         // Store verification information
@@ -106,22 +100,18 @@ fun Route.auth(){
             call.sessions.clear<AuthbookSession>()
         }
         
-        post("/reqrecover"){
-            val params = call.receive<PwRecoverRequestForm>()
+        post("/request_recover"){
+            val params = call.receive<EmailSubmitForm>()
             val email = params.email ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(0, "email is empty"))
-            val user = DbQueries.findByEmail(email) ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            if(!emailRegex.matches(email)) return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(1, "Email address is not valid."))
+            val user = DbQueries.findByEmail(email) ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(2, "User not found"))
             
-            val codeBuilder = StringBuilder()
-            for(i in 0 .. 7){
-            codeBuilder.append((0 .. 9).random().toString())
-            }
-            val code = codeBuilder.toString()
+            val code = genVerificationCode()
             val now = DateTime()
 
 
                     // Send verification code via email
-            val result = Mailer.sendVerification(user, VerificationTypes.Password,
-                code, now.toString())
+            val result = Mailer.sendVerification(user, email, VerificationTypes.Password, code, now.toString())
                     
             if(result){
                         // Store verification information
@@ -148,6 +138,28 @@ fun Route.auth(){
                 }
             }
             
+        }
+        
+        post("/change_email"){
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            val params = call.receive<EmailSubmitForm>()
+            val email = params.email ?: return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "email is empty"))
+            if(!emailRegex.matches(email)) return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "Email address is not valid."))
+            
+            val code = genVerificationCode()
+            val now = DateTime()
+
+
+            // Send verification code via email
+            val result = Mailer.sendVerification(user, email, VerificationTypes.Email, code, now.toString())
+                    
+            if(result){
+                // Store verification information
+                DbQueries.genVerification(user, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()), now, email)
+            }
+            call.respondText("A verification code for changing email has sent to your mail.")
         }
         
         put("/verify"){

@@ -78,7 +78,7 @@ object Mailer{
         return isMailSent
     }
 
-    fun sendVerification(user: User, type: VerificationTypes, code: String, requestedAt: String): Boolean{
+    fun sendVerification(user: User, email: String, type: VerificationTypes, code: String, requestedAt: String): Boolean{
         lateinit var subjectTemplate: String
         lateinit var bodyTemplate: String
 
@@ -127,6 +127,6 @@ object Mailer{
             }
         }
 
-        return Mailer.sendMail(user.email, user.displayName, subjectTemplate, bodyTemplate)
+        return Mailer.sendMail(email, user.displayName, subjectTemplate, bodyTemplate)
     }
 }

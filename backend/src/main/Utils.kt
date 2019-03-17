@@ -9,6 +9,15 @@ import java.io.ByteArrayOutputStream
 
 val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
 
+fun genVerificationCode: String(){
+    val codeBuilder = StringBuilder()
+    for(i in 0 .. 7){
+        codeBuilder.append((0 .. 9).random().toString())
+    }
+    val code = codeBuilder.toString()
+    return code
+}
+
 
 object Crypto{
     // https://www.baeldung.com/java-cipher-class

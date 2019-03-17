@@ -42,7 +42,7 @@ data class PasswordRecoverForm(
     val newPasswordCheck: String
 )
 
-data class PwRecoverRequestForm(
+data class EmailSubmitForm(
     val email: String
 )
     

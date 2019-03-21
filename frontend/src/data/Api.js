@@ -34,6 +34,33 @@ const Api = {
         });
     },
     
+    reqPasswordRecovery(email){
+        return fetch(`${this.url}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                email: email.toString(),
+            })
+        });
+    },
+    
+    recoverPassword(username, verificationCode, newPassword, newPasswordCheck){
+        return fetch(`${this.url}/auth/login`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                username: username.toString(),
+                verificationCode: verificationCode.toString(),
+                newPassword: newPassword.toString(),
+                newPasswordCheck: newPasswordCheck.toString()
+            })
+        });
+    },
+    
     getAccounts(){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/seeds/all`, {

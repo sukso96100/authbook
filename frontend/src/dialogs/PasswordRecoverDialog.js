@@ -44,18 +44,28 @@ export default class PasswordRecoverDialog extends Component{
     openForm(serverUrl){
         this.setState({isOpen: true, serverUrl: serverUrl});
     }
+
+    onClose(){
+        this.setState({
+            serverUrl:"",
+            isOpen: false,
+            step: PasswordRecoverDialog.step.INIT,
+            email: "",
+            username: "",
+            verificationCode: "",
+            password: "",
+            passwordCheck: "",
+            loading: false,
+            message: ""
+        });
+    }
     
-    async signup(){
+    async requestRecover(){
         this.setState({loading: true});
         try{
-            let res = await Api.signup(
-            this.state.username,
-            this.state.displayName,
-            this.state.email,
-            this.state.password,
-            this.state.passwordCheck);
+            let res = await Api.reqPasswordRecover(this.state.email);
             if(res.ok){
-                this.setState({loading: false, done: true});
+                this.setState({loading: false, step: PasswordRecoverDialog.step.REQUESTED});
             }else{
                 const result = await res.json();
                 this.setState({loading: false, message: result.message});
@@ -63,8 +73,25 @@ export default class PasswordRecoverDialog extends Component{
         }catch(error){
             console.log(error);
         }
-        
-        
+    }
+
+    async recoverPassword(){
+        this.setState({loading: true});
+        try{
+            let res = await Api.recoverPassword(
+                this.state.email,
+                this.state.verificationCode,
+                this.state.password,
+                this.state.passwordCheck);
+            if(res.ok){
+                this.setState({loading: false, step: PasswordRecoverDialog.step.DONE});
+            }else{
+                const result = await res.json();
+                this.setState({loading: false, message: result.message});
+            }
+        }catch(error){
+            console.log(error);
+        }
     }
     
     render(){
@@ -168,26 +195,13 @@ export default class PasswordRecoverDialog extends Component{
                         <p>Done! You can now use your new password.</p>
                     </DialogContent>
                     <DialogFooter>
-                        <DialogButton isDefault onClick={() => { 
-                                this.setState({
-                                    serverUrl:"",
-                                    isOpen: false,
-                                    step: PasswordRecoverDialog.step.INIT,
-                                    email: "",
-                                    username: "",
-                                    verificationCode: "",
-                                    password: "",
-                                    passwordCheck: "",
-                                    loading: false,
-                                    message: ""
-                                })
-                            }}>Ok</DialogButton>
+                        <DialogButton isDefault onClick={this.onClose}>Ok</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
         }
         return(
-            <Dialog open={this.state.isOpen} onClose={()=>this.setState({isOpen: false, done: false})}>
+            <Dialog open={this.state.isOpen} onClose={this.onClose}>
             <DialogTitle>Password recovery</DialogTitle>
                 {content}
             </Dialog>

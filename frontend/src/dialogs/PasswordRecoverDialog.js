@@ -28,15 +28,15 @@ export default class PasswordRecoverDialog extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            serverUrl:"",
             isOpen: false,
             step: PasswordRecoverDialog.step.INIT,
-            serverUrl:"",
-            username: "",
             email: "",
+            username: "",
+            verificationCode: "",
             password: "",
             passwordCheck: "",
             loading: false,
-            done: false,
             message: ""
         };
     }
@@ -111,69 +111,81 @@ export default class PasswordRecoverDialog extends Component{
             case PasswordRecoverDialog.step.REQUESTED:
                 content = (<div>
                     <DialogContent>
-                        <p>Did you received a verification code for recovering your password via email?</p>
+                        <p>Now, check your inbox and prepare your verification code.<br/>
+                            Couldn't received? You can move to previous step and request again.<br/>
+                            Click "Next" if you are ready.</p>
                     </DialogContent>
                     <DialogFooter>
                         <DialogButton isDefault onClick={() => { 
-                                this.setState({step: PasswordRecoverDialog.step.REQUESTED})
-                            }}>No</DialogButton>
+                                this.setState({step: PasswordRecoverDialog.step.REQUEST})
+                            }}>Previous</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: PasswordRecoverDialog.step.VERIFY})
-                            }}>Yes</DialogButton>
+                            }}>Next</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case PasswordRecoverDialog.step.VERIFY:
-                content = (<div></div>);
+                content = (<div>
+                    <DialogContent>
+                        <p>Use the verification code you received to recover password.</p>
+                        <TextField label='Server URL'>
+                            <Input disabled={true}
+                                value={this.state.serverUrl}/>
+                        </TextField>
+                        <TextField label='Username'>
+                            <Input disabled={this.state.loading}
+                                value={this.state.username}
+                                onChange={(e) => this.setState({username: e.target.value})}/>
+                        </TextField>
+                        <TextField label='Verification Code'>
+                            <Input disabled={this.state.loading}
+                                value={this.state.verificationCode}
+                                onChange={(e) => this.setState({verificationCode: e.target.value})}/>
+                        </TextField>
+                        <TextField label='New Password'>
+                            <Input disabled={this.state.loading}
+                                value={this.state.password}
+                                onChange={(e) => this.setState({password: e.target.value})}/>
+                        </TextField>
+                        <TextField label='Confirm New Password'>
+                            <Input disabled={this.state.loading}
+                                value={this.state.passwordCheck}
+                                onChange={(e) => this.setState({passwordCheck: e.target.value})}/>
+                        </TextField>
+                        <p>{this.state.message}</p>
+                    </DialogContent>
+                        {loading}
+                    <DialogFooter>
+                        <DialogButton isDefault disabled={this.state.loading}
+                            onClick={this.signup.bind(this)}>Submit</DialogButton>
+                    </DialogFooter>
+                    </div>);
                 break;
             case PasswordRecoverDialog.step.DONE:
-                content = (<div></div>);
+                content = (<div>
+                    <DialogContent>
+                        <p>Done! You can now use your new password.</p>
+                    </DialogContent>
+                    <DialogFooter>
+                        <DialogButton isDefault onClick={() => { 
+                                this.setState({
+                                    serverUrl:"",
+                                    isOpen: false,
+                                    step: PasswordRecoverDialog.step.INIT,
+                                    email: "",
+                                    username: "",
+                                    verificationCode: "",
+                                    password: "",
+                                    passwordCheck: "",
+                                    loading: false,
+                                    message: ""
+                                })
+                            }}>Ok</DialogButton>
+                    </DialogFooter>
+                    </div>);
                 break;
         }
-        const content = this.state.done ? (<div>
-                
-            </div>) : 
-            (<div>
-                <DialogContent>
-                    <TextField label='Server URL'>
-                        <Input disabled={true}
-                            value={this.state.serverUrl}/>
-                    </TextField>
-                    <TextField label='Username'>
-                        <Input disabled={this.state.loading}
-                            value={this.state.username}
-                            onChange={(e) => this.setState({username: e.target.value})}/>
-                    </TextField>
-                    <TextField label='Display Name'>
-                        <Input disabled={this.state.loading}
-                            value={this.state.displayName}
-                            onChange={(e) => this.setState({displayName: e.target.value})}/>
-                    </TextField>
-                    <TextField label='Email Address'>
-                        <Input disabled={this.state.loading}
-                            value={this.state.email}
-                            onChange={(e) => this.setState({email: e.target.value})}/>
-                    </TextField>
-                    <TextField label='Password'>
-                        <Input disabled={this.state.loading}
-                            type="password"
-                            value={this.state.password}
-                            onChange={(e) => this.setState({password: e.target.value})}/>
-                    </TextField>
-                    <TextField label='Password Check'>
-                        <Input disabled={this.state.loading}
-                            type="password"
-                            value={this.state.passwordCheck}
-                            onChange={(e) => this.setState({passwordCheck: e.target.value})}/>
-                    </TextField>
-                    <p>{this.state.message}</p>
-                </DialogContent>
-                    {loading}
-                <DialogFooter>
-                    <DialogButton isDefault disabled={this.state.loading}
-                        onClick={this.signup.bind(this)}>Sign Up</DialogButton>
-                </DialogFooter>
-            </div>)
         return(
             <Dialog open={this.state.isOpen} onClose={()=>this.setState({isOpen: false, done: false})}>
             <DialogTitle>Password recovery</DialogTitle>

@@ -35,19 +35,19 @@ const Api = {
     },
     
     reqPasswordRecovery(email){
-        return fetch(`${this.url}/auth/login`, {
+        return fetch(`${this.url}/auth/request_recover`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
               },
             body: JSON.stringify({
-                email: email.toString(),
+                email: email.toString()
             })
         });
     },
     
     recoverPassword(username, verificationCode, newPassword, newPasswordCheck){
-        return fetch(`${this.url}/auth/login`, {
+        return fetch(`${this.url}/auth/recover`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

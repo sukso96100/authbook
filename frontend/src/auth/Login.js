@@ -30,6 +30,7 @@ import Card, {
   CardActionIcons
 } from "@material/react-card";
 import SignupDialog from '../dialogs/SignupDialog';
+import PasswordRecoverDialog from '../dialogs/PasswordRecoverDialog';
 
 export default class Login extends Component {
     constructor(props) {
@@ -40,6 +41,7 @@ export default class Login extends Component {
         };
         Api.setUrl(this.state.url);
         this.signup = React.createRef();
+        this.pwRecover = React.createRef();
     }
   render() {
       const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
@@ -69,7 +71,7 @@ export default class Login extends Component {
               {loading}
         <Button raised="true" onClick={this.login.bind(this)}>Log In</Button><br/>
         <Button onClick={()=>this.signup.current.openForm(this.state.url)}>Sign Up</Button>
-        <Button>Forgot password</Button>
+        <Button onClick={()=>this.pwRecover.current.openForm(this.state.url)}>Forgot password</Button>
               </Card>
                 <Dialog open={this.state.isOpen}>
             <DialogTitle>Configure Server</DialogTitle>
@@ -90,6 +92,7 @@ export default class Login extends Component {
             </DialogFooter>
       </Dialog>
         <SignupDialog ref={this.signup}/>
+        <PasswordRecoverDialog ref={this.pwRecover}/>
     </div>
       );
   }

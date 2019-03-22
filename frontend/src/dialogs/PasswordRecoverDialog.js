@@ -17,20 +17,20 @@ import Dialog, {
 
 export default class PasswordRecoverDialog extends Component{
     
-    const step = {
+    step = {
         INIT: 0,
         REQUEST: 1,
         REQUESTED: 2,
         VERIFY: 3,
         DONE: 4
-    }
+    };
     
     constructor(props) {
         super(props);
         this.state = {
             serverUrl:"",
             isOpen: false,
-            step: PasswordRecoverDialog.step.INIT,
+            step: this.step.INIT,
             email: "",
             username: "",
             verificationCode: "",
@@ -49,7 +49,7 @@ export default class PasswordRecoverDialog extends Component{
         this.setState({
             serverUrl:"",
             isOpen: false,
-            step: PasswordRecoverDialog.step.INIT,
+            step: this.step.INIT,
             email: "",
             username: "",
             verificationCode: "",
@@ -63,9 +63,9 @@ export default class PasswordRecoverDialog extends Component{
     async requestRecover(){
         this.setState({loading: true});
         try{
-            let res = await Api.reqPasswordRecover(this.state.email);
+            let res = await Api.reqPasswordRecovery(this.state.email);
             if(res.ok){
-                this.setState({loading: false, step: PasswordRecoverDialog.step.REQUESTED});
+                this.setState({loading: false, step: this.step.REQUESTED});
             }else{
                 const result = await res.json();
                 this.setState({loading: false, message: result.message});
@@ -79,12 +79,12 @@ export default class PasswordRecoverDialog extends Component{
         this.setState({loading: true});
         try{
             let res = await Api.recoverPassword(
-                this.state.email,
+                this.state.username,
                 this.state.verificationCode,
                 this.state.password,
                 this.state.passwordCheck);
             if(res.ok){
-                this.setState({loading: false, step: PasswordRecoverDialog.step.DONE});
+                this.setState({loading: false, step: this.step.DONE});
             }else{
                 const result = await res.json();
                 this.setState({loading: false, message: result.message});
@@ -98,22 +98,22 @@ export default class PasswordRecoverDialog extends Component{
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         let content;
         switch(this.state.step){
-            case PasswordRecoverDialog.step.INIT:
+            case this.step.INIT:
                 content = (<div>
                     <DialogContent>
                         <p>Did you received a verification code for recovering your password via email?</p>
                     </DialogContent>
                     <DialogFooter>
                         <DialogButton isDefault onClick={() => { 
-                                this.setState({step: PasswordRecoverDialog.step.REQUESTED})
+                                this.setState({step: this.step.REQUEST})
                             }}>No</DialogButton>
                         <DialogButton isDefault onClick={() => { 
-                                this.setState({step: PasswordRecoverDialog.step.VERIFY})
+                                this.setState({step: this.step.VERIFY})
                             }}>Yes</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
-            case PasswordRecoverDialog.step.REQUEST:
+            case this.step.REQUEST:
                 content = (<div>
                     <DialogContent>
                         <p>Submit email address of your authbook account to get a verification code.</p>
@@ -131,11 +131,11 @@ export default class PasswordRecoverDialog extends Component{
                         {loading}
                     <DialogFooter>
                         <DialogButton isDefault disabled={this.state.loading}
-                            onClick={this.signup.bind(this)}>Submit</DialogButton>
+                            onClick={this.requestRecover.bind(this)}>Submit</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
-            case PasswordRecoverDialog.step.REQUESTED:
+            case this.step.REQUESTED:
                 content = (<div>
                     <DialogContent>
                         <p>Now, check your inbox and prepare your verification code.<br/>
@@ -144,15 +144,15 @@ export default class PasswordRecoverDialog extends Component{
                     </DialogContent>
                     <DialogFooter>
                         <DialogButton isDefault onClick={() => { 
-                                this.setState({step: PasswordRecoverDialog.step.REQUEST})
+                                this.setState({step: this.step.REQUEST})
                             }}>Previous</DialogButton>
                         <DialogButton isDefault onClick={() => { 
-                                this.setState({step: PasswordRecoverDialog.step.VERIFY})
+                                this.setState({step: this.step.VERIFY})
                             }}>Next</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
-            case PasswordRecoverDialog.step.VERIFY:
+            case this.step.VERIFY:
                 content = (<div>
                     <DialogContent>
                         <p>Use the verification code you received to recover password.</p>
@@ -172,12 +172,12 @@ export default class PasswordRecoverDialog extends Component{
                         </TextField>
                         <TextField label='New Password'>
                             <Input disabled={this.state.loading}
-                                value={this.state.password}
+                                value={this.state.password} type="password"
                                 onChange={(e) => this.setState({password: e.target.value})}/>
                         </TextField>
                         <TextField label='Confirm New Password'>
                             <Input disabled={this.state.loading}
-                                value={this.state.passwordCheck}
+                                value={this.state.passwordCheck} type="password"
                                 onChange={(e) => this.setState({passwordCheck: e.target.value})}/>
                         </TextField>
                         <p>{this.state.message}</p>
@@ -185,23 +185,23 @@ export default class PasswordRecoverDialog extends Component{
                         {loading}
                     <DialogFooter>
                         <DialogButton isDefault disabled={this.state.loading}
-                            onClick={this.signup.bind(this)}>Submit</DialogButton>
+                            onClick={this.recoverPassword.bind(this)}>Submit</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
-            case PasswordRecoverDialog.step.DONE:
+            case this.step.DONE:
                 content = (<div>
                     <DialogContent>
                         <p>Done! You can now use your new password.</p>
                     </DialogContent>
                     <DialogFooter>
-                        <DialogButton isDefault onClick={this.onClose}>Ok</DialogButton>
+                        <DialogButton isDefault onClick={()=>this.onClose()}>Ok</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
         }
         return(
-            <Dialog open={this.state.isOpen} onClose={this.onClose}>
+            <Dialog open={this.state.isOpen} onClose={()=>this.onClose()}>
             <DialogTitle>Password recovery</DialogTitle>
                 {content}
             </Dialog>

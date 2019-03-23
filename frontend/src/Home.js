@@ -36,7 +36,7 @@ import Button from '@material/react-button';
 import otplib from 'otplib/otplib-browser';
 import EditAccountDialog from './dialogs/EditAccountDialog';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-
+import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 
 
 export default class Home extends Component {
@@ -54,12 +54,16 @@ export default class Home extends Component {
             editDialogInitData: {},
             editIndex: 0
         };
+        this.emailVerify = React.createRef();
     }
     
     async componentDidMount(){
-        
-            if(!localStorage.getItem("encryptionKeySet")){
+            
+            if(!JSON.parse(localStorage.getItem("encryptionKeySet"))){
                 this.setState({isSetKeyDialogVisible: true});
+            }else if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
+                this.emailVerify.current.openForm(
+                    this.emailVerify.current.step.VERIFY);
             }else if(this.state.encryptionKey){
                 this.loadAccounts();
             }
@@ -200,6 +204,8 @@ export default class Home extends Component {
               afterSubmit={()=>{
                   this.setState({isSetKeyDialogVisible: false});
                   this.notify("Encryption key has been configured.");
+                    this.emailVerify.current.openForm(
+                        this.emailVerify.current.step.VERIFY);
               }}/>
           <EditAccountDialog isOpen={this.state.isEditDialogVisible}
               editIndex={this.state.editIndex}
@@ -224,6 +230,7 @@ export default class Home extends Component {
                               break;
                   }
               }}/>
+            <EmailVerifyDialog ref={this.emailVerify}/>
           <ToastContainer />
       </div>
     );

@@ -107,6 +107,7 @@ export default class Login extends Component {
             localStorage.setItem("username", userdata.username);
             localStorage.setItem("email", userdata.email);
             localStorage.setItem("encryptionKeySet", userdata.isSeedKeySet);
+            localStorage.setItem("isEmailVerified", userdata.isEmailVerified);
             localStorage.setItem("session", res.headers.get("SESSION"));
             this.setState({loading: false});
             history.push("/");

@@ -61,6 +61,34 @@ const Api = {
         });
     },
     
+    changeEmail(newEmail){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/auth/change_email`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'SESSION': session
+              },
+            body: JSON.stringify({
+                email: newEmail.toString()
+            })
+        });
+    },
+    
+    verifyEmail(verificationCode){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/auth/verify`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'SESSION': session
+              },
+            body: JSON.stringify({
+                verificationCode: verificationCode.toString()
+            })
+        });
+    },
+    
     getAccounts(){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/seeds/all`, {

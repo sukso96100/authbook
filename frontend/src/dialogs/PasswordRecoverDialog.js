@@ -72,6 +72,7 @@ export default class PasswordRecoverDialog extends Component{
             }
         }catch(error){
             console.log(error);
+            this.setState({loading: false, message: error});
         }
     }
 
@@ -91,6 +92,7 @@ export default class PasswordRecoverDialog extends Component{
             }
         }catch(error){
             console.log(error);
+            this.setState({loading: false, message: error});
         }
     }
     

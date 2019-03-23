@@ -107,15 +107,15 @@ fun Route.auth(){
             val user = DbQueries.findByEmail(email) ?: return@post call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(2, "User not found"))
             
             val code = genVerificationCode()
+            val codeHash = BCrypt.hashpw(code, BCrypt.gensalt())
             val now = DateTime()
-
 
                     // Send verification code via email
             val result = Mailer.sendVerification(user, email, VerificationTypes.Password, code, now.toString())
                     
             if(result){
                         // Store verification information
-                DbQueries.genVerification(user, VerificationTypes.Password, BCrypt.hashpw(code, BCrypt.gensalt()), now)
+                DbQueries.genVerification(user, VerificationTypes.Password, codeHash, now)
             }
             call.respondText("A verification code for password recovery has sent to your mail.")
         }
@@ -133,9 +133,12 @@ fun Route.auth(){
                 newPassword != newPasswordCheck -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(6, "You have to type same value for password and password check."))
                 username.length < 4 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(7, "Username must be longer then 4 letters"))
                 else -> {
-                    val result = DbQueries.verify(user, VerificationTypes.Email, params.verificationCode, newPassword)
-                    if(result) call.respondText("Your can now log in with the new password.")
-                    else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(8, "Verification code dose not matches"))
+                    val result = DbQueries.verify(user, VerificationTypes.Password, verificationCode, newPassword)
+                    if(result){
+                        call.respondText("Your can now log in with the new password.")
+                    }else{
+                        call.respond(HttpStatusCode.BadRequest, ResponseWithCode(8, "Verification code dose not matches"))
+                    } 
                 }
             }
             
@@ -169,7 +172,7 @@ fun Route.auth(){
             val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<EmailVerificationForm>()
             val verificationCode = params.verificationCode ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type verification code"))
-            val result = DbQueries.verify(user, VerificationTypes.Email, params.verificationCode)
+            val result = DbQueries.verify(user, VerificationTypes.Email, verificationCode)
             if(result) call.respondText("Your email is now verified.")
             else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Verification code dose not matches"))
         }

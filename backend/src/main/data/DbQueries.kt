@@ -181,20 +181,20 @@ object DbQueries{
             }.singleOrNull()
             
             result?.let{
-                result: Verification ->
-                    if(BCrypt.checkpw(code, result.codeHash)){
-                    when(vType){
-                        VerificationTypes.Email -> {
-                            target.email = result.newEmail
+                item: Verification ->
+                    if(BCrypt.checkpw(code, item.codeHash)){
+                        when(vType){
+                            VerificationTypes.Email -> {
+                                target.email = item.newEmail
+                            }
+                            VerificationTypes.Password -> {
+                                target.passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+                            }
                         }
-                        VerificationTypes.Password -> {
-                            target.passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt())
-                        }
+                        item.verifiedAt = DateTime()
+                        verifyResult = true
                     }
-                    result.verifiedAt = DateTime()
-                    verifyResult = true
                 }
-            }
             verifyResult
         }
     }

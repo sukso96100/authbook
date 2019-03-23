@@ -127,8 +127,9 @@ const Api = {
     setEncryptionKey(key, keyCheck){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/seeds/set_seedkey`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
+                'Content-Type': 'application/json',
                 'SESSION': session
             },
             body: JSON.stringify({

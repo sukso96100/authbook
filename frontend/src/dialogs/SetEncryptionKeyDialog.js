@@ -36,12 +36,12 @@ export default class SetEncryptionKeyDialog extends Component{
                 <p>Encryption key will be used to encrypt your account OTP data.</p>
                 <TextField label='Encryption Key'>
                     <Input disabled={this.state.loading}
-                        value={this.state.key}
+                        value={this.state.key} type="password"
                         onChange={(e) => this.setState({key: e.target.value})}/>
                 </TextField>
                 <TextField label='Encryption Key Check'>
                     <Input disabled={this.state.loading}
-                        value={this.state.keyCheck}
+                        value={this.state.keyCheck} type="password"
                         onChange={(e) => this.setState({keyCheck: e.target.value})}/>
                 </TextField>
                
@@ -53,11 +53,11 @@ export default class SetEncryptionKeyDialog extends Component{
                 <DialogButton isDefault action='confirm' onClick={async ()=>{
                         this.setState({loading: true})
                         const res = await Api.setEncryptionKey(this.state.key, this.state.keyCheck);
-                        const result = await res.json();
                         if(res.ok){
                             this.setState({loading: false});
                             this.props.afterSubmit();
                         }else{
+                            const result = await res.json();
                             this.setState({loading: false, mseeage: result.message});
                         }
                     }}>Submit</DialogButton>

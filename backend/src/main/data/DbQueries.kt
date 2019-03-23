@@ -198,5 +198,14 @@ object DbQueries{
             verifyResult
         }
     }
+    
+    fun isEmailVerified(target: User): Boolean{
+        var result = Verification.find{
+                (Verifications.type eq VerificationTypes.Email) and
+                (Verifications.verifiedAt.isNull()) and
+                (Verifications.user eq target.id)
+            }.singleOrNull()
+        result != null
+    }
 }
 

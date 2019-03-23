@@ -84,9 +84,11 @@ fun Route.auth(){
                             user.username, 
                             call.request.origin.remoteHost, 
                             DateTime.now().toString()))
+                        
+                        val isEmailVerified = DbQueries.isEmailVerified(user)
 
                         // Respond to the client
-                        call.respond(UserData(user.username, user.displayName, user.email, !user.seedKeyHash.isEmpty(), false))
+                        call.respond(UserData(user.username, user.displayName, user.email, !user.seedKeyHash.isEmpty(), isEmailVerified))
                     }else{
                         // Respond to the client
                         call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(5, "Password dose not matches!"))
@@ -153,6 +155,7 @@ fun Route.auth(){
             if(!emailRegex.matches(email)) return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "Email address is not valid."))
             
             val code = genVerificationCode()
+            val codeHash = BCrypt.hashpw(code, BCrypt.gensalt())
             val now = DateTime()
 
 
@@ -161,7 +164,7 @@ fun Route.auth(){
                     
             if(result){
                 // Store verification information
-                DbQueries.genVerification(user, VerificationTypes.Email, BCrypt.hashpw(code, BCrypt.gensalt()), now, email)
+                DbQueries.genVerification(user, VerificationTypes.Email, codeHash, now, email)
             }
             call.respondText("A verification code for changing email has sent to your mail.")
         }
@@ -175,6 +178,14 @@ fun Route.auth(){
             val result = DbQueries.verify(user, VerificationTypes.Email, verificationCode)
             if(result) call.respondText("Your email is now verified.")
             else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Verification code dose not matches"))
+        }
+        
+        get("userinfo"){
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            val isEmailVerified = DbQueries.isEmailVerified(user)
+            call.respond(UserData(user.username, user.displayName, user.email, !user.seedKeyHash.isEmpty(), isEmailVerified))
         }
     }
 }

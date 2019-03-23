@@ -14,7 +14,7 @@ object DbQueries{
     fun initDatabase(dbAddress: String, dbUser: String, dbPassword: String){
         // Connect with database
         Database.connect("jdbc:${dbAddress}", 
-                     driver = "com.mysql.jdbc.Driver", 
+                     driver = "com.mysql.cj.jdbc.Driver", 
                      user = dbUser, 
                      password = dbPassword) 
         transaction {

@@ -90,8 +90,9 @@ export default class App extends Component {
                       <ListItemText primaryText='About' />
                   </ListItem>
                   <ListItem onClick={()=>{
-                          history.push("/login");
                           this.setState({selectedIndex: 4, isOpened: false});
+                          localStorage.clear();
+                          history.push("/login");
                       }}>
                       <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
                       <ListItemText primaryText='Logout' />

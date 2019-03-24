@@ -19,6 +19,7 @@ import LinearProgress from '@material/react-linear-progress';
 import Api from './data/Api';
 import Button from '@material/react-button';
 import Home from './Home';
+import Settings from './Settings';
 
 
 export default class App extends Component {
@@ -69,23 +70,32 @@ export default class App extends Component {
           </DrawerHeader>
 
           <DrawerContent>
-            <List singleSelection selectedIndex={this.state.selectedIndex}>
-              <ListItem>
-                <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
-                <ListItemText primaryText='Accounts' />
-              </ListItem>
-                <ListItem>
-                <ListItemGraphic graphic={<MaterialIcon icon='settings'/>} />
-                <ListItemText primaryText='Settings' />
-              </ListItem>
-            <ListItem>
-                <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
-                <ListItemText primaryText='About' />
+              <List singleSelection selectedIndex={this.state.selectedIndex}>
+                  <ListItem onClick={()=>{
+                          history.push("/app/home");
+                          this.setState({selectedIndex: 0, isOpened: false});
+                      }}>
+                      <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
+                      <ListItemText primaryText='Accounts' />
                   </ListItem>
-                <NavLink to="/login"> <ListItem>
-                <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
-                <ListItemText primaryText='Logout' />
-                  </ListItem></NavLink>
+                  <ListItem onClick={()=>{
+                          history.push("/app/settings");
+                          this.setState({selectedIndex: 1, isOpened: false});
+                      }}>
+                      <ListItemGraphic graphic={<MaterialIcon icon='settings'/>} />
+                      <ListItemText primaryText='Settings' />
+                  </ListItem>
+                  <ListItem>
+                      <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
+                      <ListItemText primaryText='About' />
+                  </ListItem>
+                  <ListItem onClick={()=>{
+                          history.push("/login");
+                          this.setState({selectedIndex: 4, isOpened: false});
+                      }}>
+                      <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
+                      <ListItemText primaryText='Logout' />
+                  </ListItem>
             
             </List>
           </DrawerContent>
@@ -100,7 +110,8 @@ export default class App extends Component {
         />}
       />
       <TopAppBarFixedAdjust>
-          <Route exact path="/app" component={Home} />
+          <Route exact path="/app/home" component={Home} />
+          <Route exact path="/app/settings" component={Settings} />
       </TopAppBarFixedAdjust>
         </DrawerAppContent>
       </div>

@@ -12,9 +12,9 @@ const routing = (
   <Router history={history}>
         <div>
             <Route exact path="/" render={() => (
-                <Redirect to="/app"/>
+                <Redirect to="/app/home"/>
             )}/>
-            <Route exact path="/app" component={App} />
+            <Route path="/app" component={App} />
             <Route exact path="/login" component={Login}/>
         </div>
   </Router>

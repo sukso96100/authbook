@@ -28,7 +28,7 @@ jib {
   container {
     mainClass = mainClassName
     entrypoint = 'INHRRIT'
-    args = 'INHERIT'
+    args = ['INHERIT']
   }
 }
 

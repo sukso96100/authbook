@@ -8,13 +8,52 @@ The backend is built with Kotlin, Ktor and Exposed framework and the frontend is
 
 This project is in development stage and it isn't fullly functional yet.
 
+[See demo here](https://authbook.youngbin.xyz)
+
 ## To Do
-- [ ] Signup(with email verification)
-- [ ] Password recovery
+- [x] Signup(with email verification)
+- [x] Password recovery
 - [x] Login
 - [x] Add/Remove OTP Seed
 - [x] Show list of OTP Seeds
 - [x] Edit OTP Seed
+- [ ] Store Seed data offline
+- [ ] Localization
+- [ ] Deploy manual
+
+## Deploy
+
+### Frontend
+
+Start test server
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Generate production build
+```bash
+cd frontend
+npm install
+npm build
+```
+
+Run server instantly
+```
+./gradlew :run
+```
+
+Build docker image(See [here](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin) for more detailed guides)
+```
+./gradlew jib
+```
+
+### Backend
+- Prepare Java and Mysql server instance
+- Edit `backend/resources/application.conf` or setup environment variables(see `application.conf` for required environment variables)
+
+
  
 ## Author
 Youngbin Han(sukso96100@gmail.com)

@@ -36,7 +36,7 @@ export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: "", password: "", url: "http://52.78.53.181:58769",
+            username: "", password: "", url: "https://authbook.herokuapp.com",
             isOpen: false, message: "", loading: false
         };
         Api.setUrl(this.state.url);

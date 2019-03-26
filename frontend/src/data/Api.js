@@ -1,5 +1,5 @@
 const Api = {
-    url:'http://localhost:3000',
+    url:'https://authbook.herokuapp.com',
     
     setUrl(url){
         this.url = url;

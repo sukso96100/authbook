@@ -2,7 +2,7 @@
 
 ![App Preview](login.png)
 ![App Preview](accounts.png)
-
+![App Preview](settings.png)
 Authbook is a self-hosted OTP Web app software.  
 The backend is built with Kotlin, Ktor and Exposed framework and the frontend is built with Javascipt, React and MDC(Material Design Components)
 
@@ -39,6 +39,10 @@ npm install
 npm build
 ```
 
+### Backend
+- Prepare Java and Mysql server instance
+- Edit `backend/resources/application.conf` or setup environment variables(see `application.conf` for required environment variables)
+
 Run server instantly
 ```
 ./gradlew :run
@@ -48,12 +52,6 @@ Build docker image(See [here](https://github.com/GoogleContainerTools/jib/tree/m
 ```
 ./gradlew jib
 ```
-
-### Backend
-- Prepare Java and Mysql server instance
-- Edit `backend/resources/application.conf` or setup environment variables(see `application.conf` for required environment variables)
-
-
  
 ## Author
 Youngbin Han(sukso96100@gmail.com)

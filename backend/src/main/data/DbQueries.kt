@@ -205,8 +205,8 @@ object DbQueries{
                 (Verifications.type eq VerificationTypes.Email) and
                 (Verifications.verifiedAt.isNull()) and
                 (Verifications.user eq target.id)
-            }.singleOrNull() != null
-        result
+            }.singleOrNull()
+            if(result==null) true else false
         }
     }
 }

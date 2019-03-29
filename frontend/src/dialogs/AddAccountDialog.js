@@ -83,7 +83,16 @@ export default class AddAccountDialog extends Component{
                                         this.state.key)
                         const result = await res.json();
                         if(res.ok){
-                            this.setState({loading: false});
+                            this.setState({
+                                name: "",
+                                url: "",
+                                username: "",
+                                info: "",
+                                seed: "",
+                                key: "",
+                                loading: false,
+                                message: ""
+                            });
                             this.props.afterSubmit({
                                 seedName: this.state.name,
                                 url: this.state.url,

@@ -39,7 +39,6 @@ const Api = {
         const result = fetch(`${this.url}/auth/userinfo`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'SESSION': session
               }
         });

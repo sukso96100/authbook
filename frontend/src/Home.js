@@ -181,7 +181,7 @@ export default class Home extends Component {
             </Row>
           </Grid> 
         <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
-            onClick={()=>this.setState({isAddDialogVisible: true})}/>
+            onClick={()=>this.addAccount.current.openForm()}/>
                  </div>
          );
          

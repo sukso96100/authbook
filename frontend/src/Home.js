@@ -58,16 +58,15 @@ export default class Home extends Component {
     }
     
     async componentDidMount(){
-            
-            if(!JSON.parse(localStorage.getItem("encryptionKeySet"))){
-                this.setState({isSetKeyDialogVisible: true});
-            }else if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
-                this.emailVerify.current.openForm(
-                    this.emailVerify.current.step.VERIFY);
-            }else if(this.state.encryptionKey){
-                this.loadAccounts();
-            }
-        
+        await Api.fetchUserInfo();
+        if(!JSON.parse(localStorage.getItem("encryptionKeySet"))){
+            this.setState({isSetKeyDialogVisible: true});
+        }else if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
+            this.emailVerify.current.openForm(
+                this.emailVerify.current.step.VERIFY);
+        }else if(this.state.encryptionKey){
+            this.loadAccounts();
+        }
     }
     
     notify(msg){

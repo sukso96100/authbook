@@ -94,6 +94,7 @@ export default class EmailVerifyDialog extends Component{
                         <p>Did you received a verification code for verifying your email address?</p>
                     </DialogContent>
                     <DialogFooter>
+                        <DialogButton isDefault onClick={()=>this.onClose()}>Cancel</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.REQUEST})
                             }}>No</DialogButton>
@@ -168,7 +169,8 @@ export default class EmailVerifyDialog extends Component{
                 break;
         }
         return(
-            <Dialog open={this.state.isOpen} onClose={()=>this.onClose()}>
+            <Dialog open={this.state.isOpen}  scrimClickAction="" escapeKeyAction=""
+                onClose={()=>this.onClose()}>
             <DialogTitle>Update/Verify Email</DialogTitle>
                 {content}
             </Dialog>

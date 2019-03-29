@@ -202,10 +202,12 @@ export default class Home extends Component {
           <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
               onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}
               afterSubmit={()=>{
-                  this.setState({isSetKeyDialogVisible: false});
-                  this.notify("Encryption key has been configured.");
-                    this.emailVerify.current.openForm(
-                        this.emailVerify.current.step.VERIFY);
+                    this.setState({isSetKeyDialogVisible: false});
+                    this.notify("Encryption key has been configured.");
+                    if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
+                        this.emailVerify.current.openForm(
+                            this.emailVerify.current.step.VERIFY);
+                    }
               }}/>
           <EditAccountDialog isOpen={this.state.isEditDialogVisible}
               editIndex={this.state.editIndex}

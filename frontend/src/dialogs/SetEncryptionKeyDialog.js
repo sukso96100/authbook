@@ -29,7 +29,7 @@ export default class SetEncryptionKeyDialog extends Component{
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
-            <Dialog open={this.props.isOpen}
+            <Dialog open={this.props.isOpen} scrimClickAction="" escapeKeyAction=""
                 onClose={this.props.onClose}>
             <DialogTitle>Configure your encryption key</DialogTitle>
             <DialogContent>
@@ -50,7 +50,7 @@ export default class SetEncryptionKeyDialog extends Component{
                 {loading}
             <DialogFooter>
                 <DialogButton action='dismiss'>Cancel</DialogButton>
-                <DialogButton isDefault action='confirm' onClick={async ()=>{
+                <DialogButton isDefault onClick={async ()=>{
                         this.setState({loading: true})
                         const res = await Api.setEncryptionKey(this.state.key, this.state.keyCheck);
                         if(res.ok){

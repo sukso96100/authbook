@@ -34,6 +34,10 @@ const Api = {
         });
     },
     
+    async fetchUserInfo(){
+        
+    },
+    
     reqPasswordRecovery(email){
         return fetch(`${this.url}/auth/request_recover`, {
             method: 'POST',

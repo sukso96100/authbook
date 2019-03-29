@@ -35,10 +35,12 @@ const Api = {
     },
     
     async fetchUserInfo(){
+        const session = localStorage.getItem('session');
         const result = fetch(`${this.url}/auth/userinfo`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'SESSION': session
               }
         });
         if(result.ok){

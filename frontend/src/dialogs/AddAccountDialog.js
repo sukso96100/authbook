@@ -26,15 +26,36 @@ export default class AddAccountDialog extends Component{
             seed: "",
             key: "",
             loading: false,
-            message: ""
+            message: "",
+            isOpen: false
         };
+    }
+    
+    openForm(){
+        this.setState({
+            isOpen: true
+        });
+    }
+    
+    onClose(){
+        this.setState({
+            name: "",
+            url: "",
+            username: "",
+            info: "",
+            seed: "",
+            key: "",
+            loading: false,
+            message: "",
+            isOpen: false
+        });
     }
     
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
-            <Dialog open={this.props.isOpen}
-                onClose={this.props.onClose}>
+            <Dialog open={this.state.isOpen} onClose={this.onClose}
+                 scrimClickAction="" escapeKeyAction="">
             <DialogTitle>Add new account</DialogTitle>
             <DialogContent>
                 <TextField label='Website/Service Name'>
@@ -72,6 +93,7 @@ export default class AddAccountDialog extends Component{
             </DialogContent>
                 {loading}
             <DialogFooter>
+                <DialogButton onClick={async ()=>this.onClose()}>Cancel</DialogButton>
                 <DialogButton isDefault onClick={async ()=>{
                         this.setState({loading: true})
                         const res = await Api.addAccount(
@@ -83,16 +105,7 @@ export default class AddAccountDialog extends Component{
                                         this.state.key)
                         const result = await res.json();
                         if(res.ok){
-                            this.setState({
-                                name: "",
-                                url: "",
-                                username: "",
-                                info: "",
-                                seed: "",
-                                key: "",
-                                loading: false,
-                                message: ""
-                            });
+                            this.onClose();
                             this.props.afterSubmit({
                                 seedName: this.state.name,
                                 url: this.state.url,

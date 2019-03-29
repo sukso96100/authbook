@@ -169,7 +169,7 @@ export default class EmailVerifyDialog extends Component{
                 break;
         }
         return(
-            <Dialog open={this.state.isOpen}  scrimClickAction="" escapeKeyAction=""
+            <Dialog open={this.state.isOpen} scrimClickAction="" escapeKeyAction=""
                 onClose={()=>this.onClose()}>
             <DialogTitle>Update/Verify Email</DialogTitle>
                 {content}

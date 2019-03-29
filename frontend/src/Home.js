@@ -45,7 +45,6 @@ export default class Home extends Component {
         this.state = {
             isOpened: false,
             accounts: [],
-            isAddDialogVisible: false,
             isSetKeyDialogVisible: false,
             encryptionKey: "",
             loading: false,
@@ -55,6 +54,7 @@ export default class Home extends Component {
             editIndex: 0
         };
         this.emailVerify = React.createRef();
+        this.addAccount = React.createRef();
     }
     
     async componentDidMount(){
@@ -190,12 +190,11 @@ export default class Home extends Component {
      <div>
              {loading}
           {content}
-          <AddAccountDialog isOpen={this.state.isAddDialogVisible}
-              onClose={(action)=>this.setState({isAddDialogVisible: false})}
+          <AddAccountDialog ref={this.addAccount}
               afterSubmit={(newItem)=>{
                   let tmp = this.state.accounts;
                   tmp.push(newItem);
-                  this.setState({isAddDialogVisible: false, accounts: tmp});
+                  this.setState({accounts: tmp});
                   this.notify("New account has been added.");
               }}/>
           <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}

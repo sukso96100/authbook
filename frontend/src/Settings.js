@@ -15,16 +15,12 @@ import LinearProgress from '@material/react-linear-progress';
 import Api from './data/Api';
 import Button from '@material/react-button';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
+import { connect } from "react-redux";
 
-
-export default class Settings extends Component {
+class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userdata: {
-                    username: "",
-                    displayName: "",
-                },
                 serverUrl: ""
         };
         this.emailVerify = React.createRef();
@@ -32,10 +28,6 @@ export default class Settings extends Component {
     
     async componentDidMount(){
             this.setState({
-                userdata: {
-                    username: localStorage.getItem("username"),
-                    displayName: localStorage.getItem("displayName")
-                },
                 serverUrl: Api.url
             });
     }
@@ -56,8 +48,8 @@ export default class Settings extends Component {
                 <List twoLine={true}>
                     <ListItem>
                         <ListItemText
-                            primaryText={this.state.userdata.displayName}
-                            secondaryText={this.state.userdata.username} />
+                            primaryText={this.props.userinfo.displayName}
+                            secondaryText={this.props.userinfo.username} />
                     </ListItem>
                     <ListItem>
                         <ListItemText
@@ -84,3 +76,11 @@ export default class Settings extends Component {
     );
   }
 }
+
+function mapStateToProps(state){
+    return({
+        userinfo: state.userinfo
+    });
+}
+
+export default connect(mapStateToProps)(Settings)

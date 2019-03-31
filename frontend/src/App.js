@@ -20,18 +20,14 @@ import Api from './data/Api';
 import Button from '@material/react-button';
 import Home from './Home';
 import Settings from './Settings';
+import { connect } from "react-redux";
 
-
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selectedIndex: 0,
             isOpened: false,
-            userdata: {
-                username:"",
-                displayName: ""
-            },
             serverUrl: "",
         };
     }
@@ -42,80 +38,81 @@ export default class App extends Component {
         }else{
             Api.setUrl(localStorage.getItem("serverUrl"));
             this.setState({
-                userdata: {
-                    username: localStorage.getItem("username"),
-                    displayName: localStorage.getItem("displayName")
-                },
                 serverUrl: Api.url
             });
-           
         }
     }
     
-    
     render() {
-       
-    return (
-     <div className='drawer-container'>
-        <Drawer modal
-            open={this.state.isOpened}
-            onClose={() => this.setState({isOpened: false})}>
-          <DrawerHeader>
-              <DrawerTitle tag='h2'>
-                {this.state.userdata.displayName}
-              </DrawerTitle>
-              <DrawerSubtitle>
-                {this.state.userdata.username}<br/>{this.state.serverUrl}
-              </DrawerSubtitle>
-          </DrawerHeader>
+        return (
+         <div className='drawer-container'>
+            <Drawer modal
+                open={this.state.isOpened}
+                onClose={() => this.setState({isOpened: false})}>
+              <DrawerHeader>
+                  <DrawerTitle tag='h2'>
+                    {this.props.userinfo.displayName}
+                  </DrawerTitle>
+                  <DrawerSubtitle>
+                    {this.props.userinfo.username}<br/>{this.state.serverUrl}
+                  </DrawerSubtitle>
+              </DrawerHeader>
 
-          <DrawerContent>
-              <List singleSelection selectedIndex={this.state.selectedIndex}>
-                  <ListItem onClick={()=>{
-                          history.push("/app/home");
-                          this.setState({selectedIndex: 0, isOpened: false});
-                      }}>
-                      <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
-                      <ListItemText primaryText='Accounts' />
-                  </ListItem>
-                  <ListItem onClick={()=>{
-                          history.push("/app/settings");
-                          this.setState({selectedIndex: 1, isOpened: false});
-                      }}>
-                      <ListItemGraphic graphic={<MaterialIcon icon='settings'/>} />
-                      <ListItemText primaryText='Settings' />
-                  </ListItem>
-                  <ListItem>
-                      <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
-                      <ListItemText primaryText='About' />
-                  </ListItem>
-                  <ListItem onClick={()=>{
-                          this.setState({selectedIndex: 4, isOpened: false});
-                          localStorage.clear();
-                          history.push("/login");
-                      }}>
-                      <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
-                      <ListItemText primaryText='Logout' />
-                  </ListItem>
-            
-            </List>
-          </DrawerContent>
-        </Drawer>
+              <DrawerContent>
+                  <List singleSelection selectedIndex={this.state.selectedIndex}>
+                      <ListItem onClick={()=>{
+                              history.push("/app/home");
+                              this.setState({selectedIndex: 0, isOpened: false});
+                          }}>
+                          <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
+                          <ListItemText primaryText='Accounts' />
+                      </ListItem>
+                      <ListItem onClick={()=>{
+                              history.push("/app/settings");
+                              this.setState({selectedIndex: 1, isOpened: false});
+                          }}>
+                          <ListItemGraphic graphic={<MaterialIcon icon='settings'/>} />
+                          <ListItemText primaryText='Settings' />
+                      </ListItem>
+                      <ListItem>
+                          <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
+                          <ListItemText primaryText='About' />
+                      </ListItem>
+                      <ListItem onClick={()=>{
+                              this.setState({selectedIndex: 4, isOpened: false});
+                              localStorage.clear();
+                              history.push("/login");
+                          }}>
+                          <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
+                          <ListItemText primaryText='Logout' />
+                      </ListItem>
 
-        <DrawerAppContent className='drawer-app-content'>
-             <TopAppBar
-        title='Authbook'
-        navigationIcon={<MaterialIcon
-          icon='menu'
-          onClick={() => this.setState({isOpened: !this.state.isOpened})}
-        />}
-      />
-      <TopAppBarFixedAdjust>
-          <Route exact path="/app/home" component={Home} />
-          <Route exact path="/app/settings" component={Settings} />
-      </TopAppBarFixedAdjust>
-        </DrawerAppContent>
-      </div>
-    );
+                </List>
+              </DrawerContent>
+            </Drawer>
+
+            <DrawerAppContent className='drawer-app-content'>
+                 <TopAppBar
+            title='Authbook'
+            navigationIcon={<MaterialIcon
+              icon='menu'
+              onClick={() => this.setState({isOpened: !this.state.isOpened})}
+            />}
+          />
+          <TopAppBarFixedAdjust>
+              <Route exact path="/app/home" component={Home} />
+              <Route exact path="/app/settings" component={Settings} />
+          </TopAppBarFixedAdjust>
+            </DrawerAppContent>
+          </div>
+        );
   }
 }
+
+function mapStateToProps(state){
+    return({
+        userinfo: state.userinfo
+    });
+}
+
+export default connect(mapStateToProps)(App)

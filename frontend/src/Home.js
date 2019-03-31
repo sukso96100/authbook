@@ -38,8 +38,10 @@ import EditAccountDialog from './dialogs/EditAccountDialog';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 
+import {setUserinfo} from './data/Actions';
+import { connect } from "react-redux";
 
-export default class Home extends Component {
+class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,10 +60,15 @@ export default class Home extends Component {
     }
     
     async componentDidMount(){
-        await Api.fetchUserInfo();
-        if(!JSON.parse(localStorage.getItem("encryptionKeySet"))){
+        const result = await Api.fetchUserInfo();
+        if(result.ok){
+            const userdata = await result.json();
+            this.props.setUserinfo(userdata.displayName, userdata.username, userdata.email,
+                                  userdata.isSeedKeySet, userdata.isEmailVerified);
+        }
+        if(!this.props.userinfo.encryptionKeySet){
             this.setState({isSetKeyDialogVisible: true});
-        }else if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
+        }else if(!this.props.userinfo.isEmailVerified){
             this.emailVerify.current.openForm(
                 this.emailVerify.current.step.VERIFY);
         }else if(this.state.encryptionKey){
@@ -236,3 +243,11 @@ export default class Home extends Component {
     );
   }
 }
+
+function mapStateToProps(state){
+    return({
+        userinfo: state.userinfo
+    });
+}
+
+export default connect(mapStateToProps, {setUserinfo})(Home)

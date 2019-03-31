@@ -31,8 +31,11 @@ import Card, {
 } from "@material/react-card";
 import SignupDialog from '../dialogs/SignupDialog';
 import PasswordRecoverDialog from '../dialogs/PasswordRecoverDialog';
+import {setUserinfo} from '../data/Actions';
+import { connect } from "react-redux";
 
-export default class Login extends Component {
+
+class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -103,11 +106,8 @@ export default class Login extends Component {
         if(res.ok){
             let userdata = await res.json();
             localStorage.setItem("serverUrl", Api.url);
-            localStorage.setItem("displayName", userdata.displayName);
-            localStorage.setItem("username", userdata.username);
-            localStorage.setItem("email", userdata.email);
-            localStorage.setItem("encryptionKeySet", userdata.isSeedKeySet);
-            localStorage.setItem("isEmailVerified", userdata.isEmailVerified);
+            this.props.setUserinfo(userdata.displayName, userdata.username, userdata.email,
+                                  userdata.isSeedKeySet, userdata.isEmailVerified);
             localStorage.setItem("session", res.headers.get("SESSION"));
             this.setState({loading: false});
             history.push("/");
@@ -118,4 +118,7 @@ export default class Login extends Component {
     }
 }
 
-
+export default connect(
+  null,
+  {setUserinfo}
+)(Login)

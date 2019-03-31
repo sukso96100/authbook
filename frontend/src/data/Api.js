@@ -34,22 +34,14 @@ const Api = {
         });
     },
     
-    async fetchUserInfo(){
+    fetchUserInfo(){
         const session = localStorage.getItem('session');
-        const result = fetch(`${this.url}/auth/userinfo`, {
+        return fetch(`${this.url}/auth/userinfo`, {
             method: 'GET',
             headers: {
                 'SESSION': session
               }
         });
-        if(result.ok){
-            const userdata = await result.json();
-            localStorage.setItem("displayName", userdata.displayName);
-            localStorage.setItem("username", userdata.username);
-            localStorage.setItem("email", userdata.email);
-            localStorage.setItem("encryptionKeySet", userdata.isSeedKeySet);
-            localStorage.setItem("isEmailVerified", userdata.isEmailVerified);
-        }
     },
     
     reqPasswordRecovery(email){

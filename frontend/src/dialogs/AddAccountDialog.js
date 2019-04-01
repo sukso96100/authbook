@@ -15,10 +15,10 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 
-export default class AddAccountDialog extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {
+import { refreshAccounts } from '../data/Actions';
+import { connect } from "react-redux";
+
+const initState = {
             name: "",
             url: "",
             username: "",
@@ -29,6 +29,11 @@ export default class AddAccountDialog extends Component{
             message: "",
             isOpen: false
         };
+
+class AddAccountDialog extends Component{
+    constructor(props) {
+        super(props);
+        this.state = initState;
     }
     
     openForm(){
@@ -38,23 +43,13 @@ export default class AddAccountDialog extends Component{
     }
     
     onClose(){
-        this.setState({
-            name: "",
-            url: "",
-            username: "",
-            info: "",
-            seed: "",
-            key: "",
-            loading: false,
-            message: "",
-            isOpen: false
-        });
+        this.setState(initState);
     }
     
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
-            <Dialog open={this.state.isOpen} onClose={this.onClose}
+            <Dialog open={this.state.isOpen} onClose={this.onClose.bind(this)}
                  scrimClickAction="" escapeKeyAction="">
             <DialogTitle>Add new account</DialogTitle>
             <DialogContent>
@@ -106,13 +101,8 @@ export default class AddAccountDialog extends Component{
                         const result = await res.json();
                         if(res.ok){
                             this.onClose();
-                            this.props.afterSubmit({
-                                seedName: this.state.name,
-                                url: this.state.url,
-                                accountUserName: this.state.username,
-                                seedInfo: this.state.info,
-                                otpKey: this.state.seed
-                            });
+                            this.props.refreshAccounts(result);
+                            this.props.afterSubmit();
                         }else{
                             this.setState({loading: false, message: result.message});
                         }
@@ -122,3 +112,6 @@ export default class AddAccountDialog extends Component{
         )
     }
 }
+
+
+export default connect(null, {refreshAccounts}, null, {forwardRef: true})(AddAccountDialog);

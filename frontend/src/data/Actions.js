@@ -11,4 +11,35 @@ export const setUserinfo = (displayName, username, email,
         userinfo
     };
 };
-    
+
+export const enterEncryptionKey = (key) => {
+    return {
+        type: 'ENTER_ENCRYPTION_KEY',
+        key
+    };
+};
+
+export const refreshAccounts = (accounts) => {
+    return {
+        type: 'REFRESH_ACCOUNTS',
+        accounts
+    };
+};
+
+export const updateAccountItem = (index, account) => {
+    return {
+        type: 'UPDATE_ACCOUNT_ITEM',
+        index, account
+    };
+};
+
+export const removeAccountItem = (index) => {
+    return {
+        type: 'REMOVE_ACCOUNT_ITEM',
+        index
+    };
+};
+
+export const resetStates = () => {
+    return { type: 'RESET_STATES' };
+};

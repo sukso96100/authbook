@@ -15,78 +15,80 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 
-export default class EditAccountDialog extends Component{
+import { updateAccountItem, removeAccountItem } from '../data/Actions';
+import { connect } from "react-redux";
+
+const initState = {
+    formData: {
+        id: 0,
+        seedName: "",
+        url: "",
+        accountUserName: "",
+        seed: "",
+        key: "",
+        seedInfo: ""
+    },
+    isOpen: false,
+    message: "",
+    loading: false,
+};
+
+class EditAccountDialog extends Component{
+    
     constructor(props) {
         super(props);
-        this.state = {
-            formData: {
-                id: 0,
-                seedName: "",
-                url: "",
-                accountUserName: "",
-                seed: "",
-                key: "",
-                seedInfo: ""
-            },
-            message: "",
-            loading: false,
-        };
+        this.state = initState;
         this.editIndex = 0;
     }
     
-    componentDidUpdate(prevProps) {
-      if (this.props.isOpen !== prevProps.isOpen && this.props.isOpen) {
-        this.setState({formData: this.props.initData});
-        this.editIndex = this.props.editIndex;
-      }
+    openForm(index, initData){
+        this.setState({formData: initData, isOpen: true});
+        this.editIndex = index;
     }
     
+    closeForm(){
+        this.setState(initState);
+        this.editIndex = 0;
+    }
     
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
-            <Dialog open={this.props.isOpen}
-                onClose={this.props.onClose}>
+            <Dialog open={this.state.isOpen} onClose={this.closeForm}>
             <DialogTitle>Edit account</DialogTitle>
             <DialogContent>
                 <TextField label='Website/Service Name'>
-                    <Input disabled={this.state.loading}
-                        value={this.state.formData.seedName}
+                    <Input disabled={this.state.loading} value={this.state.formData.seedName}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, seedName: e.target.value}
                         })}/>
                 </TextField>
                 <TextField label='URL'>
-                    <Input disabled={this.state.loading}
-                        value={this.state.formData.url}
+                    <Input disabled={this.state.loading} value={this.state.formData.url}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, url: e.target.value}
                         })}/>
                 </TextField>
                 <TextField label='Username'>
-                    <Input disabled={this.state.loading}
-                        value={this.state.formData.accountUserName}
+                    <Input disabled={this.state.loading} value={this.state.formData.accountUserName}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, accountUserName: e.target.value}
                         })}/>
                 </TextField>
                 <TextField label='Information' textarea>
-                    <Input disabled={this.state.loading}
-                        value={this.state.formData.seedInfo}
+                    <Input disabled={this.state.loading} value={this.state.formData.seedInfo}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, seedInfo: e.target.value}
                         })}/>
                 </TextField>
                 <TextField label='OTP Key'
                     helperText={<HelperText>Leave this field empty to not update otp key.</HelperText>}>
-                    <Input disabled={this.state.loading}
-                        value={this.state.seed}
+                    <Input disabled={this.state.loading} value={this.state.seed}
                         onChange={(e) => this.setState({seed: e.target.value})}/>
                 </TextField>
                 <TextField label='Encryption Key'>
                     <Input disabled={this.state.loading}
-                        type="password"
-                        value={this.state.key}
+                        type="password" value={this.state.key}
                         onChange={(e) => this.setState({key: e.target.value})}/>
                 </TextField>
                 <p>{this.state.message}</p>
@@ -96,10 +98,10 @@ export default class EditAccountDialog extends Component{
                 <DialogButton onClick={async ()=>{
                         this.setState({loading: true});
                         const res = await Api.deleteAccount(this.state.formData.id);
-                        
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.afterSubmit(1, {editIndex: this.editIndex});
+                            this.props.removeAccountItem(this.editIndex);
+                            this.props.afterSubmit(1);
                         }else{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});
@@ -118,14 +120,14 @@ export default class EditAccountDialog extends Component{
                         console.log(res);
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.afterSubmit(0, {
-                                editIndex: this.editIndex,
+                            this.props.updateAccountItem(this.editIndex, {
                                 seedName: this.state.formData.seedName,
                                 url: this.state.formData.url,
                                 accountUserName: this.state.formData.accountUserName,
                                 seedInfo: this.state.formData.seedInfo,
-                                seed: this.state.seed
+                                otpKey: this.state.formData.seed
                             });
+                            this.props.afterSubmit(0);
                         }else{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});
@@ -136,3 +138,5 @@ export default class EditAccountDialog extends Component{
         )
     }
 }
+
+export default connect(null, { updateAccountItem, removeAccountItem }, null, {forwardRef: true})(EditAccountDialog);

@@ -21,6 +21,7 @@ import Button from '@material/react-button';
 import Home from './Home';
 import Settings from './Settings';
 import { connect } from "react-redux";
+import { resetStates } from './data/Actions';
 
 class App extends Component {
     constructor(props) {
@@ -81,6 +82,7 @@ class App extends Component {
                       <ListItem onClick={()=>{
                               this.setState({selectedIndex: 4, isOpened: false});
                               localStorage.clear();
+                              this.props.resetStates();
                               history.push("/login");
                           }}>
                           <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
@@ -115,4 +117,4 @@ function mapStateToProps(state){
     });
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps, {resetStates})(App)

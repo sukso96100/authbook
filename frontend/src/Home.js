@@ -38,7 +38,7 @@ import EditAccountDialog from './dialogs/EditAccountDialog';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 
-import {setUserinfo} from './data/Actions';
+import { setUserinfo, refreshAccounts, enterEncryptionKey } from './data/Actions';
 import { connect } from "react-redux";
 
 class Home extends Component {
@@ -48,15 +48,13 @@ class Home extends Component {
             isOpened: false,
             accounts: [],
             isSetKeyDialogVisible: false,
-            encryptionKey: "",
+            encryptionKeyInput: "",
             loading: false,
-            keySubmited: false,
-            isEditDialogVisible: false,
-            editDialogInitData: {},
-            editIndex: 0
+            ticker: true
         };
         this.emailVerify = React.createRef();
         this.addAccount = React.createRef();
+        this.editAccount = React.createRef();
     }
     
     async componentDidMount(){
@@ -89,6 +87,7 @@ class Home extends Component {
     }
     
     async loadAccounts(){
+        console.log("loading./..");
         if(this.otpTimer){
             clearInterval(this.otpTimer);
         }
@@ -97,27 +96,27 @@ class Home extends Component {
         if(res.ok){
             let accounts = await res.json();
             for(let item of accounts){
-                let raw = await Crypto.decrypt(this.state.encryptionKey, item.encryptedSeed);
+                let raw = await Crypto.decrypt(this.props.encryptionKey, item.encryptedSeed);
                 item.otpKey = raw;
-                console.log(raw, typeof raw);
                 item.otp = otplib.authenticator.generate(raw);
                 
                 const timeUsed = otplib.authenticator.timeUsed();
                 const timeLeft = otplib.authenticator.timeRemaining();
                 item.timeLeft = timeLeft / (timeUsed + timeLeft);
             }
-            this.setState({accounts: accounts, loading: false, keySubmited: true});
-            console.log(this.state);
+            this.props.refreshAccounts(accounts);
+            this.setState({loading: false});
         }
         this.otpTimer = setInterval(()=>{
-            let tmp = this.state.accounts;
+            let tmp = this.props.accounts;
             for(let item of tmp){
                 item.otp = otplib.authenticator.generate(item.otpKey);
                 const timeUsed = otplib.authenticator.timeUsed();
                 const timeLeft = otplib.authenticator.timeRemaining();
                 item.timeLeft = timeLeft / (timeUsed + timeLeft);
             }
-            this.setState({accounts: tmp});
+            this.props.refreshAccounts(tmp);
+            this.setState({ticker: !this.state.ticker});
         }, 1000);
     }
     
@@ -129,10 +128,13 @@ class Home extends Component {
                 <TextField label='Encryption Key'>
                     <Input disabled={this.state.loading}
                         type="password"
-                        value={this.state.encryptionKey}
-                        onChange={(e) => this.setState({encryptionKey: e.target.value})}/>
+                        value={this.state.encryptionKeyInput}
+                        onChange={(e) => this.setState({encryptionKeyInput: e.target.value})}/>
                 </TextField><br/><br/>
-                 <Button raised="true" onClick={this.loadAccounts.bind(this)}>Decrypt</Button><br/>
+                 <Button raised="true" onClick={async ()=>{
+                        this.props.enterEncryptionKey(this.state.encryptionKeyInput);
+                        await this.loadAccounts();
+                    }}>Decrypt</Button><br/>
              </div>
          );
          
@@ -140,7 +142,7 @@ class Home extends Component {
              <div>
           <Grid>
             <Row id="otpCardsGrid">
-                {this.state.accounts.map((item, i)=>{
+                {this.props.accounts.map((item, i)=>{
                     return(
                         <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>
                             <Card>
@@ -170,12 +172,7 @@ class Home extends Component {
                                         </CopyToClipboard>
                                         
                                         <IconButton onClick={()=>{
-                                                console.log(this.state.accounts[i]);
-                                                this.setState({
-                                                    isEditDialogVisible: true, 
-                                                    editDialogInitData: this.state.accounts[i],
-                                                    editIndex: i
-                                                });
+                                                this.editAccount.current.openForm(i, item);
                                             }}>
                                             <MaterialIcon icon='edit'/>
                                         </IconButton>
@@ -188,66 +185,51 @@ class Home extends Component {
             </Row>
           </Grid> 
         <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
-            onClick={()=>this.addAccount.current.openForm()}/>
+            disabled={this.state.loading} onClick={()=>this.addAccount.current.openForm()}/>
                  </div>
          );
          
-         const content = this.state.keySubmited ? accounts : decryptPrompt;
-    return (
-     <div>
-             {loading}
-          {content}
-          <AddAccountDialog ref={this.addAccount}
-              afterSubmit={(newItem)=>{
-                  let tmp = this.state.accounts;
-                  tmp.push(newItem);
-                  this.setState({accounts: tmp});
-                  this.notify("New account has been added.");
-              }}/>
-          <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
-              onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}
-              afterSubmit={()=>{
-                    this.setState({isSetKeyDialogVisible: false});
-                    this.notify("Encryption key has been configured.");
-                    if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
-                        this.emailVerify.current.openForm(
-                            this.emailVerify.current.step.VERIFY);
-                    }
-              }}/>
-          <EditAccountDialog isOpen={this.state.isEditDialogVisible}
-              editIndex={this.state.editIndex}
-              initData={this.state.editDialogInitData}
-              onClose={(action)=>this.setState({isEditDialogVisible: false})}
-              afterSubmit={(result, item)=>{
-                  this.setState({isEditDialogVisible: false});
-                  switch(result){
+         const content = this.props.encryptionKey != "" ? accounts : decryptPrompt;
+        return (
+            <div>
+                {loading}
+                {content}
+              <AddAccountDialog ref={this.addAccount}
+                  afterSubmit={()=> this.notify("New account has been added.")}/>
+              <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
+                  onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}
+                  afterSubmit={()=>{
+                        this.setState({isSetKeyDialogVisible: false});
+                        this.notify("Encryption key has been configured.");
+                        if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
+                            this.emailVerify.current.openForm(
+                                this.emailVerify.current.step.VERIFY);
+                        }
+                  }}/>
+              <EditAccountDialog ref={this.editAccount}
+                  afterSubmit={(result, item)=>{
+                      switch(result){
                           case 0:
-                              let tmp = this.state.accounts;
-                              tmp[item.editIndex].seedName = item.seedName;
-                              tmp[item.editIndex].url = item.url;
-                              tmp[item.editIndex].accountUserName = item.accountUserName;
-                              tmp[item.editIndex].seedInfo = item.seedInfo;
-                              tmp[item.editIndex].otpkey = item.seed;
-                              this.setState({accounts: tmp});
                               this.notify("Account updated.");
                               break;
                           case 1: 
-                              this.setState({accounts: this.state.accounts.splice(item.editIndex, 1)});
                               this.notify("Account deleted."); 
                               break;
-                  }
-              }}/>
-            <EmailVerifyDialog ref={this.emailVerify}/>
-          <ToastContainer />
-      </div>
+                      }
+                  }}/>
+                <EmailVerifyDialog ref={this.emailVerify}/>
+              <ToastContainer />
+          </div>
     );
   }
 }
 
 function mapStateToProps(state){
     return({
-        userinfo: state.userinfo
+        userinfo: state.userinfo,
+        accounts: state.accounts,
+        encryptionKey: state.encryptionKey
     });
 }
 
-export default connect(mapStateToProps, {setUserinfo})(Home)
+export default connect(mapStateToProps, {setUserinfo, refreshAccounts, enterEncryptionKey})(Home)

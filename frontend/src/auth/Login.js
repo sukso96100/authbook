@@ -46,6 +46,25 @@ class Login extends Component {
         this.signup = React.createRef();
         this.pwRecover = React.createRef();
     }
+    
+    async login(){
+        this.setState({loading: true});
+        Api.setUrl(this.state.url);
+        let res = await Api.login(this.state.username, this.state.password);
+        if(res.ok){
+            let userdata = await res.json();
+            localStorage.setItem("serverUrl", Api.url);
+            this.props.setUserinfo(userdata.displayName, userdata.username, userdata.email,
+                                  userdata.isSeedKeySet, userdata.isEmailVerified);
+            localStorage.setItem("session", res.headers.get("SESSION"));
+            this.setState({loading: false});
+            history.push("/");
+        }else{
+            let result = await res.json();
+            this.setState({message: result.message, loading: false})
+        }
+    }
+    
   render() {
       const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
       return (
@@ -99,23 +118,7 @@ class Login extends Component {
     </div>
       );
   }
-    async login(){
-        this.setState({loading: true});
-        Api.setUrl(this.state.url);
-        let res = await Api.login(this.state.username, this.state.password);
-        if(res.ok){
-            let userdata = await res.json();
-            localStorage.setItem("serverUrl", Api.url);
-            this.props.setUserinfo(userdata.displayName, userdata.username, userdata.email,
-                                  userdata.isSeedKeySet, userdata.isEmailVerified);
-            localStorage.setItem("session", res.headers.get("SESSION"));
-            this.setState({loading: false});
-            history.push("/");
-        }else{
-            let result = await res.json();
-            this.setState({message: result.message, loading: false})
-        }
-    }
+    
 }
 
 export default connect(

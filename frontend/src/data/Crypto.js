@@ -12,7 +12,6 @@ export default class Crypto{
             const iv = CryptoJS.enc.Hex.parse(encryptedContent.slice(32, 64));
             // const content = Buffer.from(encryptedContent.slice(64, encryptedContent.length), 'hex').toString('base64');
             const content = CryptoJS.enc.Hex.parse(encryptedContent.slice(64, encryptedContent.length));
-            console.log(content);
             const secretKey = CryptoJS.PBKDF2(password, salt, { 
                 keySize: 256 / 32, iterations: 20000, 
                 hasher: CryptoJS.algo.SHA512,
@@ -21,8 +20,6 @@ export default class Crypto{
             });
 
             const decrypted = CryptoJS.AES.decrypt({ciphertext: content}, secretKey, {iv: iv});
-            console.log(decrypted);
-            console.log(decrypted.toString(CryptoJS.enc.Utf8));
             resolve(decrypted.toString(CryptoJS.enc.Utf8));
         });
     }

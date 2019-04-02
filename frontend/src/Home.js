@@ -74,6 +74,10 @@ class Home extends Component {
         }
     }
     
+    componentWillUnmount(){
+        clearInterval(this.otpTimer);
+    }
+    
     notify(msg){
         toast(msg, {
           className: css({
@@ -144,7 +148,7 @@ class Home extends Component {
             <Row id="otpCardsGrid">
                 {this.props.accounts.map((item, i)=>{
                     return(
-                        <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4}>
+                        <Cell desktopColumns={4} phoneColumns={4} tabletColumns={4} key={`${i}_${item.id}`}>
                             <Card>
                                   <CardPrimaryContent>
                                       <div class="seedInfoItem">

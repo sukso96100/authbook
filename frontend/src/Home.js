@@ -33,7 +33,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { css } from 'glamor';
 import Crypto from './data/Crypto';
 import Button from '@material/react-button';
-import otplib from 'otplib/otplib-browser';
+import {authenticator} from 'otplib/otplib-browser';
 import EditAccountDialog from './dialogs/EditAccountDialog';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
@@ -55,6 +55,8 @@ class Home extends Component {
         this.emailVerify = React.createRef();
         this.addAccount = React.createRef();
         this.editAccount = React.createRef();
+        this.authenticator = authenticator;
+
     }
     
     async componentDidMount(){
@@ -102,10 +104,10 @@ class Home extends Component {
             for(let item of accounts){
                 let raw = await Crypto.decrypt(this.props.encryptionKey, item.encryptedSeed);
                 item.otpKey = raw;
-                item.otp = otplib.authenticator.generate(raw);
+                item.otp = this.authenticator.generate(raw);
                 
-                const timeUsed = otplib.authenticator.timeUsed();
-                const timeLeft = otplib.authenticator.timeRemaining();
+                const timeUsed = this.authenticator.timeUsed();
+                const timeLeft = this.authenticator.timeRemaining();
                 item.timeLeft = timeLeft / (timeUsed + timeLeft);
             }
             this.props.refreshAccounts(accounts);
@@ -114,9 +116,9 @@ class Home extends Component {
         this.otpTimer = setInterval(()=>{
             let tmp = this.props.accounts;
             for(let item of tmp){
-                item.otp = otplib.authenticator.generate(item.otpKey);
-                const timeUsed = otplib.authenticator.timeUsed();
-                const timeLeft = otplib.authenticator.timeRemaining();
+                item.otp = this.authenticator.generate(item.otpKey);
+                const timeUsed = this.authenticator.timeUsed();
+                const timeLeft = this.authenticator.timeRemaining();
                 item.timeLeft = timeLeft / (timeUsed + timeLeft);
             }
             this.props.refreshAccounts(tmp);

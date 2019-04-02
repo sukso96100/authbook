@@ -54,7 +54,7 @@ class EditAccountDialog extends Component{
     render(){
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
-            <Dialog open={this.state.isOpen} onClose={this.closeForm}>
+            <Dialog open={this.state.isOpen} onClose={this.closeForm.bind(this)}>
             <DialogTitle>Edit account</DialogTitle>
             <DialogContent>
                 <TextField label='Website/Service Name'>
@@ -102,6 +102,7 @@ class EditAccountDialog extends Component{
                             this.setState({loading: false});
                             this.props.removeAccountItem(this.editIndex);
                             this.props.afterSubmit(1);
+                            this.closeForm();
                         }else{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});
@@ -117,17 +118,21 @@ class EditAccountDialog extends Component{
                                         this.state.formData.seedInfo,
                                         this.state.seed,
                                         this.state.key);
-                        console.log(res);
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.updateAccountItem(this.editIndex, {
+                            
+                            let newItem = {
                                 seedName: this.state.formData.seedName,
                                 url: this.state.formData.url,
                                 accountUserName: this.state.formData.accountUserName,
-                                seedInfo: this.state.formData.seedInfo,
-                                otpKey: this.state.formData.seed
-                            });
+                                seedInfo: this.state.formData.seedInfo
+                            }
+                            
+                            if(this.state.formData.seed != "") newItem.otpKey = this.state.formData.seed;
+                            
+                            this.props.updateAccountItem(this.editIndex, newItem);
                             this.props.afterSubmit(0);
+                            this.closeForm();
                         }else{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});

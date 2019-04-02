@@ -27,7 +27,14 @@ export default function authbookApp(state = initState, action) {
             };
         case 'UPDATE_ACCOUNT_ITEM':
             let tmp = state.accounts;
-            tmp[action.index] = action.account;
+            tmp[action.index] = {
+                ...tmp[action.index],
+                seedName: action.account.seedName,
+                url: action.account.url,
+                accountUserName: action.account.accountUserName,
+                seedInfo: action.account.seedInfo
+            };
+            if(action.account.otpKey) tmp[action.index].otpKey = action.account.otpKey;
             return {
                 ...state,
                 accounts: tmp

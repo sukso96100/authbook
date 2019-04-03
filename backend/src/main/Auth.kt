@@ -121,6 +121,29 @@ fun Route.auth(){
             }
             call.respondText("A verification code for password recovery has sent to your mail.")
         }
+        
+        put("/change_password"){
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            val params = call.receive<PasswordChangeForm>()
+            val currentPassword = params.currentPassword ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "currentPassword is empty"))
+            val newPassword = params.newPassword ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type new password"))
+            val newPasswordCheck = params.newPasswordCheck ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "You didn't type new password check"))
+            
+            when{
+                currentPassword.length < 8 || newPassword.length < 8 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(5, "Password must be at least 8 digits"))
+                newPassword != newPasswordCheck -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(6, "You have to type same value for password and password check."))
+                else -> {
+                    if(BCrypt.checkpw(currentPassword, user.passwordHash)){
+                        DbQueries.setPassword(user, BCrypt.hashpw(newPassword, BCrypt.gensalt()))
+                        call.respondText("Password changed.")
+                    }else{
+                        call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(5, "Password dose not matches!"))
+                    }
+                }
+            }
+        }
 
         put("/recover"){
             val params = call.receive<PasswordRecoverForm>()

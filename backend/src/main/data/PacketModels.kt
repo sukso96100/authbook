@@ -80,3 +80,8 @@ data class SeedItem(
     val encryptedSeed: String
 )
 
+data class PasswordChangeForm(
+    val currentPassword: String,
+    val newPassword: String,
+    val newPasswordCheck: String 
+)

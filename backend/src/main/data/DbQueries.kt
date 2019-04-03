@@ -53,6 +53,12 @@ object DbQueries{
         }
     }
     
+    fun setPassword(user: User, newPasswordHash: String){
+        return transaction{
+            user.passwordHash = newPasswordHash
+        }
+    }
+    
     fun checkSeedKey(user: User, seedKey: String): Boolean{
         return transaction{
             BCrypt.checkpw(seedKey, user.seedKeyHash)

@@ -60,6 +60,7 @@ class Home extends Component {
     }
     
     async componentDidMount(){
+        console.log("mount");
         const result = await Api.fetchUserInfo();
         if(result.ok){
             const userdata = await result.json();
@@ -73,6 +74,8 @@ class Home extends Component {
                 this.emailVerify.current.step.VERIFY);
         }else if(this.state.encryptionKey){
             this.loadAccounts();
+        }else if(this.props.encryptionKey){
+            this.setupTimer();
         }
     }
     
@@ -113,6 +116,11 @@ class Home extends Component {
             this.props.refreshAccounts(accounts);
             this.setState({loading: false});
         }
+        
+        this.setupTimer();
+    }
+    
+    setupTimer(){
         this.otpTimer = setInterval(()=>{
             let tmp = this.props.accounts;
             for(let item of tmp){

@@ -15,6 +15,7 @@ import LinearProgress from '@material/react-linear-progress';
 import Api from './data/Api';
 import Button from '@material/react-button';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
+import ChangePasswordDialog from './dialogs/ChangePasswordDialog';
 import { connect } from "react-redux";
 
 class Settings extends Component {
@@ -24,6 +25,7 @@ class Settings extends Component {
                 serverUrl: ""
         };
         this.emailVerify = React.createRef();
+        this.changePassword = React.createRef();
     }
     
     async componentDidMount(){
@@ -36,6 +38,10 @@ class Settings extends Component {
         {title: "Change Email Address", desc:"Click to change your email address",
          onClick: ()=>{
             this.emailVerify.current.openForm();
+        }},
+        {title: "Change Password", desc:"Change the password of your account",
+        onClick: ()=>{
+            this.changePassword.current.openForm();
         }}
     ]
     
@@ -72,6 +78,7 @@ class Settings extends Component {
                 </List>
             </ListGroup>
             <EmailVerifyDialog ref={this.emailVerify}/>
+            <ChangePasswordDialog ref={this.changePassword}/>
       </div>
     );
   }

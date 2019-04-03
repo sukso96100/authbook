@@ -34,6 +34,22 @@ const Api = {
         });
     },
     
+    changePassword(currentPassword, newPassword, newPasswordCheck){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/auth/change_password`, {
+            method: 'PUT',
+            headers: {
+                'SESSION': session,
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                currentPassword: currentPassword.toString(),
+                newPassword: newPassword.toString(),
+                newPasswordCheck: newPasswordCheck.toString()
+            })
+        });
+    },
+    
     fetchUserInfo(){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/auth/userinfo`, {

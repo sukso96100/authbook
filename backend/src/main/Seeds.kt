@@ -37,10 +37,8 @@ fun Route.seeds(){
                 return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You must enter name of the account and otp key value!."))
             if(!DbQueries.checkSeedKey(user, params.seedKey)) 
                 return@post call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "You have typed wrong seed key."))
-            DbQueries.addUserSeed(user, params)
-            val seeds = DbQueries.getUserSeeds(user)
-            seeds ?: call.respondText("Empty")
-            call.respond(seeds)
+            val newItem = DbQueries.addUserSeed(user, params)
+            call.respond(newItem)
         }
         
         put("/edit"){

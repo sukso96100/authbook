@@ -101,10 +101,10 @@ object DbQueries{
         }
     }
     
-    fun addUserSeed(user: User, newSeedData: AddSeedForm) {
+    fun addUserSeed(user: User, newSeedData: AddSeedForm): SeedItem {
         val newSeedBytes = Crypto.encryptWithKey(newSeedData.seedKey, newSeedData.seedValue)
         return transaction{
-            OtpSeed.new {
+            val result = OtpSeed.new {
                 seedName = newSeedData.seedName
                 url = newSeedData.url
                 accountUserName = newSeedData.accountUserName
@@ -112,6 +112,12 @@ object DbQueries{
                 seedBytes = newSeedBytes 
                 seedOwner = user
             }
+            SeedItem(result.id.value,
+                     result.seedName,
+                     result.url,
+                     result.accountUserName,
+                     result.seedInfo,
+                     Hex.encodeHexString(result.seedBytes))
         }
     }
     

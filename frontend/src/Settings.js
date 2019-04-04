@@ -16,6 +16,7 @@ import Api from './data/Api';
 import Button from '@material/react-button';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 import ChangePasswordDialog from './dialogs/ChangePasswordDialog';
+import ChangeEncryptionKeyDialog from './dialogs/ChangeEncryptionKeyDialog';
 import { connect } from "react-redux";
 
 class Settings extends Component {
@@ -26,12 +27,11 @@ class Settings extends Component {
         };
         this.emailVerify = React.createRef();
         this.changePassword = React.createRef();
+        this.changeKey = React.createRef();
     }
     
     async componentDidMount(){
-            this.setState({
-                serverUrl: Api.url
-            });
+        this.setState({ serverUrl: Api.url});
     }
     
     listItems = [
@@ -42,45 +42,50 @@ class Settings extends Component {
         {title: "Change Password", desc:"Change the password of your account",
         onClick: ()=>{
             this.changePassword.current.openForm();
+        }},
+        {title: "Change Encryption Key", desc:"Change the key that encryptes OTP data.",
+        onClick: ()=>{
+            this.changeKey.current.openForm();
         }}
     ]
     
     
     render() {
-    return (
-        <div class="listMargin">
-            <ListGroup>
-                <ListGroupSubheader tag='h3'><b>Account Information</b></ListGroupSubheader>
-                <List twoLine={true}>
-                    <ListItem>
-                        <ListItemText
-                            primaryText={this.props.userinfo.displayName}
-                            secondaryText={this.props.userinfo.username} />
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText
-                            primaryText="Server URL"
-                            secondaryText={this.state.serverUrl} />
-                    </ListItem>
-                </List>
-                <ListDivider tag="div" />
-                <ListGroupSubheader tag='h3'><b>Account Settings</b></ListGroupSubheader>
-                <List twoLine={true}>
-                    {this.listItems.map((item, i)=>{
-                        return(
-                            <ListItem onClick={item.onClick.bind(this)}>
-                                <ListItemText 
-                                    primaryText={item.title}
-                                    secondaryText={item.desc}/>
-                            </ListItem>
-                        )
-                    })}
-                </List>
-            </ListGroup>
-            <EmailVerifyDialog ref={this.emailVerify}/>
-            <ChangePasswordDialog ref={this.changePassword}/>
-      </div>
-    );
+        return (
+            <div class="listMargin">
+                <ListGroup>
+                    <ListGroupSubheader tag='h3'><b>Account Information</b></ListGroupSubheader>
+                    <List twoLine={true}>
+                        <ListItem>
+                            <ListItemText
+                                primaryText={this.props.userinfo.displayName}
+                                secondaryText={this.props.userinfo.username} />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText
+                                primaryText="Server URL"
+                                secondaryText={this.state.serverUrl} />
+                        </ListItem>
+                    </List>
+                    <ListDivider tag="div" />
+                    <ListGroupSubheader tag='h3'><b>Account Settings</b></ListGroupSubheader>
+                    <List twoLine={true}>
+                        {this.listItems.map((item, i)=>{
+                            return(
+                                <ListItem onClick={item.onClick.bind(this)}>
+                                    <ListItemText 
+                                        primaryText={item.title}
+                                        secondaryText={item.desc}/>
+                                </ListItem>
+                            )
+                        })}
+                    </List>
+                </ListGroup>
+                <EmailVerifyDialog ref={this.emailVerify}/>
+                <ChangePasswordDialog ref={this.changePassword}/>
+                <ChangeEncryptionKeyDialog ref={this.changeKey}/>
+          </div>
+        );
   }
 }
 

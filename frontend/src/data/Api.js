@@ -87,6 +87,22 @@ const Api = {
         });
     },
     
+    changeEncryptionKey(currentKey, newKey, newKeyCheck){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/seeds/change_seedkey`, {
+            method: 'PUT',
+            headers: {
+                'SESSION': session,
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                currentPassword: currentKey.toString(),
+                newPassword: newKey.toString(),
+                newPasswordCheck: newKeyCheck.toString()
+            })
+        });
+    },
+    
     changeEmail(newEmail){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/auth/change_email`, {

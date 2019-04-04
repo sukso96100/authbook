@@ -76,20 +76,37 @@ fun Route.seeds(){
             session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
             val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<SetSeedKeyForm>()
-            if(params.seedKey != params.seedKeyCheck) return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Seed Key not matches"))
-            DbQueries.setSeedKey(user, params.seedKey)
-            call.respondText("Seed key configured") 
+            when{
+                params.seedKey.length < 8 || params.seedKeyCheck.length < 8 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(5, "seed key must be at least 8 digits"))
+                params.seedKey != params.seedKeyCheck -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Seed Key not matches"))
+                else -> {
+                    DbQueries.setSeedKey(user, params.seedKey)
+                    call.respondText("Seed key configured")
+                }
+            }
         }
         
         put("change_seedkey"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
             session ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
             val user = DbQueries.findById(session.useruid) ?: return@put call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
-            val params = call.receive<ChangeSeedKeyForm>()
-            if(!DbQueries.checkSeedKey(user, params.prevKey))
-                return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2,"You have typed wrong seed key."))
-            DbQueries.changeSeedKey(user, params.prevKey, params.newKey)
-            call.respondText("Seed key chanegd")
+            val params = call.receive<PasswordChangeForm>()
+            val currentPassword = params.currentPassword ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "current seed key is empty"))
+            val newPassword = params.newPassword ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "You didn't type new seed key"))
+            val newPasswordCheck = params.newPasswordCheck ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "You didn't type new seed key check"))
+            
+            when{
+                currentPassword.length < 8 || newPassword.length < 8 -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(5, "seed key must be at least 8 digits"))
+                newPassword != newPasswordCheck -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(6, "You have to type same value for seed key and seed key check."))
+                else -> {
+                    if(DbQueries.checkSeedKey(user, params.currentPassword)){
+                        DbQueries.changeSeedKey(user, currentPassword, newPassword)
+                        call.respondText("Seed key chanegd")
+                    }else{
+                        return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(6,"You have typed wrong seed key."))
+                    }
+                }
+            }
         }
     }
         

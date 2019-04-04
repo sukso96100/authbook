@@ -63,7 +63,7 @@ object Crypto{
         // generate secret with key and salt
         val secretKey = generateSecretKey(key, salt)
 
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
         val decrypted = cipher.doFinal(content)
         return String(decrypted, Charsets.UTF_8)

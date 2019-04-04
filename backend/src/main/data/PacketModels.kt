@@ -58,8 +58,6 @@ data class AddSeedForm(
 
 data class SetSeedKeyForm(val seedKey: String, val seedKeyCheck: String)
 
-data class ChangeSeedKeyForm(val prevKey: String, val newKey: String)
-
 data class UpdateSeedForm(
     val id: Int,
     val seedName: String,

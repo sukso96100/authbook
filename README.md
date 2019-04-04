@@ -8,8 +8,8 @@ The backend is built with Kotlin, Ktor and Exposed framework and the frontend is
 
 This project is in development stage and it isn't fullly functional yet.
 
-[Live demo](https://authbook.youngbin.xyz)
-[Demo video(YouTube](https://youtu.be/AlQjdASa2EQ)
+- [Live demo](https://authbook.youngbin.xyz)
+- [Demo video(YouTube](https://youtu.be/AlQjdASa2EQ)
 
 ## To Do
 - [x] Signup(with email verification)

@@ -15,6 +15,12 @@ export default function authbookApp(state = initState, action) {
                 userinfo: action.userinfo
             });
             
+        case 'ADD_ACCOUNT':
+            return {
+                ...state,
+                accounts: [...state.accounts, action.account]
+            };
+            
         case 'REFRESH_ACCOUNTS':
             return Object.assign({}, state, {
                 accounts: action.accounts

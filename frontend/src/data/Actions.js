@@ -19,6 +19,14 @@ export const enterEncryptionKey = (key) => {
     };
 };
 
+export const addAccount = (account) => {
+    return {
+        type: 'ADD_ACCOUNT',
+        account
+    };
+};
+
+
 export const refreshAccounts = (accounts) => {
     return {
         type: 'REFRESH_ACCOUNTS',

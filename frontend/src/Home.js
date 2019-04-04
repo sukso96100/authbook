@@ -105,9 +105,8 @@ class Home extends Component {
         if(res.ok){
             let accounts = await res.json();
             for(let item of accounts){
-                let raw = await Crypto.decrypt(this.props.encryptionKey, item.encryptedSeed);
-                item.otpKey = raw;
-                item.otp = this.authenticator.generate(raw);
+                item.otpKey = await Crypto.decrypt(this.props.encryptionKey, item.encryptedSeed);
+                item.otp = this.authenticator.generate(item.otpKey);
                 
                 const timeUsed = this.authenticator.timeUsed();
                 const timeLeft = this.authenticator.timeRemaining();

@@ -15,7 +15,7 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 
-import { refreshAccounts } from '../data/Actions';
+import { addAccount } from '../data/Actions';
 import { connect } from "react-redux";
 
 const initState = {
@@ -100,8 +100,12 @@ class AddAccountDialog extends Component{
                                         this.state.key)
                         const result = await res.json();
                         if(res.ok){
+                            console.log(result);
+                            this.props.addAccount({
+                                ...result,
+                                otpKey: this.state.seed
+                            });
                             this.onClose();
-                            this.props.refreshAccounts(result);
                             this.props.afterSubmit();
                         }else{
                             this.setState({loading: false, message: result.message});
@@ -114,4 +118,4 @@ class AddAccountDialog extends Component{
 }
 
 
-export default connect(null, {refreshAccounts}, null, {forwardRef: true})(AddAccountDialog);
+export default connect(null, {addAccount}, null, {forwardRef: true})(AddAccountDialog);

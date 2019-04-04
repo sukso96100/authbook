@@ -31,6 +31,7 @@ const initState = {
     isOpen: false,
     message: "",
     loading: false,
+    editIndex: 0
 };
 
 class EditAccountDialog extends Component{
@@ -38,17 +39,17 @@ class EditAccountDialog extends Component{
     constructor(props) {
         super(props);
         this.state = initState;
-        this.editIndex = 0;
     }
     
     openForm(index, initData){
-        this.setState({formData: initData, isOpen: true});
-        this.editIndex = index;
+        this.setState({
+            formData: initData, 
+            isOpen: true,
+            editIndex: index});
     }
     
     closeForm(){
         this.setState(initState);
-        this.editIndex = 0;
     }
     
     render(){
@@ -100,7 +101,7 @@ class EditAccountDialog extends Component{
                         const res = await Api.deleteAccount(this.state.formData.id);
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.removeAccountItem(this.editIndex);
+                            this.props.removeAccountItem(this.state.editIndex);
                             this.props.afterSubmit(1);
                             this.closeForm();
                         }else{

@@ -27,9 +27,11 @@ export default function authbookApp(state = initState, action) {
             });
         
         case 'REMOVE_ACCOUNT_ITEM':
+            let tmpArr = state.accounts;
+            tmpArr.splice(action.index, 1);
             return {
                 ...state,
-                accounts: state.accounts.splice(action.index, 1)
+                accounts: tmpArr
             };
         case 'UPDATE_ACCOUNT_ITEM':
             let tmp = state.accounts;

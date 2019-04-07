@@ -81,7 +81,8 @@ export default class App extends Component {
                           <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
                           <ListItemText primaryText='About' />
                       </ListItem>
-                      <ListItem onClick={()=>{
+                      <ListItem onClick={async ()=>{
+                              await Api.logout();
                               this.setState({selectedIndex: 4, isOpened: false});
                               localStorage.clear();
                               // this.props.resetStates();

@@ -34,6 +34,16 @@ const Api = {
         });
     },
     
+    logout(){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/auth/logout`, {
+            method: 'GET',
+            headers: {
+                'SESSION': session
+              }
+        });
+    },
+    
     changePassword(currentPassword, newPassword, newPasswordCheck){
         const session = localStorage.getItem('session');
         return fetch(`${this.url}/auth/change_password`, {

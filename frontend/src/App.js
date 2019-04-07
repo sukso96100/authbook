@@ -20,10 +20,9 @@ import Api from './data/Api';
 import Button from '@material/react-button';
 import Home from './Home';
 import Settings from './Settings';
-import { connect } from "react-redux";
-import { resetStates } from './data/Actions';
+import {AuthbookContext} from './data/AuthbookContext';
 
-class App extends Component {
+export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,19 +44,22 @@ class App extends Component {
     }
     
     render() {
+        let userinfo = this.context;
         return (
          <div className='drawer-container'>
             <Drawer modal
                 open={this.state.isOpened}
                 onClose={() => this.setState({isOpened: false})}>
-              <DrawerHeader>
-                  <DrawerTitle tag='h2'>
-                    {this.props.userinfo.displayName}
-                  </DrawerTitle>
-                  <DrawerSubtitle>
-                    {this.props.userinfo.username}<br/>{this.state.serverUrl}
-                  </DrawerSubtitle>
-              </DrawerHeader>
+              
+                  <AuthbookContext.Consumer>
+                      {({userinfo}) => (
+                          <DrawerHeader>
+                              <DrawerTitle tag='h2'>{userinfo.displayName}</DrawerTitle>
+                              <DrawerSubtitle>{userinfo.username}<br/>{this.state.serverUrl}</DrawerSubtitle>
+                          </DrawerHeader>
+                      )}
+                  </AuthbookContext.Consumer>
+              
 
               <DrawerContent>
                   <List singleSelection selectedIndex={this.state.selectedIndex}>
@@ -82,7 +84,7 @@ class App extends Component {
                       <ListItem onClick={()=>{
                               this.setState({selectedIndex: 4, isOpened: false});
                               localStorage.clear();
-                              this.props.resetStates();
+                              // this.props.resetStates();
                               history.push("/login");
                           }}>
                           <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
@@ -110,11 +112,3 @@ class App extends Component {
         );
   }
 }
-
-function mapStateToProps(state){
-    return({
-        userinfo: state.userinfo
-    });
-}
-
-export default connect(mapStateToProps, {resetStates})(App)

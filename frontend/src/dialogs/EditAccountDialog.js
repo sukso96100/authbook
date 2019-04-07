@@ -4,7 +4,6 @@ import '@material/react-text-field/dist/text-field.css';
 import "@material/react-dialog/dist/dialog.css";
 import '@material/react-linear-progress/dist/linear-progress.css';
 import './DialogInputStyle.css';
-
 import TextField, {HelperText, Input} from '@material/react-text-field';
 import LinearProgress from '@material/react-linear-progress';
 import Api from '../data/Api';
@@ -14,9 +13,7 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from '@material/react-dialog';
-
-import { updateAccountItem, removeAccountItem } from '../data/Actions';
-import { connect } from "react-redux";
+import {AuthbookContext} from '../data/AuthbookContext';
 
 const initState = {
     formData: {
@@ -34,8 +31,8 @@ const initState = {
     editIndex: 0
 };
 
-class EditAccountDialog extends Component{
-    
+export default class EditAccountDialog extends Component{
+    static contextType = AuthbookContext;
     constructor(props) {
         super(props);
         this.state = initState;
@@ -101,7 +98,7 @@ class EditAccountDialog extends Component{
                         const res = await Api.deleteAccount(this.state.formData.id);
                         if(res.ok){
                             this.setState({loading: false});
-                            this.props.removeAccountItem(this.state.editIndex);
+                            this.context.deleteAccount(this.state.editIndex);
                             this.props.afterSubmit(1);
                             this.closeForm();
                         }else{
@@ -127,11 +124,10 @@ class EditAccountDialog extends Component{
                                 url: this.state.formData.url,
                                 accountUserName: this.state.formData.accountUserName,
                                 seedInfo: this.state.formData.seedInfo
-                            }
+                            };
                             
                             if(this.state.formData.seed != "") newItem.otpKey = this.state.formData.seed;
-                            
-                            this.props.updateAccountItem(this.editIndex, newItem);
+                            this.context.updateAccount(this.editIndex, newItem);
                             this.props.afterSubmit(0);
                             this.closeForm();
                         }else{
@@ -145,4 +141,4 @@ class EditAccountDialog extends Component{
     }
 }
 
-export default connect(null, { updateAccountItem, removeAccountItem }, null, {forwardRef: true})(EditAccountDialog);
+// export default connect(null, { updateAccountItem, removeAccountItem }, null, {forwardRef: true})(EditAccountDialog);

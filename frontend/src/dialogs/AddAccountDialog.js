@@ -14,9 +14,7 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from '@material/react-dialog';
-
-import { addAccount } from '../data/Actions';
-import { connect } from "react-redux";
+import {AuthbookContext} from '../data/AuthbookContext';
 
 const initState = {
             name: "",
@@ -30,7 +28,8 @@ const initState = {
             isOpen: false
         };
 
-class AddAccountDialog extends Component{
+export default class AddAccountDialog extends Component{
+    static contextType = AuthbookContext;
     constructor(props) {
         super(props);
         this.state = initState;
@@ -101,7 +100,7 @@ class AddAccountDialog extends Component{
                         const result = await res.json();
                         if(res.ok){
                             console.log(result);
-                            this.props.addAccount({
+                            this.context.addAccount({
                                 ...result,
                                 otpKey: this.state.seed
                             });
@@ -118,4 +117,4 @@ class AddAccountDialog extends Component{
 }
 
 
-export default connect(null, {addAccount}, null, {forwardRef: true})(AddAccountDialog);
+// export default connect(null, {addAccount}, null, {forwardRef: true})(AddAccountDialog);

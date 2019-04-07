@@ -17,9 +17,9 @@ import Button from '@material/react-button';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 import ChangePasswordDialog from './dialogs/ChangePasswordDialog';
 import ChangeEncryptionKeyDialog from './dialogs/ChangeEncryptionKeyDialog';
-import { connect } from "react-redux";
+import {AuthbookContext} from './data/AuthbookContext';
 
-class Settings extends Component {
+export default class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,11 +56,15 @@ class Settings extends Component {
                 <ListGroup>
                     <ListGroupSubheader tag='h3'><b>Account Information</b></ListGroupSubheader>
                     <List twoLine={true}>
-                        <ListItem>
-                            <ListItemText
-                                primaryText={this.props.userinfo.displayName}
-                                secondaryText={this.props.userinfo.username} />
-                        </ListItem>
+                        <AuthbookContext.Consumer>
+                          {({userinfo}) => (
+                                <ListItem>
+                                    <ListItemText
+                                        primaryText={userinfo.displayName}
+                                        secondaryText={userinfo.username} />
+                                </ListItem>
+                            )}
+                        </AuthbookContext.Consumer>
                         <ListItem>
                             <ListItemText
                                 primaryText="Server URL"
@@ -88,11 +92,3 @@ class Settings extends Component {
         );
   }
 }
-
-function mapStateToProps(state){
-    return({
-        userinfo: state.userinfo
-    });
-}
-
-export default connect(mapStateToProps)(Settings)

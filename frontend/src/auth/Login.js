@@ -31,16 +31,17 @@ import Card, {
 } from "@material/react-card";
 import SignupDialog from '../dialogs/SignupDialog';
 import PasswordRecoverDialog from '../dialogs/PasswordRecoverDialog';
-import {setUserinfo} from '../data/Actions';
-import { connect } from "react-redux";
+import {AuthbookContext} from '../data/AuthbookContext';
 
 
-class Login extends Component {
+export default class Login extends Component {
+    static contextType = AuthbookContext;
     constructor(props) {
         super(props);
         this.state = {
             username: "", password: "", url: "https://authbook.herokuapp.com",
-            isOpen: false, message: "", loading: false
+            isOpen: false, message: "", loading: false,
+            userinfo: this.context
         };
         Api.setUrl(this.state.url);
         this.signup = React.createRef();
@@ -54,14 +55,17 @@ class Login extends Component {
         if(res.ok){
             let userdata = await res.json();
             localStorage.setItem("serverUrl", Api.url);
-            this.props.setUserinfo(userdata.displayName, userdata.username, userdata.email,
-                                  userdata.isSeedKeySet, userdata.isEmailVerified);
             localStorage.setItem("session", res.headers.get("SESSION"));
             this.setState({loading: false});
+            this.context.setUserinfo({ displayName: userdata.displayName,
+                             username: userdata.username,
+                             email: userdata.email, 
+                             encryptionKeySet: userdata.isSeedKeySet,
+                             isEmailVerified: userdata.isEmailVerified });
             history.push("/");
         }else{
             let result = await res.json();
-            this.setState({message: result.message, loading: false})
+            this.setState({message: result.message, loading: false});
         }
     }
     
@@ -116,12 +120,9 @@ class Login extends Component {
         <SignupDialog ref={this.signup}/>
         <PasswordRecoverDialog ref={this.pwRecover}/>
     </div>
+          
       );
   }
     
 }
 
-export default connect(
-  null,
-  {setUserinfo}
-)(Login)

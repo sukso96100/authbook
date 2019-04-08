@@ -1,7 +1,10 @@
+![Icon](frontend/public/icons/icon-72x72.png)
+
 # Authbook
 
 ![App Preview](login.png)
-![App Preview](accounts.png)
+![App Preview](home.png)
+![App Preview](menu.png)
 ![App Preview](settings.png)
 Authbook is a self-hosted OTP Web app software.  
 The backend is built with Kotlin, Ktor and Exposed framework and the frontend is built with Javascipt, React and MDC(Material Design Components)
@@ -22,6 +25,8 @@ This project is in development stage and it isn't fullly functional yet.
 - [ ] Localization
 - [ ] Session manager
 - [x] Deploy manual
+- [x] Themeing
+- [ ] Enable PWA
 
 ## Deploy
 

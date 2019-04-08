@@ -3,12 +3,8 @@ import { Router, Route, NavLink } from "react-router-dom";
 import history from './history';
 import logo from './logo.svg';
 import './App.css';
-import '@material/react-top-app-bar/dist/top-app-bar.css';
-import '@material/react-material-icon/dist/material-icon.css';
-import "@material/react-drawer/dist/drawer.css";
-import '@material/react-list/dist/list.css';
-import '@material/react-icon-button/dist/icon-button.css';
-import '@material/react-button/dist/button.css';
+import './themeing.scss';
+
 
 import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
 import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle, DrawerSubtitle} from '@material/react-drawer';

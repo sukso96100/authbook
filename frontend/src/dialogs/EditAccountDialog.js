@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Route, NavLink } from "react-router-dom";
-import '@material/react-text-field/dist/text-field.css';
-import "@material/react-dialog/dist/dialog.css";
-import '@material/react-linear-progress/dist/linear-progress.css';
+import '../themeing.scss';
 import './DialogInputStyle.css';
 import TextField, {HelperText, Input} from '@material/react-text-field';
 import LinearProgress from '@material/react-linear-progress';

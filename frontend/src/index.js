@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './themeing.scss';
+import './index.scss';
 import { Router, Route, Link, Redirect } from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 import App from './App';

@@ -3,10 +3,7 @@ import { Router, Route, NavLink } from "react-router-dom";
 import history from './history';
 import logo from './logo.svg';
 import './App.css';
-import '@material/react-material-icon/dist/material-icon.css';
-import '@material/react-linear-progress/dist/linear-progress.css';
-import '@material/react-button/dist/button.css';
-import '@material/react-list/dist/list.css';
+import './themeing.scss';
 
 import MaterialIcon from '@material/react-material-icon';
 import List, {ListItem, ListItemText, ListGroup, 

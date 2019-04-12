@@ -53,6 +53,12 @@ object DbQueries{
         }
     }
     
+    fun closeUser(user: User){
+        return transaction{
+            user.delete()
+        }
+    }
+    
     fun setPassword(user: User, newPasswordHash: String){
         return transaction{
             user.passwordHash = newPasswordHash

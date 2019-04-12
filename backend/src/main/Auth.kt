@@ -100,6 +100,7 @@ fun Route.auth(){
         get("/logout"){
             // Clear session when logging out
             call.sessions.clear<AuthbookSession>()
+            call.respondText("Logged out.")
         }
         
         post("/request_recover"){
@@ -203,12 +204,32 @@ fun Route.auth(){
             else call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "Verification code dose not matches"))
         }
         
-        get("userinfo"){
+        get("/userinfo"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
             session ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
             val user = DbQueries.findById(session.useruid) ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val isEmailVerified = DbQueries.isEmailVerified(user)
             call.respond(UserData(user.username, user.displayName, user.email, !user.seedKeyHash.isEmpty(), isEmailVerified))
+        }
+        
+        delete("/close_account"){
+            val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
+            session ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            val params = call.receive<CloseAccountForm>()
+            
+            val password = params.password ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "password is empty"))
+            val seedKey = params.seedKey ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "seed key is empty"))
+            
+            when{
+                !BCrypt.checkpw(password, user.passwordHash) -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "Password dose not matches."))
+                !BCrypt.checkpw(seedKey, user.seedKeyHash) -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "Seed key dose not matches."))
+                else -> {
+                    DbQueries.closeUser(user)
+                    call.sessions.clear<AuthbookSession>()
+                    call.respondText("Your account is now closed and no longer available.")
+                }
+            }
         }
     }
 }

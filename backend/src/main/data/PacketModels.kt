@@ -45,6 +45,11 @@ data class PasswordRecoverForm(
 data class EmailSubmitForm(
     val email: String
 )
+
+data class CloseAccountForm(
+    val passord: String,
+    val seedKey: String 
+)
     
 // Seeds
 

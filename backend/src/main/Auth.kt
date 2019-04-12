@@ -214,12 +214,12 @@ fun Route.auth(){
         
         delete("/close_account"){
             val session: AuthbookSession? = call.sessions.get<AuthbookSession>()
-            session ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
-            val user = DbQueries.findById(session.useruid) ?: return@get call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
+            session ?: return@delete call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(0, "Session is empty"))
+            val user = DbQueries.findById(session.useruid) ?: return@delete call.respond(HttpStatusCode.Unauthorized, ResponseWithCode(1, "User not found"))
             val params = call.receive<CloseAccountForm>()
             
-            val password = params.password ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "password is empty"))
-            val seedKey = params.seedKey ?: return@put call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "seed key is empty"))
+            val password = params.password ?: return@delete call.respond(HttpStatusCode.BadRequest, ResponseWithCode(2, "password is empty"))
+            val seedKey = params.seedKey ?: return@delete call.respond(HttpStatusCode.BadRequest, ResponseWithCode(3, "seed key is empty"))
             
             when{
                 !BCrypt.checkpw(password, user.passwordHash) -> call.respond(HttpStatusCode.BadRequest, ResponseWithCode(4, "Password dose not matches."))

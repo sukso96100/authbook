@@ -47,7 +47,7 @@ data class EmailSubmitForm(
 )
 
 data class CloseAccountForm(
-    val passord: String,
+    val password: String,
     val seedKey: String 
 )
     

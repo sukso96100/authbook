@@ -39,7 +39,7 @@ object OtpSeeds : IdTable<Int>() {
     val accountUserName = varchar("account_user_name", 128)
     val seedInfo = varchar("seed_info", 2048)
     val seedBytes = binary("seed_bytes", 512)
-    val seedOwner= reference("seed_owner", Users)
+    val seedOwner= reference("seed_owner", Users, onDelete = ReferenceOption.CASCADE)
 }
 
 class OtpSeed(id: EntityID<Int>) : Entity<Int>(id) {
@@ -65,7 +65,7 @@ object Verifications : IdTable<Int>() {
     val requestedAt = datetime("requested_at")
     val verifiedAt = datetime("verified_at").nullable()
     val newEmail = varchar("new_email", 128).default("")
-    val user = reference("user", Users)
+    val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
 }
 
 class Verification(id: EntityID<Int>) : Entity<Int>(id) {

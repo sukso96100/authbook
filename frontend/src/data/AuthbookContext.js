@@ -37,6 +37,18 @@ export class AuthbookContextProvider extends Component{
         };
     }
     
+    resetStates(){
+        this.setState({
+            ...ContextDefaults,
+            setUserinfo: this.setUserinfo.bind(this),
+            setEncryptionKey: this.setEncryptionKey.bind(this),
+            setAccounts: this.setAccounts.bind(this),
+            addAccount: this.addAccount.bind(this),
+            updateAccount: this.updateAccount.bind(this),
+            deleteAccount: this.deleteAccount.bind(this)
+        });
+    }
+    
     setUserinfo(data){ 
         this.setState({userinfo: data});
     }

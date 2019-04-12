@@ -40,7 +40,22 @@ const Api = {
             method: 'GET',
             headers: {
                 'SESSION': session
-              }
+            }
+        });
+    },
+    
+    closeAccount(password, encryptionKey){
+        const session = localStorage.getItem('session');
+        return fetch(`${this.url}/auth/close_account`, {
+            method: 'DELETE',
+            headers: {
+                'SESSION': session,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: password.toString(),
+                seedKey: encryptionKey.toString()
+            })
         });
     },
     

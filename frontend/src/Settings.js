@@ -14,6 +14,7 @@ import Button from '@material/react-button';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 import ChangePasswordDialog from './dialogs/ChangePasswordDialog';
 import ChangeEncryptionKeyDialog from './dialogs/ChangeEncryptionKeyDialog';
+import CloseAccountDialog from './dialogs/CloseAccountDialog';
 import {AuthbookContext} from './data/AuthbookContext';
 
 export default class Settings extends Component {
@@ -25,6 +26,7 @@ export default class Settings extends Component {
         this.emailVerify = React.createRef();
         this.changePassword = React.createRef();
         this.changeKey = React.createRef();
+        this.closeAccount = React.createRef();
     }
     
     async componentDidMount(){
@@ -43,6 +45,10 @@ export default class Settings extends Component {
         {title: "Change Encryption Key", desc:"Change the key that encryptes OTP data.",
         onClick: ()=>{
             this.changeKey.current.openForm();
+        }},
+        {title: "Close my account", desc:"Delete your data and account from the server.",
+        onClick: ()=>{
+            this.closeAccount.current.openForm();
         }}
     ]
     
@@ -85,6 +91,7 @@ export default class Settings extends Component {
                 <EmailVerifyDialog ref={this.emailVerify}/>
                 <ChangePasswordDialog ref={this.changePassword}/>
                 <ChangeEncryptionKeyDialog ref={this.changeKey}/>
+                <CloseAccountDialog ref={this.closeAccount}/>
           </div>
         );
   }

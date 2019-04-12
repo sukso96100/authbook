@@ -22,6 +22,9 @@ plugins {
 mainClassName = 'io.ktor.server.cio.EngineMain'
 
 jib {
+    from {
+        image = "oracle/graalvm-ce:1.0.0-rc15"
+    }
     to {
         image = 'sukso96100/authbook'
     }

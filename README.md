@@ -62,3 +62,8 @@ Build docker image(See [here](https://github.com/GoogleContainerTools/jib/tree/m
  
 ## Author
 Youngbin Han(sukso96100@gmail.com)
+
+## License
+GNU General Public License v3.0
+
+See [COPYING.txt](COPYING.txt) to see the full text.

@@ -6,7 +6,8 @@ import './App.css';
 import './themeing.scss';
 
 
-import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
+import TopAppBar, {TopAppBarFixedAdjust, TopAppBarIcon, 
+                   TopAppBarTitle, TopAppBarRow, TopAppBarSection} from '@material/react-top-app-bar';
 import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle, DrawerSubtitle} from '@material/react-drawer';
 import MaterialIcon from '@material/react-material-icon';
 import List, {ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
@@ -93,19 +94,22 @@ export default class App extends Component {
             </Drawer>
 
             <DrawerAppContent className='drawer-app-content'>
-                 <TopAppBar
-            title='Authbook'
-            navigationIcon={<MaterialIcon
-              icon='menu'
-              onClick={() => this.setState({isOpened: !this.state.isOpened})}
-            />}
-          />
-          <TopAppBarFixedAdjust>
-              <Route exact path="/app/home" component={Home} />
-              <Route exact path="/app/settings" component={Settings} />
-          </TopAppBarFixedAdjust>
-            </DrawerAppContent>
-          </div>
+                 <TopAppBar>
+                     <TopAppBarRow>
+                         <TopAppBarSection align='start'>
+                            <TopAppBarIcon navIcon tabIndex={0}>
+                                <MaterialIcon hasRipple icon='menu' onClick={() => this.setState({isOpened: !this.state.isOpened})}/>
+                             </TopAppBarIcon>
+                             <TopAppBarTitle>Authbook</TopAppBarTitle>
+                         </TopAppBarSection>
+                     </TopAppBarRow>
+                </TopAppBar>
+                <TopAppBarFixedAdjust>
+                    <Route exact path="/app/home" component={Home} />
+                    <Route exact path="/app/settings" component={Settings} />
+                </TopAppBarFixedAdjust>
+                </DrawerAppContent>
+            </div>
         );
-  }
+    }
 }

@@ -31,6 +31,7 @@ import {authenticator} from 'otplib/otplib-browser';
 import EditAccountDialog from './dialogs/EditAccountDialog';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
+import DetailsDialog from './dialogs/DetailsDialog';
 import {AuthbookContext} from './data/AuthbookContext';
 
 export default class Home extends Component {
@@ -49,6 +50,7 @@ export default class Home extends Component {
         this.emailVerify = React.createRef();
         this.addAccount = React.createRef();
         this.editAccount = React.createRef();
+        this.details = React.createRef();
         this.authenticator = authenticator;
     }
     
@@ -167,6 +169,11 @@ export default class Home extends Component {
                                     <LinearProgress
                                         progress={item.timeLeft} bufferingDots={false}/>
                                   <CardActions>
+                                    <IconButton onClick={()=>{
+                                        this.details.current.openForm(item);
+                                    }}>
+                                        <MaterialIcon icon='info'/>
+                                    </IconButton>
                                     <CardActionIcons>
                                         <CopyToClipboard text={item.otp}
                                             onCopy={() => this.notify("Copied!")}>
@@ -231,6 +238,7 @@ export default class Home extends Component {
                       }
                   }}/>
                 <EmailVerifyDialog ref={this.emailVerify}/>
+                <DetailsDialog ref={this.details}/>
               <ToastContainer />
           </div>
     );

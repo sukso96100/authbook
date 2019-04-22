@@ -42,11 +42,10 @@ export default class DetailsDialog extends Component{
             <Dialog open={this.state.isOpen} onClose={this.closeForm.bind(this)}>
             <DialogTitle>Account Details</DialogTitle>
             <DialogContent>
-                <h2>{this.state.formData.seedName}</h2>
-                <p>{this.state.formData.url}</p>
-                <hr/>
-                <h3>{this.state.formData.accountUserName}</h3>
-                <p>{this.state.formData.seedInfo}</p>
+                <p><b>{this.state.formData.seedName}</b></p>
+                <p><b>URL </b>{this.state.formData.url}</p>
+                <p><b>Username </b>{this.state.formData.accountUserName}</p>
+                <p><b>Information </b><br/>{this.state.formData.seedInfo}</p>
             </DialogContent>
             <DialogFooter>
                 <DialogButton onClick={this.closeForm.bind(this)}>Close</DialogButton>

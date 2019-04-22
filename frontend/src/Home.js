@@ -169,12 +169,12 @@ export default class Home extends Component {
                                     <LinearProgress
                                         progress={item.timeLeft} bufferingDots={false}/>
                                   <CardActions>
-                                    <IconButton onClick={()=>{
-                                        this.details.current.openForm(item);
-                                    }}>
-                                        <MaterialIcon icon='info'/>
-                                    </IconButton>
                                     <CardActionIcons>
+                                        <IconButton onClick={()=>{
+                                            this.details.current.openForm(item);
+                                        }}>
+                                            <MaterialIcon icon='info'/>
+                                        </IconButton>
                                         <CopyToClipboard text={item.otp}
                                             onCopy={() => this.notify("Copied!")}>
                                             <IconButton>

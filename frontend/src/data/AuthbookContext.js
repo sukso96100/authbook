@@ -12,6 +12,7 @@ export const ContextDefaults = {
     accounts: [],
     encryptionKey: "",
     
+    resetStates: () => {},
     setUserinfo: () => {},
     setEncryptionKey: () => {},
     setAccounts: () => {},
@@ -28,6 +29,7 @@ export class AuthbookContextProvider extends Component{
         super(props);
         this.state = {
             ...ContextDefaults,
+            resetStates: this.resetStates.bind(this),
             setUserinfo: this.setUserinfo.bind(this),
             setEncryptionKey: this.setEncryptionKey.bind(this),
             setAccounts: this.setAccounts.bind(this),
@@ -40,6 +42,7 @@ export class AuthbookContextProvider extends Component{
     resetStates(){
         this.setState({
             ...ContextDefaults,
+            resetStates: this.resetStates.bind(this),
             setUserinfo: this.setUserinfo.bind(this),
             setEncryptionKey: this.setEncryptionKey.bind(this),
             setAccounts: this.setAccounts.bind(this),

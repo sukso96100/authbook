@@ -8,7 +8,7 @@ import App from './App';
 import Login from './auth/Login';
 import history from './history';
 import {AuthbookContextProvider} from './data/AuthbookContext';
-
+import './data/i18n/i18n';
 ReactDOM.render((
     <AuthbookContextProvider>
         <Router history={history}>

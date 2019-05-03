@@ -11,15 +11,13 @@ import TopAppBar, {TopAppBarFixedAdjust, TopAppBarIcon,
 import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle, DrawerSubtitle} from '@material/react-drawer';
 import MaterialIcon from '@material/react-material-icon';
 import List, {ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
-import IconButton from '@material/react-icon-button';
-import LinearProgress from '@material/react-linear-progress';
 import Api from './data/Api';
-import Button from '@material/react-button';
 import Home from './Home';
 import Settings from './Settings';
 import {AuthbookContext} from './data/AuthbookContext';
+import { withTranslation } from 'react-i18next';
 
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -65,18 +63,18 @@ export default class App extends Component {
                               this.setState({selectedIndex: 0, isOpened: false});
                           }}>
                           <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
-                          <ListItemText primaryText='Accounts' />
+                          <ListItemText primaryText={this.props.t("menu.accounts")} />
                       </ListItem>
                       <ListItem onClick={()=>{
                               history.push("/app/settings");
                               this.setState({selectedIndex: 1, isOpened: false});
                           }}>
                           <ListItemGraphic graphic={<MaterialIcon icon='settings'/>} />
-                          <ListItemText primaryText='Settings' />
+                          <ListItemText primaryText={this.props.t("menu.settings")} />
                       </ListItem>
                       <ListItem>
                           <ListItemGraphic graphic={<MaterialIcon icon='info'/>} />
-                          <ListItemText primaryText='About' />
+                          <ListItemText primaryText={this.props.t("menu.about")} />
                       </ListItem>
                       <ListItem onClick={async ()=>{
                               await Api.logout();
@@ -86,7 +84,7 @@ export default class App extends Component {
                               history.push("/login");
                           }}>
                           <ListItemGraphic graphic={<MaterialIcon icon='lock'/>} />
-                          <ListItemText primaryText='Logout' />
+                          <ListItemText primaryText={this.props.t("menu.logout")} />
                       </ListItem>
 
                 </List>
@@ -113,3 +111,5 @@ export default class App extends Component {
         );
     }
 }
+
+export default withTranslation()(App);

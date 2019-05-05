@@ -12,8 +12,9 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from '@material/react-dialog';
+import { withTranslation } from 'react-i18next';
 
-export default class PasswordRecoverDialog extends Component{
+class PasswordRecoverDialog extends Component{
     
     step = {
         INIT: 0,
@@ -101,22 +102,22 @@ export default class PasswordRecoverDialog extends Component{
             case this.step.INIT:
                 content = (<div>
                     <DialogContent>
-                        <p>Did you received a verification code for recovering your password via email?</p>
+                        <p>{this.props.t("login.recover_init")}</p>
                     </DialogContent>
                     <DialogFooter>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.REQUEST})
-                            }}>No</DialogButton>
+                            }}>{this.props.t("common.no")}</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.VERIFY})
-                            }}>Yes</DialogButton>
+                            }}>{this.props.t("common.yes")}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.REQUEST:
                 content = (<div>
                     <DialogContent>
-                        <p>Submit email address of your authbook account to get a verification code.</p>
+                        <p>{this.props.t("login.recover_request")}</p>
                         <TextField label='Server URL'>
                             <Input disabled={true}
                                 value={this.state.serverUrl}/>
@@ -131,51 +132,49 @@ export default class PasswordRecoverDialog extends Component{
                         {loading}
                     <DialogFooter>
                         <DialogButton isDefault disabled={this.state.loading}
-                            onClick={this.requestRecover.bind(this)}>Submit</DialogButton>
+                            onClick={this.requestRecover.bind(this)}>{this.props.t("common.submit")}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.REQUESTED:
                 content = (<div>
                     <DialogContent>
-                        <p>Now, check your inbox and prepare your verification code.<br/>
-                            Couldn't received? You can move to previous step and request again.<br/>
-                            Click "Next" if you are ready.</p>
+                        <p>{this.props.t("login.recover_requested")}</p>
                     </DialogContent>
                     <DialogFooter>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.REQUEST})
-                            }}>Previous</DialogButton>
+                            }}>{this.props.t("commom.prev")}</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.VERIFY})
-                            }}>Next</DialogButton>
+                            }}>{this.props.t("common.next")}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.VERIFY:
                 content = (<div>
                     <DialogContent>
-                        <p>Use the verification code you received to recover password.</p>
-                        <TextField label='Server URL'>
+                        <p>{this.props.t("login.recover_verify")}</p>
+                        <TextField label={this.props.t("common.serverurl")}>
                             <Input disabled={true}
                                 value={this.state.serverUrl}/>
                         </TextField>
-                        <TextField label='Username'>
+                        <TextField label={this.props.t("common.username")}>
                             <Input disabled={this.state.loading}
                                 value={this.state.username}
                                 onChange={(e) => this.setState({username: e.target.value})}/>
                         </TextField>
-                        <TextField label='Verification Code'>
+                        <TextField label={this.props.t("common.ver_code")}>
                             <Input disabled={this.state.loading}
                                 value={this.state.verificationCode}
                                 onChange={(e) => this.setState({verificationCode: e.target.value})}/>
                         </TextField>
-                        <TextField label='New Password'>
+                        <TextField label={this.props.t("login.new_pw")}>
                             <Input disabled={this.state.loading}
                                 value={this.state.password} type="password"
                                 onChange={(e) => this.setState({password: e.target.value})}/>
                         </TextField>
-                        <TextField label='Confirm New Password'>
+                        <TextField label={this.props.t("login.new_pw_chk")}>
                             <Input disabled={this.state.loading}
                                 value={this.state.passwordCheck} type="password"
                                 onChange={(e) => this.setState({passwordCheck: e.target.value})}/>
@@ -202,9 +201,11 @@ export default class PasswordRecoverDialog extends Component{
         }
         return(
             <Dialog open={this.state.isOpen} onClose={()=>this.onClose()}>
-            <DialogTitle>Password recovery</DialogTitle>
+            <DialogTitle>{this.props.t("login.recover")}</DialogTitle>
                 {content}
             </Dialog>
         )
     }
 }
+
+export default withTranslation(null,{withRef: true})(PasswordRecoverDialog);

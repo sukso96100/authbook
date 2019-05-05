@@ -12,8 +12,9 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from '@material/react-dialog';
+import { withTranslation } from 'react-i18next';
 
-export default class SignupDialog extends Component{
+class SignupDialog extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -70,32 +71,32 @@ export default class SignupDialog extends Component{
             </div>) : 
             (<div>
                 <DialogContent>
-                    <TextField label='Server URL'>
+                    <TextField label={this.props.t("common.serverurl")}>
                         <Input disabled={true}
                             value={this.state.serverUrl}/>
                     </TextField>
-                    <TextField label='Username'>
+                    <TextField label={this.props.t("common.username")}>
                         <Input disabled={this.state.loading}
                             value={this.state.username}
                             onChange={(e) => this.setState({username: e.target.value})}/>
                     </TextField>
-                    <TextField label='Display Name'>
+                    <TextField label={this.props.t("common.dspname")}>
                         <Input disabled={this.state.loading}
                             value={this.state.displayName}
                             onChange={(e) => this.setState({displayName: e.target.value})}/>
                     </TextField>
-                    <TextField label='Email Address'>
+                    <TextField label={this.props.t("common.email")}>
                         <Input disabled={this.state.loading}
                             value={this.state.email}
                             onChange={(e) => this.setState({email: e.target.value})}/>
                     </TextField>
-                    <TextField label='Password'>
+                    <TextField label={this.props.t("common.password")}>
                         <Input disabled={this.state.loading}
                             type="password"
                             value={this.state.password}
                             onChange={(e) => this.setState({password: e.target.value})}/>
                     </TextField>
-                    <TextField label='Password Check'>
+                    <TextField label={this.props.t("common.pwcheck")}>
                         <Input disabled={this.state.loading}
                             type="password"
                             value={this.state.passwordCheck}
@@ -106,14 +107,16 @@ export default class SignupDialog extends Component{
                     {loading}
                 <DialogFooter>
                     <DialogButton isDefault disabled={this.state.loading}
-                        onClick={this.signup.bind(this)}>Sign Up</DialogButton>
+                        onClick={this.signup.bind(this)}>{this.props.t("login.signup")}</DialogButton>
                 </DialogFooter>
             </div>)
         return(
             <Dialog open={this.state.isOpen} onClose={()=>this.setState({isOpen: false, done: false})}>
-            <DialogTitle>Sign Up</DialogTitle>
+            <DialogTitle>{this.props.t("login.signup")}</DialogTitle>
                 {content}
             </Dialog>
         )
     }
 }
+
+export default withTranslation(null, {withRef: true})(SignupDialog);

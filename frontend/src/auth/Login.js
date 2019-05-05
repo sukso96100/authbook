@@ -5,9 +5,6 @@ import Api from '../data/Api';
 import './Login.scss';
 import '../themeing.scss';
 import logo from '../logo.svg';
-
-
-
 import TextField, {HelperText, Input} from '@material/react-text-field';
 import Button from '@material/react-button';
 import Dialog, {
@@ -28,9 +25,9 @@ import Card, {
 import SignupDialog from '../dialogs/SignupDialog';
 import PasswordRecoverDialog from '../dialogs/PasswordRecoverDialog';
 import {AuthbookContext} from '../data/AuthbookContext';
+import { withTranslation } from 'react-i18next';
 
-
-export default class Login extends Component {
+class Login extends Component {
     static contextType = AuthbookContext;
     constructor(props) {
         super(props);
@@ -76,14 +73,14 @@ export default class Login extends Component {
                   <Chip id="urlChip" label={this.state.url} onClick={()=>{this.setState({isOpen: true})}}/><br/>
         <TextField 
             class="loginForm"
-            label='Username'>
+            label={this.props.t("common.username")}>
             <Input disabled={this.state.loading}
                 value={this.state.username}
                 onChange={(e) => this.setState({username: e.target.value})}/>
         </TextField><br/>
         <TextField 
             class="loginForm"
-            label='Password'>
+            label={this.props.t("common.password")}>
             <Input disabled={this.state.loading}
                 type="password"
                 value={this.state.password}
@@ -91,16 +88,16 @@ export default class Login extends Component {
         </TextField><br/>
               <p>{this.state.message}</p>
               {loading}
-        <Button raised="true" onClick={this.login.bind(this)}>Log In</Button><br/>
-        <Button onClick={()=>this.signup.current.openForm(this.state.url)}>Sign Up</Button>
-        <Button onClick={()=>this.pwRecover.current.openForm(this.state.url)}>Forgot password</Button>
+        <Button raised="true" onClick={this.login.bind(this)}>{this.props.t("login.login")}</Button><br/>
+        <Button onClick={()=>this.signup.current.openForm(this.state.url)}>{this.props.t("login.signup")}</Button>
+        <Button onClick={()=>this.pwRecover.current.openForm(this.state.url)}>{this.props.t("login.forgot")}</Button>
               </Card>
                 <Dialog open={this.state.isOpen}>
-            <DialogTitle>Configure Server</DialogTitle>
+            <DialogTitle>{this.props.t("login.server_config")}</DialogTitle>
             <DialogContent>
-            <p>Type the url of Authbook server instance. It must be HTTPS.</p>
+            <p>{this.props.t("login.server_config_desc")}</p>
               <TextField textarea
-                  label='Server URL'>
+                  label={this.props.t("common.serverurl")}>
                 <Input
                     value={this.state.url}
                     onChange={(e) => this.setState({url: e.target.value})}/>
@@ -110,15 +107,14 @@ export default class Login extends Component {
               <DialogButton isDefault onClick={()=>{
                         Api.setUrl(this.state.url);
                         this.setState({isOpen: false})
-                    }}>Configure</DialogButton>
+                    }}>{this.props.t("common.configure")}</DialogButton>
             </DialogFooter>
       </Dialog>
         <SignupDialog ref={this.signup}/>
         <PasswordRecoverDialog ref={this.pwRecover}/>
-    </div>
-          
+    </div>       
       );
   }
-    
 }
 
+export default withTranslation()(Login);

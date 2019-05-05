@@ -16,6 +16,7 @@ const i18nEnUS = {
             'ver_code': 'Verification code',
             'dspname': 'Display name(nickname, real name, etc...)',
             'configure': 'Configure',
+            'enckey': 'Encryption key'
         },
         'menu': {
             'accounts': 'My Accounts',
@@ -46,6 +47,7 @@ const i18nEnUS = {
         'home': {
             'decrypt_desc': 'Type your encryption key to decrypt your accounts.',
             'decrypt': 'Decrypt',
+            'add': 'Add account'
         },
     },
 };

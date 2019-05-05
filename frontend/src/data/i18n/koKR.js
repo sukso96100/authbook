@@ -15,6 +15,7 @@ const i18nKoKR = {
             'ver_code': '인증 코드',
             'dspname': '표시 이름(별명, 실명 등)',
             'configure': '구성',
+            'enckey': '암호화 키'
         },
         'menu': {
             'accounts': '내 계정',
@@ -45,6 +46,7 @@ const i18nKoKR = {
         'home': {
             'decrypt_desc': '계정 정보를 복호화 하기 위해 암호화 키를 입력하세요.',
             'decrypt': '복호화',
+            'add': '계정 추가'
         },
     },
 };

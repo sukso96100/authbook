@@ -12,6 +12,7 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 import {AuthbookContext} from '../data/AuthbookContext';
+import {withTranslation} from 'react-i18next';
 
 const initState = {
             name: "",
@@ -25,7 +26,7 @@ const initState = {
             isOpen: false
         };
 
-export default class AddAccountDialog extends Component{
+class AddAccountDialog extends Component{
     static contextType = AuthbookContext;
     constructor(props) {
         super(props);
@@ -47,34 +48,34 @@ export default class AddAccountDialog extends Component{
         return(
             <Dialog open={this.state.isOpen} onClose={this.onClose.bind(this)}
                  scrimClickAction="" escapeKeyAction="">
-            <DialogTitle>Add new account</DialogTitle>
+            <DialogTitle>{this.props.t('home.addnew')}</DialogTitle>
             <DialogContent>
-                <TextField label='Website/Service Name'>
+                <TextField label={this.props.t('common.acc_name')}>
                     <Input disabled={this.state.loading}
                         value={this.state.name}
                         onChange={(e) => this.setState({name: e.target.value})}/>
                 </TextField>
-                <TextField label='URL'>
+                <TextField label={this.props.t('common.url')}>
                     <Input disabled={this.state.loading}
                         value={this.state.url}
                         onChange={(e) => this.setState({url: e.target.value})}/>
                 </TextField>
-                <TextField label='Username'>
+                <TextField label={this.props.t('common.username')}>
                     <Input disabled={this.state.loading}
                         value={this.state.username}
                         onChange={(e) => this.setState({username: e.target.value})}/>
                 </TextField>
-                <TextField label='Information' textarea>
+                <TextField label={this.props.t('common.info')} textarea>
                     <Input disabled={this.state.loading}
                         value={this.state.info}
                         onChange={(e) => this.setState({info: e.target.value})}/>
                 </TextField>
-                <TextField label='OTP Key'>
+                <TextField label={this.props.t('common.otpkey')}>
                     <Input disabled={this.state.loading}
                         value={this.state.seed}
                         onChange={(e) => this.setState({seed: e.target.value})}/>
                 </TextField>
-                <TextField label='Encryption Key'>
+                <TextField label={this.props.t('common.enckey')}>
                     <Input disabled={this.state.loading}
                         type="password"
                         value={this.state.key}
@@ -84,7 +85,7 @@ export default class AddAccountDialog extends Component{
             </DialogContent>
                 {loading}
             <DialogFooter>
-                <DialogButton onClick={async ()=>this.onClose()}>Cancel</DialogButton>
+                <DialogButton onClick={async ()=>this.onClose()}>{this.props.t('common.cancel')}</DialogButton>
                 <DialogButton isDefault onClick={async ()=>{
                         this.setState({loading: true})
                         const res = await Api.addAccount(
@@ -106,7 +107,7 @@ export default class AddAccountDialog extends Component{
                         }else{
                             this.setState({loading: false, message: result.message});
                         }
-                    }}>Submit</DialogButton>
+                    }}>{this.props.t('common.submit')}</DialogButton>
             </DialogFooter>
       </Dialog>
         )
@@ -114,4 +115,4 @@ export default class AddAccountDialog extends Component{
 }
 
 
-// export default connect(null, {addAccount}, null, {forwardRef: true})(AddAccountDialog);
+export default withTranslation(null, {withRef: true})(AddAccountDialog);

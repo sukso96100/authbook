@@ -7,6 +7,7 @@ const i18nKoKR = {
             'next': '다음',
             'prev': '이전',
             'submit': '제출',
+            'cancel': '취소',
             'username': '사용자 이름',
             'password': '암호',
             'pwcheck': '암호 확인',
@@ -15,6 +16,11 @@ const i18nKoKR = {
             'ver_code': '인증 코드',
             'dspname': '표시 이름(별명, 실명 등)',
             'configure': '구성',
+            'enckey': '암호화 키',
+            'acc_name': '웹사이트/서비스 이름',
+            'url': 'URL',
+            'info': '정보',
+            'otpkey': 'OTP 키'
         },
         'menu': {
             'accounts': '내 계정',
@@ -45,6 +51,13 @@ const i18nKoKR = {
         'home': {
             'decrypt_desc': '계정 정보를 복호화 하기 위해 암호화 키를 입력하세요.',
             'decrypt': '복호화',
+            'add': '계정 추가',
+            'enc_done': '암호화 키가 구성되었습니다.',
+            'added': '새 계정이 추가되었습니다.',
+            'updated': '계정이 업데이트 되었습니다.',
+            'deleted': '계정이 삭제되었습니다.',
+            'copied': '복사되었습니다!',
+            'addnew': '새 계정 추가'
         },
     },
 };

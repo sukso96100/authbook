@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Route, NavLink } from "react-router-dom";
 import history from './history';
-import logo from './logo.svg';
 import './App.css';
 import './themeing.scss';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,8 +32,9 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import EmailVerifyDialog from './dialogs/EmailVerifyDialog';
 import DetailsDialog from './dialogs/DetailsDialog';
 import {AuthbookContext} from './data/AuthbookContext';
+import {withTranslation} from 'react-i18next';
 
-export default class Home extends Component {
+class Home extends Component {
     static contextType = AuthbookContext;
     constructor(props) {
         super(props);
@@ -135,8 +135,8 @@ export default class Home extends Component {
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         const decryptPrompt = (
             <div class="decryptPrompt">
-                <p>Type your encryption key to decrypt your accounts.</p>
-                <TextField label='Encryption Key'>
+                <p>{this.props.t("home.decrypt_desc")}</p>
+                <TextField label={this.props.t('common.enckey')}>
                     <Input disabled={this.state.loading}
                         type="password"
                         value={this.state.encryptionKeyInput}
@@ -145,7 +145,7 @@ export default class Home extends Component {
                  <Button raised="true" onClick={async ()=>{
                         this.context.setEncryptionKey(this.state.encryptionKeyInput);
                         await this.loadAccounts();
-                    }}>Decrypt</Button><br/>
+                    }}>{this.props.t("home.decrypt")}</Button><br/>
              </div>
          );
          
@@ -176,7 +176,7 @@ export default class Home extends Component {
                                             <MaterialIcon icon='info'/>
                                         </IconButton>
                                         <CopyToClipboard text={item.otp}
-                                            onCopy={() => this.notify("Copied!")}>
+                                            onCopy={() => this.notify(this.props.t('home.copied'))}>
                                             <IconButton>
                                                 <MaterialIcon icon='file_copy'/></IconButton>
                                         </CopyToClipboard>
@@ -204,7 +204,7 @@ export default class Home extends Component {
                 </AuthbookContext.Consumer>
             </Row>
           </Grid> 
-        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel="Add Account"
+        <Fab id="addbtn" icon={<MaterialIcon icon="add"/>} textLabel={this.props.t('home.add')}
             disabled={this.state.loading} onClick={()=>this.addAccount.current.openForm()}/>
                  </div>
          );
@@ -215,12 +215,12 @@ export default class Home extends Component {
                 {loading}
                 {content}
               <AddAccountDialog ref={this.addAccount}
-                  afterSubmit={()=> this.notify("New account has been added.")}/>
+                  afterSubmit={()=> this.notify(this.props.t('home.added'))}/>
               <SetEncryptionKeyDialog isOpen={this.state.isSetKeyDialogVisible}
                   onClose={(action)=>this.setState({isSetKeyDialogVisible: false})}
                   afterSubmit={()=>{
                         this.setState({isSetKeyDialogVisible: false});
-                        this.notify("Encryption key has been configured.");
+                        this.notify(this.props.t('home.enc_done'));
                         if(!JSON.parse(localStorage.getItem("isEmailVerified"))){
                             this.emailVerify.current.openForm(
                                 this.emailVerify.current.step.VERIFY);
@@ -230,10 +230,10 @@ export default class Home extends Component {
                   afterSubmit={(result, item)=>{
                       switch(result){
                           case 0:
-                              this.notify("Account updated.");
+                              this.notify(this.props.t('home.updated'));
                               break;
                           case 1: 
-                              this.notify("Account deleted."); 
+                              this.notify(this.props.t('home.deleted')); 
                               break;
                       }
                   }}/>
@@ -245,3 +245,4 @@ export default class Home extends Component {
   }
 }
 
+export default withTranslation()(Home);

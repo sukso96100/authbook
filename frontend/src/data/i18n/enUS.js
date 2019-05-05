@@ -8,6 +8,7 @@ const i18nEnUS = {
             'next': 'Next',
             'prev': 'Previous',
             'submit': 'Submit',
+            'cancel': 'Cancel',
             'username': 'Username',
             'password': 'Password',
             'pwcheck': 'Password Check',
@@ -16,6 +17,11 @@ const i18nEnUS = {
             'ver_code': 'Verification code',
             'dspname': 'Display name(nickname, real name, etc...)',
             'configure': 'Configure',
+            'enckey': 'Encryption key',
+            'acc_name': 'Website/Service Name',
+            'url': 'URL',
+            'info': 'Information',
+            'otpkey': 'OTP Key'
         },
         'menu': {
             'accounts': 'My Accounts',
@@ -46,6 +52,13 @@ const i18nEnUS = {
         'home': {
             'decrypt_desc': 'Type your encryption key to decrypt your accounts.',
             'decrypt': 'Decrypt',
+            'add': 'Add account',
+            'enc_done': 'Encryption key has been configured.',
+            'added': 'New account has been added.',
+            'updated': 'Account updated',
+            'deleted': 'Account deleted',
+            'copied': 'Copied!',
+            'addnew': 'Add new account'
         },
     },
 };

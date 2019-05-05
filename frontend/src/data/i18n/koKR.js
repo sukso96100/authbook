@@ -44,4 +44,4 @@ const i18nKoKR = {
                 }
             }
 };
-export defualt i18nKoKR;
+export default i18nKoKR;

@@ -28,14 +28,16 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-i18next": "^10.9.0",
-    "react-router-dom": "^4.3.1",
-    "react-toastify": "^4.5.2"
+    "react-router-dom": "^5.0.0",
+    "react-toastify": "^5.1.0"
   },
   "scripts": {
     "start": "SASS_PATH=./node_modules react-scripts start",
     "build": "SASS_PATH=./node_modules react-scripts build",
     "test": "SASS_PATH=./node_modules react-scripts test",
-    "eject": "SASS_PATH=./node_modules react-scripts eject"
+    "eject": "SASS_PATH=./node_modules react-scripts eject",
+    "lint": "eslint src/*/*.js",
+    "lint-fix": "eslint src/*/*.js --fix"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,6 +49,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "react-scripts": "^2.1.8"
+    "eslint-config-google": "^0.12.0",
+    "eslint-plugin-react": "^7.13.0",
+    "react-scripts": "3.0.0"
   }
 }

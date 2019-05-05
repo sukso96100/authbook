@@ -9,19 +9,19 @@ i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-      fallbackLng: 'en-US',
-      debug: true,
-      detection: {
-        order: ['navigator'],
-      },
-      resources: {
-        'en-US': i18nEnUS,
-        'ko-KR': i18nKoKR,
-
-        'interpolation': {
-          escapeValue: false,
+        fallbackLng: 'en-US',
+        debug: true,
+        detection: {
+            order: ['navigator'],
         },
-      },
+        resources: {
+            'en-US': i18nEnUS,
+            'ko-KR': i18nKoKR,
+
+            'interpolation': {
+                escapeValue: false,
+            },
+        },
     });
 
 export default i18n;

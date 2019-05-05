@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Router, Route, NavLink } from "react-router-dom";
 import '../themeing.scss';
 import './DialogInputStyle.css';
 import history from '../history';

@@ -49,7 +49,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint-config-google": "^0.12.0",
     "eslint-plugin-react": "^7.13.0",
     "react-scripts": "3.0.0"
   }

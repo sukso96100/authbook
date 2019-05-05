@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Router, Route, NavLink } from "react-router-dom";
 import '../themeing.scss';
 import './DialogInputStyle.css';
-
 import TextField, {HelperText, Input} from '@material/react-text-field';
 import LinearProgress from '@material/react-linear-progress';
 import Api from '../data/Api';

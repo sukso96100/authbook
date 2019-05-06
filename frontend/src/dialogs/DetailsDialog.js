@@ -7,6 +7,7 @@ import Dialog, {
     DialogFooter,
     DialogButton,
 } from '@material/react-dialog';
+import {withTranslation} from 'react-i18next';
 
 const initState = {
     formData: {
@@ -21,7 +22,7 @@ const initState = {
     isOpen: false,
 };
 
-export default class DetailsDialog extends Component {
+class DetailsDialog extends Component {
     constructor(props) {
         super(props);
         this.state = initState;
@@ -40,17 +41,19 @@ export default class DetailsDialog extends Component {
     render() {
         return (
             <Dialog open={this.state.isOpen} onClose={this.closeForm.bind(this)}>
-                <DialogTitle>Account Details</DialogTitle>
+                <DialogTitle>{this.props.t('home.acc_details')}</DialogTitle>
                 <DialogContent>
                     <p><b>{this.state.formData.seedName}</b></p>
-                    <p><b>URL </b>{this.state.formData.url}</p>
-                    <p><b>Username </b>{this.state.formData.accountUserName}</p>
-                    <p><b>Information </b><br/>{this.state.formData.seedInfo}</p>
+                    <p><b>{this.props.t('common.url')} </b>{this.state.formData.url}</p>
+                    <p><b>{this.props.t('common.username')} </b>{this.state.formData.accountUserName}</p>
+                    <p><b>{this.props.t('common.info')} </b><br/>{this.state.formData.seedInfo}</p>
                 </DialogContent>
                 <DialogFooter>
-                    <DialogButton onClick={this.closeForm.bind(this)}>Close</DialogButton>
+                    <DialogButton onClick={this.closeForm.bind(this)}>{this.props.t('common.close')}</DialogButton>
                 </DialogFooter>
             </Dialog>
         );
     }
 }
+
+export default withTranslation(null, {withRef: true})(DetailsDialog);

@@ -9,6 +9,7 @@ const i18nEnUS = {
             'prev': 'Previous',
             'submit': 'Submit',
             'cancel': 'Cancel',
+            'close': 'Close',
             'username': 'Username',
             'password': 'Password',
             'pwcheck': 'Password Check',
@@ -58,7 +59,8 @@ const i18nEnUS = {
             'updated': 'Account updated',
             'deleted': 'Account deleted',
             'copied': 'Copied!',
-            'addnew': 'Add new account'
+            'addnew': 'Add new account',
+            'acc_details': 'Account details'
         },
     },
 };

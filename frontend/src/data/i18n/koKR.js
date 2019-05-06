@@ -8,6 +8,7 @@ const i18nKoKR = {
             'prev': '이전',
             'submit': '제출',
             'cancel': '취소',
+            'close': '닫기',
             'username': '사용자 이름',
             'password': '암호',
             'pwcheck': '암호 확인',
@@ -57,7 +58,8 @@ const i18nKoKR = {
             'updated': '계정이 업데이트 되었습니다.',
             'deleted': '계정이 삭제되었습니다.',
             'copied': '복사되었습니다!',
-            'addnew': '새 계정 추가'
+            'addnew': '새 계정 추가',
+            'acc_details': '계정 상세 정보'
         },
     },
 };

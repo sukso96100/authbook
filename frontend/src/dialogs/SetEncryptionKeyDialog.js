@@ -11,8 +11,9 @@ import Dialog, {
     DialogFooter,
     DialogButton,
 } from '@material/react-dialog';
+import {withTranslation} from 'react-i18next';
 
-export default class SetEncryptionKeyDialog extends Component {
+class SetEncryptionKeyDialog extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,15 +29,15 @@ export default class SetEncryptionKeyDialog extends Component {
         return (
             <Dialog open={this.props.isOpen} scrimClickAction="" escapeKeyAction=""
                 onClose={this.props.onClose}>
-                <DialogTitle>Configure your encryption key</DialogTitle>
+                <DialogTitle>{this.props.t('home.conf_enckey')}</DialogTitle>
                 <DialogContent>
-                    <p>Encryption key will be used to encrypt your account OTP data.</p>
-                    <TextField label='Encryption Key'>
+                    <p>{this.props.t('home.conf_enckey_desc')}</p>
+                    <TextField label={this.props.t('common.enckey')}>
                         <Input disabled={this.state.loading}
                             value={this.state.key} type="password"
                             onChange={(e) => this.setState({key: e.target.value})}/>
                     </TextField>
-                    <TextField label='Encryption Key Check'>
+                    <TextField label={this.props.t('common.enckey_check')}>
                         <Input disabled={this.state.loading}
                             value={this.state.keyCheck} type="password"
                             onChange={(e) => this.setState({keyCheck: e.target.value})}/>
@@ -46,7 +47,7 @@ export default class SetEncryptionKeyDialog extends Component {
                 </DialogContent>
                 {loading}
                 <DialogFooter>
-                    <DialogButton action='dismiss'>Cancel</DialogButton>
+                    <DialogButton action='dismiss'>{this.props.t('common.cancel')}</DialogButton>
                     <DialogButton isDefault onClick={async ()=>{
                         this.setState({loading: true});
                         const res = await Api.setEncryptionKey(this.state.key, this.state.keyCheck);
@@ -57,9 +58,11 @@ export default class SetEncryptionKeyDialog extends Component {
                             const result = await res.json();
                             this.setState({loading: false, mseeage: result.message});
                         }
-                    }}>Submit</DialogButton>
+                    }}>{this.props.t('common.submit')}</DialogButton>
                 </DialogFooter>
             </Dialog>
         );
     }
 }
+
+export default withTranslation(null, {withRef: true})(SetEncryptionKeyDialog);

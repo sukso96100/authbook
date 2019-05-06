@@ -20,6 +20,7 @@ const i18nEnUS = {
             'dspname': 'Display name(nickname, real name, etc...)',
             'configure': 'Configure',
             'enckey': 'Encryption key',
+            'enckey_check': 'Encryption key check',
             'acc_name': 'Website/Service Name',
             'url': 'URL',
             'info': 'Information',
@@ -63,7 +64,10 @@ const i18nEnUS = {
             'addnew': 'Add new account',
             'acc_details': 'Account details',
             'acc_edit': 'Edit account',
-            'acc_edit_otpkey_desc': 'Leave this field empty to current otp key.'
+            'acc_edit_otpkey_desc': 'Leave this field empty to current otp key.',
+            'conf_enckey': 'Configure your encryption key',
+            'conf_enckey_desc': 'Encryption key will be used to encrypt your account OTP data.\n \
+                            Please note that if you forgot your encryption key, you can\'t recover it.'
         },
     },
 };

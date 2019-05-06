@@ -19,6 +19,7 @@ const i18nKoKR = {
             'dspname': '표시 이름(별명, 실명 등)',
             'configure': '구성',
             'enckey': '암호화 키',
+            'enckey_check': '암호화 키 확인',
             'acc_name': '웹사이트/서비스 이름',
             'url': 'URL',
             'info': '정보',
@@ -62,8 +63,11 @@ const i18nKoKR = {
             'addnew': '새 계정 추가',
             'acc_details': '계정 상세 정보',
             'acc_edit': '계정 수정',
-            'acc_edit_otpkey_desc': '사용중인 OTP 키를 유지하려면 이 칸을 비워두세요.'
-        },
+            'acc_edit_otpkey_desc': '사용중인 OTP 키를 유지하려면 이 칸을 비워두세요.',
+            'conf_enckey': '암호화 키 구성',
+            'conf_enckey_desc': '암호화 키는 OTP 데이터 암호화에 사용됩니다.\n \
+                            분실 하시는 경우 복구할 수 없습니다.'
+        }
     },
 };
 export default i18nKoKR;

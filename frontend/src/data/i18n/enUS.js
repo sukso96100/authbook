@@ -10,6 +10,7 @@ const i18nEnUS = {
             'submit': 'Submit',
             'cancel': 'Cancel',
             'close': 'Close',
+            'delete': 'Delete',
             'username': 'Username',
             'password': 'Password',
             'pwcheck': 'Password Check',
@@ -60,7 +61,9 @@ const i18nEnUS = {
             'deleted': 'Account deleted',
             'copied': 'Copied!',
             'addnew': 'Add new account',
-            'acc_details': 'Account details'
+            'acc_details': 'Account details',
+            'acc_edit': 'Edit account',
+            'acc_edit_otpkey_desc': 'Leave this field empty to current otp key.'
         },
     },
 };

@@ -9,6 +9,7 @@ const i18nKoKR = {
             'submit': '제출',
             'cancel': '취소',
             'close': '닫기',
+            'delete': '제거',
             'username': '사용자 이름',
             'password': '암호',
             'pwcheck': '암호 확인',
@@ -56,10 +57,12 @@ const i18nKoKR = {
             'enc_done': '암호화 키가 구성되었습니다.',
             'added': '새 계정이 추가되었습니다.',
             'updated': '계정이 업데이트 되었습니다.',
-            'deleted': '계정이 삭제되었습니다.',
+            'deleted': '계정이 제거되었습니다.',
             'copied': '복사되었습니다!',
             'addnew': '새 계정 추가',
-            'acc_details': '계정 상세 정보'
+            'acc_details': '계정 상세 정보',
+            'acc_edit': '계정 수정',
+            'acc_edit_otpkey_desc': '사용중인 OTP 키를 유지하려면 이 칸을 비워두세요.'
         },
     },
 };

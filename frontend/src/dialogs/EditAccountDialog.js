@@ -11,6 +11,7 @@ import Dialog, {
   DialogButton,
 } from '@material/react-dialog';
 import {AuthbookContext} from '../data/AuthbookContext';
+import {withTranslation} from 'react-i18next';
 
 const initState = {
     formData: {
@@ -28,7 +29,7 @@ const initState = {
     editIndex: 0
 };
 
-export default class EditAccountDialog extends Component{
+class EditAccountDialog extends Component{
     static contextType = AuthbookContext;
     constructor(props) {
         super(props);
@@ -50,38 +51,38 @@ export default class EditAccountDialog extends Component{
         const loading = this.state.loading ? (<LinearProgress indeterminate={true}/>) : (<div></div>);
         return(
             <Dialog open={this.state.isOpen} onClose={this.closeForm.bind(this)}>
-            <DialogTitle>Edit account</DialogTitle>
+            <DialogTitle>{this.props.t('home.acc_edit')}</DialogTitle>
             <DialogContent>
-                <TextField label='Website/Service Name'>
+                <TextField label={this.props.t('common.acc_name')}>
                     <Input disabled={this.state.loading} value={this.state.formData.seedName}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, seedName: e.target.value}
                         })}/>
                 </TextField>
-                <TextField label='URL'>
+                <TextField label={this.props.t('common.url')}>
                     <Input disabled={this.state.loading} value={this.state.formData.url}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, url: e.target.value}
                         })}/>
                 </TextField>
-                <TextField label='Username'>
+                <TextField label={this.props.t('common.username')}>
                     <Input disabled={this.state.loading} value={this.state.formData.accountUserName}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, accountUserName: e.target.value}
                         })}/>
                 </TextField>
-                <TextField label='Information' textarea>
+                <TextField label={this.props.t('common.info')} textarea>
                     <Input disabled={this.state.loading} value={this.state.formData.seedInfo}
                         onChange={(e) => this.setState({
                             formData:{...this.state.formData, seedInfo: e.target.value}
                         })}/>
                 </TextField>
-                <TextField label='OTP Key'
-                    helperText={<HelperText>Leave this field empty to not update otp key.</HelperText>}>
+                <TextField label={this.props.t('common.otpkey')}
+                    helperText={<HelperText>{this.props.t('home.acc_edit_otpkey_desc')}</HelperText>}>
                     <Input disabled={this.state.loading} value={this.state.seed}
                         onChange={(e) => this.setState({seed: e.target.value})}/>
                 </TextField>
-                <TextField label='Encryption Key'>
+                <TextField label={this.props.t('common.enckey')}>
                     <Input disabled={this.state.loading}
                         type="password" value={this.state.key}
                         onChange={(e) => this.setState({key: e.target.value})}/>
@@ -102,7 +103,7 @@ export default class EditAccountDialog extends Component{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});
                         }
-                    }}>Delete</DialogButton>
+                    }}>{this.props.t('common.delete')}</DialogButton>
                 <DialogButton isDefault onClick={async ()=>{
                         this.setState({loading: true});
                         const res = await Api.updateAccount(
@@ -131,11 +132,11 @@ export default class EditAccountDialog extends Component{
                             const result = await res.json();
                             this.setState({loading: false, message: result.message});
                         }
-                    }}>Submit</DialogButton>
+                    }}>{this.props.t('common.submit')}</DialogButton>
             </DialogFooter>
       </Dialog>
         )
     }
 }
 
-// export default connect(null, { updateAccountItem, removeAccountItem }, null, {forwardRef: true})(EditAccountDialog);
+export default withTranslation(null, {withRef: true})(EditAccountDialog);

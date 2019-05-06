@@ -69,6 +69,17 @@ const i18nEnUS = {
             'conf_enckey_desc': 'Encryption key will be used to encrypt your account OTP data.\n \
                             Please note that if you forgot your encryption key, you can\'t recover it.'
         },
+        'email': {
+            'title': 'Update/Verify Email',
+            'init': 'Did you received a verification code for verifying your email address?',
+            'request': 'Submit the new email address that will replace the current one.',
+            'requested': 'Now, check your inbox and prepare your verification code.\n \
+                            Couldn\'t received? You can move to previous step and request again.\n \
+                            Click "Next" if you are ready.',
+            'verify': 'Use the verification code you received to verify your email address.',
+            'done': 'Done! Your email is now updated and verified.',
+            'new': 'New email address'
+        }
     },
 };
 export default i18nEnUS;

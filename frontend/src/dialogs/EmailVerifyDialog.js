@@ -11,8 +11,9 @@ import Dialog, {
   DialogFooter,
   DialogButton,
 } from '@material/react-dialog';
+import {withTranslation} from 'react-i18next';
 
-export default class EmailVerifyDialog extends Component{
+class EmailVerifyDialog extends Component{
     
     step = {
         INIT: 0,
@@ -88,24 +89,24 @@ export default class EmailVerifyDialog extends Component{
             case this.step.INIT:
                 content = (<div>
                     <DialogContent>
-                        <p>Did you received a verification code for verifying your email address?</p>
+                        <p>{this.props.t('email.init')}</p>
                     </DialogContent>
                     <DialogFooter>
-                        <DialogButton isDefault onClick={()=>this.onClose()}>Cancel</DialogButton>
+                        <DialogButton isDefault onClick={()=>this.onClose()}>{this.props.t('common.cancel')}</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.REQUEST})
-                            }}>No</DialogButton>
+                            }}>{this.props.t('common.no')}</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.VERIFY})
-                            }}>Yes</DialogButton>
+                            }}>{this.props.t('common.yes')}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.REQUEST:
                 content = (<div>
                     <DialogContent>
-                        <p>Submit the new email address that will replace the current one.</p>
-                        <TextField label='New Email Address'>
+                        <p>{this.props.t('email.request')}</p>
+                        <TextField label={this.props.t('email.new')}>
                             <Input disabled={this.state.loading}
                                 value={this.state.email}
                                 onChange={(e) => this.setState({email: e.target.value})}/>
@@ -115,32 +116,30 @@ export default class EmailVerifyDialog extends Component{
                         {loading}
                     <DialogFooter>
                         <DialogButton isDefault disabled={this.state.loading}
-                            onClick={this.changeEmail.bind(this)}>Submit</DialogButton>
+                            onClick={this.changeEmail.bind(this)}>{this.props.t('common.submit')}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.REQUESTED:
                 content = (<div>
                     <DialogContent>
-                        <p>Now, check your inbox and prepare your verification code.<br/>
-                            Couldn't received? You can move to previous step and request again.<br/>
-                            Click "Next" if you are ready.</p>
+                        <p>{this.props.t('email.requested')}</p>
                     </DialogContent>
                     <DialogFooter>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.REQUEST})
-                            }}>Previous</DialogButton>
+                            }}>{this.props.t('common.prev')}</DialogButton>
                         <DialogButton isDefault onClick={() => { 
                                 this.setState({step: this.step.VERIFY})
-                            }}>Next</DialogButton>
+                            }}>{this.props.t('common.next')}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.VERIFY:
                 content = (<div>
                     <DialogContent>
-                        <p>Use the verification code you received to verify your email address.</p>
-                        <TextField label='Verification Code'>
+                        <p>{this.props.t('email.verify')}</p>
+                        <TextField label={this.props.t('common.ver_code')}>
                             <Input disabled={this.state.loading}
                                 value={this.state.verificationCode}
                                 onChange={(e) => this.setState({verificationCode: e.target.value})}/>
@@ -150,17 +149,17 @@ export default class EmailVerifyDialog extends Component{
                         {loading}
                     <DialogFooter>
                         <DialogButton isDefault disabled={this.state.loading}
-                            onClick={this.verifyEmail.bind(this)}>Submit</DialogButton>
+                            onClick={this.verifyEmail.bind(this)}>{this.props.t('common.submit')}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
             case this.step.DONE:
                 content = (<div>
                     <DialogContent>
-                        <p>Done! Your email is now updated and verified.</p>
+                        <p>{this.props.t('email.done')}</p>
                     </DialogContent>
                     <DialogFooter>
-                        <DialogButton isDefault onClick={()=>this.onClose()}>Ok</DialogButton>
+                        <DialogButton isDefault onClick={()=>this.onClose()}>{this.porps.t('common.ok')}</DialogButton>
                     </DialogFooter>
                     </div>);
                 break;
@@ -168,9 +167,11 @@ export default class EmailVerifyDialog extends Component{
         return(
             <Dialog open={this.state.isOpen} scrimClickAction="" escapeKeyAction=""
                 onClose={()=>this.onClose()}>
-            <DialogTitle>Update/Verify Email</DialogTitle>
+            <DialogTitle>{this.props.t('email.title')}</DialogTitle>
                 {content}
             </Dialog>
         )
     }
 }
+
+export default withTranslation(null, {withRef: null})(EmailVerifyDialog);

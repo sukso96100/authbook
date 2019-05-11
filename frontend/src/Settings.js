@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Router, Route, NavLink } from "react-router-dom";
+import { Router, Route, NavLink } from 'react-router-dom';
 import history from './history';
-import logo from './logo.svg';
 import './App.css';
 import './themeing.scss';
 
 import MaterialIcon from '@material/react-material-icon';
 import List, {ListItem, ListItemText, ListGroup, 
-  ListGroupSubheader,ListDivider} from '@material/react-list';
+    ListGroupSubheader,ListDivider} from '@material/react-list';
 import LinearProgress from '@material/react-linear-progress';
 import Api from './data/Api';
 import Button from '@material/react-button';
@@ -16,51 +15,52 @@ import ChangePasswordDialog from './dialogs/ChangePasswordDialog';
 import ChangeEncryptionKeyDialog from './dialogs/ChangeEncryptionKeyDialog';
 import CloseAccountDialog from './dialogs/CloseAccountDialog';
 import {AuthbookContext} from './data/AuthbookContext';
+import {withTranslation} from 'react-i18next';
 
-export default class Settings extends Component {
+class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-                serverUrl: ""
+            serverUrl: ''
         };
         this.emailVerify = React.createRef();
         this.changePassword = React.createRef();
         this.changeKey = React.createRef();
         this.closeAccount = React.createRef();
+
+        this.listItems = [
+            {title: this.props.t('settings.change_email'), desc: this.props.t('settings.change_email_desc'),
+                onClick: ()=>{
+                    this.emailVerify.current.openForm();
+                }},
+            {title: this.props.t('settings.change_pw'), desc: this.props.t('settings.change_pw_desc'),
+                onClick: ()=>{
+                    this.changePassword.current.openForm();
+                }},
+            {title:this.props.t('settings.change_enckey'), desc: this.props.t('settings.change_enckey_desc'),
+                onClick: ()=>{
+                    this.changeKey.current.openForm();
+                }},
+            {title: this.props.t('settings.close_acc'), desc: this.props.t('settings.close_acc_desc'),
+                onClick: ()=>{
+                    this.closeAccount.current.openForm();
+                }}
+        ];
     }
     
     async componentDidMount(){
         this.setState({ serverUrl: Api.url});
     }
     
-    listItems = [
-        {title: "Change Email Address", desc:"Click to change your email address",
-         onClick: ()=>{
-            this.emailVerify.current.openForm();
-        }},
-        {title: "Change Password", desc:"Change the password of your account",
-        onClick: ()=>{
-            this.changePassword.current.openForm();
-        }},
-        {title: "Change Encryption Key", desc:"Change the key that encryptes OTP data.",
-        onClick: ()=>{
-            this.changeKey.current.openForm();
-        }},
-        {title: "Close my account", desc:"Delete your data and account from the server.",
-        onClick: ()=>{
-            this.closeAccount.current.openForm();
-        }}
-    ]
-    
-    
+
     render() {
         return (
             <div class="listMargin">
                 <ListGroup>
-                    <ListGroupSubheader tag='h3'><b>Account Information</b></ListGroupSubheader>
+                    <ListGroupSubheader tag='h3'><b>{this.props.t('settings.acc_info')}</b></ListGroupSubheader>
                     <List twoLine={true}>
                         <AuthbookContext.Consumer>
-                          {({userinfo}) => (
+                            {({userinfo}) => (
                                 <ListItem>
                                     <ListItemText
                                         primaryText={userinfo.displayName}
@@ -75,7 +75,7 @@ export default class Settings extends Component {
                         </ListItem>
                     </List>
                     <ListDivider tag="div" />
-                    <ListGroupSubheader tag='h3'><b>Account Settings</b></ListGroupSubheader>
+                    <ListGroupSubheader tag='h3'><b>{this.props.t('settings.acc_settings')}</b></ListGroupSubheader>
                     <List twoLine={true}>
                         {this.listItems.map((item, i)=>{
                             return(
@@ -84,7 +84,7 @@ export default class Settings extends Component {
                                         primaryText={item.title}
                                         secondaryText={item.desc}/>
                                 </ListItem>
-                            )
+                            );
                         })}
                     </List>
                 </ListGroup>
@@ -92,7 +92,9 @@ export default class Settings extends Component {
                 <ChangePasswordDialog ref={this.changePassword}/>
                 <ChangeEncryptionKeyDialog ref={this.changeKey}/>
                 <CloseAccountDialog ref={this.closeAccount}/>
-          </div>
+            </div>
         );
-  }
+    }
 }
+
+export default withTranslation()(Settings);

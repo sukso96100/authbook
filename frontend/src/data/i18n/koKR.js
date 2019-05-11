@@ -78,6 +78,19 @@ const i18nKoKR = {
             'verify': '이메일 주소를 인증하려면 앞서 받은 인증코드를 입력하세요.',
             'done': '이메일 주소가 갱신 및 인증 되었습니다.',
             'new': '새 이메일 주소'
+        },
+        'settings': {
+            'acc_info': '계정 정보',
+            'acc_settings': '계정 설정',
+            'change_email': '이메일 주소 변경',
+            'change_email_desc': '계정에 연결된 이메일 주소 변경',
+            'change_pw': '암호 변경',
+            'change_pw_desc': '계정 로그인 암호 바꾸기',
+            'change_enckey': '암호화 키 변경',
+            'change_enckey_desc': 'OTP 데이터 암호화에 쓸 키 변경',
+            'close_acc': '회원 탈퇴',
+            'close_acc_desc': '서버에서 내 계정과 데이터 모두 지우기'
+
         }
     },
 };

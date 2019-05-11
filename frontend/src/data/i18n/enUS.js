@@ -79,6 +79,19 @@ const i18nEnUS = {
             'verify': 'Use the verification code you received to verify your email address.',
             'done': 'Done! Your email is now updated and verified.',
             'new': 'New email address'
+        },
+        'settings': {
+            'acc_info': 'Account information',
+            'acc_settings': 'Account settings',
+            'change_email': 'Change Email Address',
+            'change_email_desc': 'Click to change your email address',
+            'change_pw': 'Change password',
+            'change_pw_desc': 'Change the password of your account',
+            'change_enckey': 'Change Encryption Key',
+            'change_enckey_desc': 'Change the key that encryptes OTP data.',
+            'close_acc': 'Close my account',
+            'close_acc_desc': 'Delete your data and account from the server.'
+
         }
     },
 };

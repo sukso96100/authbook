@@ -50,6 +50,6 @@
   ],
   "devDependencies": {
     "eslint-plugin-react": "^7.13.0",
-    "react-scripts": "3.0.0"
+    "react-scripts": "5.0.1"
   }
 }
